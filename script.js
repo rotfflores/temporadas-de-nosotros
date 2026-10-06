@@ -1504,9 +1504,9 @@
     const games = EPS.filter((ep) => ep.interaccion && GAMES[ep.interaccion.tipo]);
     const arcadeId = param("arcade");
     const arcades = [
-      { id: "flappy", name: "Vuelo de corazones", type: "Acción", desc: "Vuela entre obstáculos y supera tu mejor marca.", img: F.t1 },
+      { id: "flappy", name: "Vuelo de corazones", type: "Acción", desc: "Vuela entre huecos estrechos a toda velocidad.", img: F.t1 },
       { id: "sopa", name: "Sopa de nuestra historia", type: "Palabras", desc: "Encuentra lugares y recuerdos escondidos.", img: F.t2 },
-      { id: "racha", name: "Racha de recuerdos", type: "Récord infinito", desc: "Atrapa fotos, esquiva tormentas y suma puntos sin límite.", img: F.t5 },
+      { id: "racha", name: "Atrapa el Instante", type: "Récord infinito", desc: "Atrapa fotos rápidas y esquiva tormentas con solo dos vidas.", img: F.t5 },
       { id: "memory", name: "Memorama de fotos", type: "Memoria", desc: "Encuentra las parejas con fotos del proyecto.", img: F.t3 },
       { id: "puzzle", name: "Rompecabezas de recuerdos", type: "Puzzle", desc: "Elige una imagen y arma sus nueve piezas.", img: F.puzzle }
     ];
