@@ -925,3 +925,14 @@ body.searching .hero, body.searching main.rows { display: none; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+/* Créditos al terminar cada película o serie */
+.title-credits { position: absolute; inset: 0; z-index: 30; background: #000; opacity: 0; transition: opacity .6s; }
+.title-credits.show { opacity: 1; }
+.title-credits .credits { position: absolute; }
+.title-credits .credits-ui { position: absolute; }
+
+/* Ficha de película: "Acerca de" en lugar de episodios */
+.movie-about { color: var(--netflix-gray); font-size: .95rem; line-height: 1.5; max-width: 900px; }
+.movie-about p { margin: .35rem 0; color: #fff; }
+.movie-about p > span:first-child { color: var(--netflix-gray); }

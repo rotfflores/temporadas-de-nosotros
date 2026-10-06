@@ -46,8 +46,8 @@ window.TDN = (function () {
      ------------------------------------------------------------- */
   const F = {
     hero: "assets/fotos/hero.webp",                   // La foto más significativa (portada principal)
-    perfilB: "assets/fotos/perfil-b.webp",            // Avatar del perfil de B (cuadrada)
-    perfilPareja: "assets/fotos/perfil-pareja.webp",  // Avatar "Tú y yo" (cuadrada)
+    perfilB: "assets/fotos/avatar-b.svg",             // Avatar del perfil de B (cuadrado, estilo Netflix)
+    perfilPareja: "assets/fotos/avatar-pareja.svg",   // Avatar "Tú y yo" (cuadrado, estilo Netflix)
     t0: "assets/fotos/t0.webp", t1: "assets/fotos/t1.webp", t2: "assets/fotos/t2.webp",
     t3: "assets/fotos/t3-concierto.webp", t4: "assets/fotos/t4.webp", t5: "assets/fotos/t5.webp",
     t6: "assets/fotos/t6.webp", t7: "assets/fotos/t7.webp", final: "assets/fotos/final.webp",
@@ -103,353 +103,446 @@ window.TDN = (function () {
     coincidencia: 98,              // "98% para ti"
     clasificacion: "+13",          // Etiqueta de edad
     clasificacionTexto: "Romance, besos, cursilería",
-    heroTag: "NUEVA TEMPORADA",    // o "ESTRENO"
+    heroTag: "ESTRENO",             // o "NUEVA TEMPORADA"
     heroTop: "N.º 1 en tu corazón hoy",
     sinopsis: `${P.nombreB} y ${P.nombreA} protagonizan la historia que empezó en ${P.ciudad}. ` +
               `${P.anios} ${P.anios === 1 ? "año" : "años"}, risas, viajes y alguna tormenta. ` +
-              `Una serie original hecha solo para ti, ${P.apodo}.`,
+              `12 películas y 3 series originales hechas solo para ti, ${P.apodo}.`,
     generos: ["Romántica", "Comedia", "Basada en hechos reales"],
     filaRecomendada: "Nuestro primer año" // Título usado en "Porque viste '…'"
   };
 
   /* -------------------------------------------------------------
-     5. TEMPORADAS Y EPISODIOS
+     5. PELÍCULAS Y SERIES
      ---------------------------------------------------------------
-     Cada episodio:
-       titulo, descripcion, duracion (segundos simulados, 60–120)
-       escenas: [{ img, poster, texto: [frase1, frase2] }]
-       Cada escena ocupa una parte igual del episodio; sus frases se alternan sin detener el video.
-       interaccion: { tipo, ... }        → juego independiente en juegos.html
-       recompensa: texto que se desbloquea al terminar
-     Tipos de interacción disponibles:
-       quiz · memory · puzzle · sopa · rascar · codigo · ordenar · adivinanza · completar
+     Todo está desbloqueado: se puede ver cualquier título en cualquier orden.
+     Cada título:
+       tipo: "pelicula" (1 episodio) o "serie" (2–3 episodios cortos)
+       titulo, anio, imagen (portada), sinopsis, cancion + musica (audio de fondo)
+       creditos: [[rol, nombre], ...] → se muestran al terminar el título
+       episodios: [{ titulo, descripcion, duracion, escenas, interaccion, recompensa }]
+     Cada escena: E(n, frase1, frase2) usa el clip n de la lista CLIPS (video + imagen de carga).
+     interaccion: { tipo, ... } → juego independiente en juegos.html
+     Tipos: quiz · memory · puzzle · sopa · rascar · codigo · ordenar · adivinanza · completar
      ------------------------------------------------------------- */
+  // Clips de video de las escenas: [video en assets/video/, imagen de carga en assets/fotos/escenas/]
+  const CLIPS = [
+    /*00*/ ["guadalajara.mp4", "s00.webp"], /*01*/ ["escenas/esc00.mp4", "s01.webp"],
+    /*02*/ ["antes-ana.mp4", "s02.webp"], /*03*/ ["escenas/esc02.mp4", "s03.webp"],
+    /*04*/ ["escenas/esc01.mp4", "s04.webp"], /*05*/ ["escenas/n05.mp4", "s05.webp"],
+    /*06*/ ["escenas/n06b.mp4", "s06b.webp"], /*07*/ ["encuentro.mp4", "s07.webp"],
+    /*08*/ ["escenas/esc03.mp4", "s08.webp"], /*09*/ ["escenas/n09.mp4", "s09.webp"],
+    /*10*/ ["escenas/n10.mp4", "s10.webp"], /*11*/ ["escenas/esc04.mp4", "s11.webp"],
+    /*12*/ ["escenas/n12.mp4", "s12.webp"], /*13*/ ["primer-mensaje.mp4", "s13.webp"],
+    /*14*/ ["escenas/esc05.mp4", "s14.webp"], /*15*/ ["preparativos.mp4", "s15.webp"],
+    /*16*/ ["escenas/n16.mp4", "s16.webp"], /*17*/ ["escenas/esc07.mp4", "s17.webp"],
+    /*18*/ ["primera-cita.mp4", "s18.webp"], /*19*/ ["escenas/esc08.mp4", "s19.webp"],
+    /*20*/ ["escenas/n20.mp4", "s20.webp"], /*21*/ ["cafe.mp4", "s21.webp"],
+    /*22*/ ["cotidiano.mp4", "s22.webp"], /*23*/ ["escenas/n23.mp4", "s23.webp"],
+    /*24*/ ["escenas/esc16.mp4", "s24.webp"], /*25*/ ["vinilo.mp4", "s25.webp"],
+    /*26*/ ["escenas/esc09.mp4", "s26.webp"], /*27*/ ["baile-nuestra-cancion.mp4", "s27.webp"],
+    /*28*/ ["escenas/n28.mp4", "s28.webp"], /*29*/ ["escenas/n29.mp4", "s29.webp"],
+    /*30*/ ["escenas/n30.mp4", "s30.webp"], /*31*/ ["pizza.mp4", "s31.webp"],
+    /*32*/ ["escenas/n32.mp4", "s32.webp"], /*33*/ ["escenas/esc10.mp4", "s33.webp"],
+    /*34*/ ["risas-juntos.mp4", "s34.webp"], /*35*/ ["vuelo.mp4", "s35.webp"],
+    /*36*/ ["playa.mp4", "s36.webp"], /*37*/ ["escenas/esc12.mp4", "s37.webp"],
+    /*38*/ ["foto-viaje.mp4", "s38.webp"], /*39*/ ["escenas/n39.mp4", "s39.webp"],
+    /*40*/ ["escenas/esc19b.mp4", "s40.webp"], /*41*/ ["escenas/n41.mp4", "s41.webp"],
+    /*42*/ ["escenas/n42.mp4", "s42.webp"], /*43*/ ["escenas/esc13.mp4", "s43.webp"],
+    /*44*/ ["viaje-juntos.mp4", "s44.webp"], /*45*/ ["llamada-lluvia.mp4", "s45.webp"],
+    /*46*/ ["dias-dificiles.mp4", "s46.webp"], /*47*/ ["escenas/esc14.mp4", "s47.webp"],
+    /*48*/ ["reencuentro.mp4", "s48.webp"], /*49*/ ["escenas/esc15.mp4", "s49.webp"],
+    /*50*/ ["mudanza.mp4", "s50.webp"], /*51*/ ["escenas/n51.mp4", "s51.webp"],
+    /*52*/ ["escenas/n52.mp4", "s52.webp"], /*53*/ ["escenas/esc20.mp4", "s53.webp"],
+    /*54*/ ["escenas/n54.mp4", "s54.webp"], /*55*/ ["escenas/n55.mp4", "s55.webp"],
+    /*56*/ ["escenas/n56.mp4", "s56.webp"], /*57*/ ["escenas/n57.mp4", "s57.webp"],
+    /*58*/ ["escenas/esc19.mp4", "s58.webp"], /*59*/ ["escenas/esc17.mp4", "s59.webp"],
+    /*60*/ ["escenas/n60.mp4", "s60.webp"], /*61*/ ["escenas/n61.mp4", "s61.webp"],
+    /*62*/ ["escenas/n62.mp4", "s62.webp"], /*63*/ ["escenas/n63.mp4", "s63.webp"],
+    /*64*/ ["escenas/n64.mp4", "s64.webp"], /*65*/ ["atardecer.mp4", "s65.webp"],
+    /*66*/ ["tokio.mp4", "s66.webp"], /*67*/ ["escenas/esc21.mp4", "s67.webp"],
+    /*68*/ ["escenas/n68.mp4", "s68.webp"], /*69*/ ["final-prueba.mp4", "s69.webp"],
+    /*70*/ ["escenas/n70.mp4", "s70.webp"], /*71*/ ["escenas/n71.mp4", "s71.webp"],
+    /*72*/ ["escenas/n72.mp4", "s72.webp"], /*73*/ ["escenas/n73.mp4", "s73.webp"],
+    /*74*/ ["escenas/esc11.mp4", "s74.webp"]
+  ];
+  const E = (n, a, b) => ({ img: "assets/video/" + CLIPS[n][0], poster: "assets/fotos/escenas/" + CLIPS[n][1], texto: [a, b] });
+  // Audio y canción de cada título (se reparten los 8 archivos de assets/audio/)
+  const son = (i) => ({ musica: M.temporadas[i % M.temporadas.length], cancion: M.canciones[i % M.canciones.length] });
+  const cred = (...extra) => [["Protagonizada por", `${P.nombreB} y ${P.nombreA}`], ...extra, ["Dirección", "El destino"]];
+
   const temporadas = [
-    /* ---------------- TEMPORADA 0 ---------------- */
+    /* =================== PELÍCULAS =================== */
     {
-      num: 0, titulo: "Piloto: Antes de Nosotros", anio: P.anioInicio - 1, clasificacion: "TP",
-      imagen: F.t0, musica: M.temporadas[0], top10: false,
-      sinopsis: `Dos vidas paralelas que aún no se cruzan. ${P.nombreA} en su mundo, ${P.nombreB} en el suyo. ` +
-                `Nadie sabe todavía que el guion ya estaba escrito.`,
+      num: 0, tipo: "pelicula", titulo: "Antes de Nosotros", anio: P.anioInicio - 1, clasificacion: "TP",
+      imagen: F.t0, ...son(0), top10: false,
+      sinopsis: `Dos vidas paralelas en ${P.ciudad}. ${P.nombreA} en su mundo, ${P.nombreB} en el suyo. Nadie sabe todavía que el guion ya estaba escrito.`,
+      creditos: cred(["Locación", P.ciudad], ["Guion", "La casualidad"]),
       episodios: [{
-        titulo: "Dos historias paralelas", duracion: 70,
+        titulo: "Antes de Nosotros", duracion: 62,
         descripcion: `Antes de ser "nosotros", había dos personas que no sabían que se estaban buscando.`,
         escenas: [
-          { img: "assets/video/guadalajara.mp4", poster: "assets/fotos/escenas/s00.webp", texto: [`${P.ciudad}. Dos historias avanzaban por separado.`, `Sin saberlo, caminaban hacia el mismo capítulo.`] },
-          { img: "assets/video/escenas/esc00.mp4", poster: "assets/fotos/escenas/s01.webp", texto: [`${P.nombreA} tenía sus rutinas y sus planes.`, `Creía que no le faltaba nada.`] },
-          { img: "assets/video/antes-ana.mp4", poster: "assets/fotos/escenas/s02.webp", texto: [`${P.nombreB} también estaba escribiendo su propia historia.`, `Ninguno conocía aún el nombre del otro.`] },
-          { img: "assets/video/escenas/esc02.mp4", poster: "assets/fotos/escenas/s03.webp", texto: [`Dos vidas. La misma ciudad.`, `Una coincidencia esperando su momento.`] },
-          { img: "assets/video/escenas/esc01.mp4", poster: "assets/fotos/escenas/s04.webp", texto: [`Parece un día más...`, `Pero el siguiente episodio lo cambia todo.`] }
+          E(0, `Sentía que mi vida en ${P.ciudad} ya estaba completa.`, `Qué equivocado estaba.`),
+          E(1, `Tranquilo, con mis rutinas.`, `Pero a veces, sin saber por qué, me sentía solo.`),
+          E(2, `Tú también tenías tus planes.`, `Y una corazonada de que algo bueno estaba por llegar.`),
+          E(3, `Dos personas con la misma inquietud:`, `esa sensación de que algo estaba por pasar.`)
         ],
         interaccion: {
           tipo: "completar", frase: "Todo estaba a punto de empezar en ___",
           opciones: [P.ciudad, "Marte", "Una telenovela"], correcta: 0,
-          ok: `Exacto. ${P.ciudad}, la locación del piloto.`
+          ok: `Exacto. ${P.ciudad}, donde empezó todo.`
         },
-        recompensa: "Desbloqueaste: el permiso oficial para empezar la serie 🎬"
+        recompensa: "Cupón: un paseo por el lugar donde empezó todo 🎬"
+      }]
+    },
+    {
+      num: 1, tipo: "pelicula", titulo: "El Día que Te Vi", anio: P.anioInicio, clasificacion: "TP",
+      imagen: F.t1, ...son(1), top10: true,
+      sinopsis: `Un día cualquiera en ${P.ciudad} deja de serlo. Una mirada, un «hola» que suena distinto y una noche en la que nadie puede dejar de pensar.`,
+      creditos: cred(["Primera escena", P.ciudad], ["Efectos especiales", "Esa mirada"]),
+      episodios: [{
+        titulo: "El Día que Te Vi", duracion: 62,
+        descripcion: `${P.ciudad}. Un día cualquiera que dejó de serlo.`,
+        escenas: [
+          E(4, `Ese día me sentía igual que siempre.`, `Ni idea de que todo estaba a punto de cambiar.`),
+          E(5, `Te vi y sentí un vuelco en el estómago.`, `Como si el mundo se hubiera puesto en pausa.`),
+          E(6, `Me temblaban las piernas.`, `Todo seguía su ritmo, menos yo.`),
+          E(7, `Nervios. Muchos nervios.`, `Y una alegría que no sabía explicar.`)
+        ],
+        interaccion: {
+          tipo: "adivinanza",
+          texto: "Llegó sin avisar, se quedó sin pedir permiso y desde entonces no se ha ido. ¿Qué es?",
+          respuestas: ["amor", "el amor", "tu", "tú", "nosotros", P.nombreB, ...P.apodos],
+          pista: "Cuatro letras. Empieza con A.",
+          ok: "Exacto: el amor (y tú)."
+        },
+        recompensa: "Cupón: un abrazo de 30 segundos sin soltar 🤗"
+      }]
+    },
+    {
+      num: 2, tipo: "pelicula", titulo: "Enviar", anio: P.anioInicio, clasificacion: "TP",
+      imagen: "assets/fotos/escenas/s13.webp", ...son(2), top10: false,
+      sinopsis: `Escribir. Borrar. Volver a escribir. La historia del primer mensaje y de la fecha que se volvió aniversario.`,
+      creditos: cred(["Guion", "Mensajes de madrugada"], ["Fecha de estreno", P.fechaCodigo.replace(/(\d{2})(\d{2})(\d{4})/, "$1/$2/$3")]),
+      episodios: [{
+        titulo: "Enviar", duracion: 62,
+        descripcion: "Una fecha que se volvió contraseña, aniversario y excusa para celebrar.",
+        escenas: [
+          E(10, `Tenía miedo de escribirte.`, `¿Y si no me contestabas?`),
+          E(11, `Ansiedad pura: escribir, borrar, volver a escribir.`, `Al final, un poco de valor. Enviar.`),
+          E(12, `Cada minuto sin respuesta se sentía eterno.`, `Revisaba el teléfono cada dos segundos.`),
+          E(13, `Cuando contestaste, sentí que podía volar.`, `Sonreí como tonto toda la noche.`)
+        ],
+        interaccion: {
+          tipo: "codigo", modo: "fecha",
+          pregunta: "Introduce el código secreto: la fecha en que empezó todo",
+          placeholder: "DDMMAAAA",
+          respuestas: [P.fechaCodigo],
+          pista: `Es el día en que empezó nuestra historia (${P.anioInicio}).`,
+          ok: "Código aceptado. Esa fecha es nuestra."
+        },
+        recompensa: "Cupón: una noche de mensajes como al principio 💬"
+      }]
+    },
+    {
+      num: 3, tipo: "pelicula", titulo: `Mesa para Dos en ${P.primeraCita}`, anio: P.anioInicio, clasificacion: "TP",
+      imagen: F.t2, ...son(3), top10: true,
+      sinopsis: `Nervios, ropa elegida tres veces y una mesa en ${P.primeraCita}. La primera cita que se convirtió en la primera de muchas.`,
+      creditos: cred(["Locación", P.primeraCita], ["Vestuario", "Tres cambios de ropa"]),
+      episodios: [{
+        titulo: `Mesa para Dos en ${P.primeraCita}`, duracion: 62,
+        descripcion: "Los nervios, la ropa elegida tres veces y una conversación que no queríamos terminar.",
+        escenas: [
+          E(15, `Nervios de primera cita.`, `Ninguna camisa se sentía suficiente.`),
+          E(16, `Ilusión y miedo al mismo tiempo.`, `Quería que todo saliera perfecto.`),
+          E(17, `Al verte llegar, olvidé todo lo que había ensayado.`, `Y de pronto sentí calma.`),
+          E(18, `Esa noche me sentí en casa contigo.`, `No quería que se acabara.`)
+        ],
+        interaccion: {
+          tipo: "quiz", pregunta: "¿Dónde fue nuestra primera cita?",
+          opciones: [P.primeraCita, "Un cine en Plaza Galerías", "La taquería de la esquina"], correcta: 0,
+          ok: `¡Sí! ${P.primeraCita}. Lugar sagrado desde entonces.`
+        },
+        recompensa: "Cupón: repetimos la primera cita, mismo lugar 🍽️"
+      }]
+    },
+    {
+      num: 4, tipo: "pelicula", titulo: P.cancion, anio: P.anioInicio, clasificacion: "TP",
+      imagen: F.t3, musica: M.temporadas[3], cancion: M.canciones[3], top10: true,
+      sinopsis: `Hay canciones que se escuchan y otras que se viven. "${P.cancion}" dejó de ser una canción para convertirse en un lugar al que volver.`,
+      creditos: cred(["Banda sonora", `"${P.cancion}" — ${P.artista}`], ["Coreografía", "Improvisada"]),
+      episodios: [{
+        titulo: P.cancion, duracion: 62,
+        descripcion: `"${P.cancion}" empezó a sonar y ya nunca fue solo una canción.`,
+        escenas: [
+          E(25, `Sonó la canción y sentí mariposas.`, `No sabía si invitarte a bailar.`),
+          E(26, `Ese momento se sintió eterno.`, `Como si la canción fuera solo para nosotros.`),
+          E(27, `Bailando contigo me sentí invencible.`, `Y un poco torpe, para qué negarlo.`),
+          E(28, `Hoy, cada vez que suena, siento lo mismo.`, `Esa felicidad no se gasta.`)
+        ],
+        interaccion: {
+          tipo: "completar", frase: "Nuestra canción es ___",
+          respuestas: [P.cancion],
+          pista: `La canta ${P.artista}.`,
+          ok: `"${P.cancion}". Dale play cuando quieras.`
+        },
+        recompensa: "Cupón: bailamos nuestra canción en la sala 💃"
+      }]
+    },
+    {
+      num: 5, tipo: "pelicula", titulo: `Destino: ${P.viajes[0]}`, anio: P.anioInicio + 1, clasificacion: "TP",
+      imagen: "assets/fotos/e7-1.webp", ...son(4), top10: true,
+      sinopsis: `Maletas hechas a última hora, el primer viaje juntos y un mar que nos esperaba en ${P.viajes[0]}.`,
+      creditos: cred(["Locación", P.viajes[0]], ["Fotografía", "Fotos movidas, como siempre"]),
+      episodios: [{
+        titulo: `Destino: ${P.viajes[0]}`, duracion: 62,
+        descripcion: `Nuestro primer viaje juntos: de ${P.ciudad} a ${P.viajes[0]}.`,
+        escenas: [
+          E(35, `Emoción de primer viaje juntos.`, `Y nervios: ¿y si nos peleábamos en el camino?`),
+          E(36, `Frente al mar sentí una paz enorme.`, `Contigo todo se veía más bonito.`),
+          E(38, `Quería guardar cada segundo.`, `Me daba miedo olvidar algo.`),
+          E(40, `Libres. Así nos sentíamos.`, `Riéndonos de todo, hasta de las fotos movidas.`)
+        ],
+        interaccion: {
+          tipo: "puzzle", titulo: "Arma la foto del viaje",
+          imagen: F.puzzle,
+          ok: "¡Recuerdo restaurado!"
+        },
+        recompensa: "Cupón: escapada de fin de semana, destino sorpresa ✈️"
+      }]
+    },
+    {
+      num: 6, tipo: "pelicula", titulo: `Callejones de ${P.viajes[1]}`, anio: P.anioInicio + 1, clasificacion: "TP",
+      imagen: "assets/fotos/e7-2.webp", ...son(5), top10: false,
+      sinopsis: `Calles de colores, mapas que no entendíamos y un café a media tarde. En ${P.viajes[1]} aprendimos que perdernos juntos también es llegar.`,
+      creditos: cred(["Locación", P.viajes[1]], ["Navegación", "Un mapa al revés"]),
+      episodios: [{
+        titulo: `Callejones de ${P.viajes[1]}`, duracion: 62,
+        descripcion: `Un viaje a ${P.viajes[1]} sin prisa y sin GPS.`,
+        escenas: [
+          E(37, `Curiosidad: todo era nuevo.`, `Y tú lo hacías aún más emocionante.`),
+          E(43, `Nos sentíamos aventureros.`, `Perdidos, pero felices.`),
+          E(42, `Una tarde tranquila en la que no faltaba nada.`, `Me sentí afortunado.`),
+          E(44, `Confianza: no importaba el camino.`, `Sabía que llegaríamos juntos.`)
+        ],
+        interaccion: {
+          tipo: "ordenar", titulo: "Ordena nuestra historia",
+          eventos: [
+            `Nos conocimos en ${P.ciudad}`,
+            `Primera cita en ${P.primeraCita}`,
+            `Viaje a ${P.viajes[0]}`,
+            `Viaje a ${P.viajes[1]}`,
+            `Este aniversario`
+          ],
+          ok: "Línea del tiempo perfecta."
+        },
+        recompensa: "Cupón: un día de turistas en nuestra propia ciudad 🗺️"
+      }]
+    },
+    {
+      num: 7, tipo: "pelicula", titulo: `${P.viajes[2]}: Mar Turquesa`, anio: P.anioInicio + 2, clasificacion: "TP",
+      imagen: "assets/fotos/x-locaciones.webp", ...son(6), top10: true,
+      sinopsis: `Agua turquesa, atardeceres naranjas y la sensación de estar exactamente donde queríamos estar. ${P.viajes[2]}, juntos.`,
+      creditos: cred(["Locación", P.viajes[2]], ["Iluminación", "El atardecer"]),
+      episodios: [{
+        titulo: `${P.viajes[2]}: Mar Turquesa`, duracion: 62,
+        descripcion: `El viaje a ${P.viajes[2]} que todavía extrañamos.`,
+        escenas: [
+          E(39, `Asombro total.`, `El mar era tan azul que parecía mentira.`),
+          E(65, `Cada atardecer contigo se sentía como un regalo.`, `Y no quería que oscureciera.`),
+          E(69, `Plenitud. No hay otra palabra.`, `Estaba exactamente donde quería estar.`),
+          E(74, `Gratitud por todo lo vivido.`, `Contigo, siempre me siento en casa.`)
+        ],
+        interaccion: {
+          tipo: "memory", titulo: "Encuentra las 6 parejas",
+          pares: ["💌", "🎬", "🍿", "✈️", "🎵", "🌙"],
+          ok: "¡Todas las parejas! Como nosotros: hechos para encajar."
+        },
+        recompensa: "Cupón: un atardecer juntos, tú eliges el lugar 🌅"
+      }]
+    },
+    {
+      num: 8, tipo: "pelicula", titulo: "A Distancia", anio: P.anioInicio + 1, clasificacion: "+13",
+      imagen: F.t5, ...son(7), top10: false,
+      sinopsis: `${P.dificiles[0]}. Pantallas, llamadas largas y días grises. La película que demostró que lo nuestro aguanta cualquier distancia.`,
+      creditos: cred(["Asesoría en tormentas", P.dificiles[0]], ["Comunicaciones", "Videollamadas infinitas"]),
+      episodios: [{
+        titulo: "A Distancia", duracion: 62,
+        descripcion: "Hubo días grises. Esta película es sobre cómo los atravesamos.",
+        escenas: [
+          E(45, `Te extrañaba todo el tiempo.`, `Los días se sentían grises y larguísimos.`),
+          E(46, `Hubo frustración y cansancio.`, `Y miedo de que la distancia nos ganara.`),
+          E(47, `Escuchar tu voz me devolvía la calma.`, `Aunque fuera a través de una pantalla.`),
+          E(49, `Esperanza.`, `Sabía que la tormenta iba a pasar.`)
+        ],
+        interaccion: {
+          tipo: "rascar", titulo: "Rasca para revelar",
+          revelar: `Incluso en "${P.dificiles[0]}", te elegí. Y te volvería a elegir.`,
+          imagen: "assets/fotos/e13-1.webp",
+          ok: "Siempre."
+        },
+        recompensa: "Cupón: un día sin preocupaciones, yo me encargo de todo ☔"
+      }]
+    },
+    {
+      num: 9, tipo: "pelicula", titulo: "Encerrados en Pijama", anio: P.anioInicio + 2, clasificacion: "TP",
+      imagen: "assets/fotos/escenas/s55.webp", ...son(0), top10: true,
+      sinopsis: `${P.anecdota}. La comedia que contamos en cada reunión (y nadie nos cree).`,
+      creditos: cred(["Departamento de comedia", P.anecdota], ["Vestuario", "Pijamas"]),
+      episodios: [{
+        titulo: "Encerrados en Pijama", duracion: 62,
+        descripcion: "La anécdota que contamos en cada reunión.",
+        escenas: [
+          E(55, `Cansados, con sueño y con ganas de llegar a casa.`, `Nada podía salir mal… creíamos.`),
+          E(56, `Pánico total: ¡las llaves adentro!`, `Y nosotros afuera, en pijama.`),
+          E(57, `Frustración, frío y un poco de vergüenza.`, `Cada idea era peor que la anterior.`),
+          E(58, `Y de pronto, un ataque de risa.`, `Esa noche me sentí más tuyo que nunca.`)
+        ],
+        interaccion: {
+          tipo: "quiz", pregunta: `"${P.anecdota}". ¿Quién tuvo la culpa?`,
+          opciones: [P.nombreA, P.nombreB, "Los dos (obviamente)"], correcta: P.culpableAnecdota,
+          ok: "Respuesta correcta. Caso cerrado."
+        },
+        recompensa: "Cupón: noche de comedia y tu comida favorita 🍕"
+      }]
+    },
+    {
+      num: 10, tipo: "pelicula", titulo: "Nueva Ciudad, Mismo Nosotros", anio: P.anioInicio + 3, clasificacion: "TP",
+      imagen: "assets/fotos/escenas/s50.webp", ...son(1), top10: false,
+      sinopsis: `${P.dificiles[1]}: cajas por todas partes, cansancio y dudas. Y al final, un hogar nuevo con las mismas dos personas.`,
+      creditos: cred(["Mudanza", "Los dos (y muchas cajas)"], ["Escenografía", "Nuestro nuevo hogar"]),
+      episodios: [{
+        titulo: "Nueva Ciudad, Mismo Nosotros", duracion: 62,
+        descripcion: "Lo que queda después de una mudanza: más confianza y un apodo que nadie más usa.",
+        escenas: [
+          E(50, `Agobio: cajas por todas partes.`, `Y la incertidumbre de empezar de cero.`),
+          E(51, `Hubo cansancio y dudas.`, `A ratos sentí que no podíamos con todo.`),
+          E(52, `Ese abrazo me hizo sentir seguro otra vez.`, `Recordé por qué valía la pena.`),
+          E(54, `Orgullo. Lo logramos.`, `Más fuertes y más cerca que antes.`)
+        ],
+        interaccion: {
+          tipo: "codigo", modo: "texto",
+          pregunta: "Código secreto: ¿cómo te digo cuando nadie nos escucha?",
+          placeholder: "Escribe el apodo",
+          respuestas: P.apodos,
+          pista: `Empieza con "${String(P.apodo).replace(/[^\p{L}]/gu, "").charAt(0)}".`,
+          ok: `${P.apodo}. Solo yo te digo así.`
+        },
+        recompensa: "Cupón: estrenamos la casa con una cena hecha por mí 🏠"
+      }]
+    },
+    {
+      num: 11, tipo: "pelicula", titulo: "Lo que Te Hace Sonreír", anio: P.anioInicio + 3, clasificacion: "TP",
+      imagen: "assets/fotos/e1-2.webp", ...son(2), top10: false,
+      sinopsis: `${P.gustosB.join(", ")}. Una película dedicada a todo lo que le gusta a ${P.nombreB}.`,
+      creditos: cred(["Catering", P.gustosB.join(" · ")], ["Sonrisas", P.nombreB]),
+      episodios: [{
+        titulo: "Lo que Te Hace Sonreír", duracion: 62,
+        descripcion: `Un homenaje a las cosas favoritas de ${P.nombreB}.`,
+        escenas: [
+          E(30, `Ternura: así me siento cuando te veo con tu café.`, `Ese primer sorbo es mi parte favorita del día.`),
+          E(31, `Felicidad sencilla.`, `Comer juntos y robarnos el último bocado.`),
+          E(32, `Me siento afortunado de conocerte tan bien.`, `Y de seguir descubriéndote.`),
+          E(33, `Tu sonrisa me desarma.`, `Es mi lugar feliz.`)
+        ],
+        interaccion: {
+          tipo: "sopa", titulo: "Encuentra las palabras escondidas",
+          palabras: ["CAFE", "TACOS", "PLAYA", "PERRITO", "SERIES", "BESOS", "JAPON"],
+          ok: "¡Todas encontradas! Te conoces tan bien como yo."
+        },
+        recompensa: "Cupón: un día entero de tus cosas favoritas ☕"
       }]
     },
 
-    /* ---------------- TEMPORADA 1 ---------------- */
+    /* =================== SERIES =================== */
     {
-      num: 1, titulo: "El Encuentro", anio: P.anioInicio, clasificacion: "TP",
-      imagen: F.t1, musica: M.temporadas[1], top10: true,
-      sinopsis: `En ${P.ciudad}, una mirada lo cambia todo. ${P.nombreA} no sabe qué decir; ` +
-                `${P.nombreB} no sabe que ya le gusta. La química es innegable.`,
+      num: 12, tipo: "serie", titulo: "Nosotros, Todos los Días", anio: P.anioInicio + 1, clasificacion: "TP",
+      imagen: F.t6, ...son(3), top10: true,
+      sinopsis: `Cafés compartidos, costumbres que nadie planeó y fechas marcadas en el calendario. Una serie corta sobre lo extraordinario de lo cotidiano.`,
+      creditos: cred(["Locación", "Nuestra casa"], ["Producción", "Cada mañana juntos"]),
       episodios: [
         {
-          titulo: "La primera mirada", duracion: 75,
-          descripcion: `${P.ciudad}. Un día cualquiera que dejó de serlo.`,
+          titulo: "Café para Dos", duracion: 60,
+          descripcion: "Los encuentros sin plan que se volvieron costumbre.",
           escenas: [
-            { img: "assets/video/escenas/n05.mp4", poster: "assets/fotos/escenas/s05.webp", texto: [`${P.ciudad}. Parecía un día cualquiera.`, `Hasta que entraste en cuadro.`] },
-            { img: "assets/video/escenas/n06b.mp4", poster: "assets/fotos/escenas/s06b.webp", texto: [`La ciudad siguió a su ritmo.`, `Nosotros nos detuvimos un segundo.`] },
-            { img: "assets/video/encuentro.mp4", poster: "assets/fotos/escenas/s07.webp", texto: [`Primero fue una mirada.`, `Luego un «hola» que sonó diferente.`] },
-            { img: "assets/video/escenas/esc03.mp4", poster: "assets/fotos/escenas/s08.webp", texto: [`¿Tú también lo notaste?`, `${P.nombreA} supo que quería volver a verte.`] },
-            { img: "assets/video/escenas/n09.mp4", poster: "assets/fotos/escenas/s09.webp", texto: [`Esa noche cada quien tomó su camino.`, `Pero algo ya nos había encontrado.`] }
+            E(20, `Emoción de volver a verte.`, `Cada plan improvisado se sentía como una aventura.`),
+            E(21, `Comodidad.`, `Un café contigo bastaba para que el día fuera bueno.`),
+            E(22, `Paz: podíamos estar callados sin sentirnos lejos.`, `Y reírnos de cualquier cosa.`),
+            E(23, `Seguridad.`, `Empecé a sentir que contigo estaba en casa.`),
+            E(24, `Un día simplemente lo supe:`, `ya no quería imaginar la vida sin ti.`)
           ],
           interaccion: {
-            tipo: "adivinanza",
-            texto: "Llegó sin avisar, se quedó sin pedir permiso y desde entonces no se ha ido. ¿Qué es?",
-            respuestas: ["amor", "el amor", "tu", "tú", "nosotros", P.nombreB, ...P.apodos],
-            pista: "Cuatro letras. Empieza con A.",
-            ok: "Exacto: el amor (y tú)."
+            tipo: "quiz", pregunta: "¿Qué no puede faltar en nuestras mañanas?",
+            opciones: [P.gustosB[0], "Un despertador a todo volumen", "Prisa"], correcta: 0,
+            ok: `Exacto: ${P.gustosB[0].toLowerCase()} y tú.`
           },
-          recompensa: "Cupón: un abrazo de 30 segundos sin soltar 🤗"
+          recompensa: "Cupón: desayuno en la cama ☕"
         },
         {
-          titulo: "El primer mensaje", duracion: 75,
-          descripcion: "Una fecha que se volvió contraseña, aniversario y excusa para celebrar.",
+          titulo: "Nuestro Día Favorito", duracion: 60,
+          descripcion: "Aniversarios, abrazos y tardes en calma.",
           escenas: [
-            { img: "assets/video/escenas/n10.mp4", poster: "assets/fotos/escenas/s10.webp", texto: [`El teléfono estaba ahí.`, `Faltaba reunir valor para escribir.`] },
-            { img: "assets/video/escenas/esc04.mp4", poster: "assets/fotos/escenas/s11.webp", texto: [`Escribir. Borrar. Volver a escribir.`, `Al final, ${P.nombreA} pulsó enviar.`] },
-            { img: "assets/video/escenas/n12.mp4", poster: "assets/fotos/escenas/s12.webp", texto: [`Ahora tocaba esperar.`, `Cada notificación parecía importante.`] },
-            { img: "assets/video/primer-mensaje.mp4", poster: "assets/fotos/escenas/s13.webp", texto: [`Entonces llegó tu respuesta.`, `Y la conversación ya no quiso terminar.`] },
-            { img: "assets/video/escenas/esc05.mp4", poster: "assets/fotos/escenas/s14.webp", texto: [`Ese día quedó marcado en el calendario.`, `El primero de muchos que celebraríamos.`] }
+            E(14, `Cada aniversario siento la misma emoción.`, `Como si fuera la primera vez.`),
+            E(8, `Todavía me pongo nervioso cuando me miras así.`, `Y me encanta.`),
+            E(19, `Tranquilidad: caminar contigo sin rumbo.`, `Tomados de la mano, como siempre.`),
+            E(48, `Un abrazo tuyo y todo se acomoda.`, `Ahí me siento a salvo.`),
+            E(53, `Calma total.`, `Solo nosotros y el ruido del agua.`)
           ],
-          interaccion: {
-            tipo: "codigo", modo: "fecha",
-            pregunta: "Introduce el código secreto: la fecha en que empezó todo",
-            placeholder: "DDMMAAAA",
-            respuestas: [P.fechaCodigo],
-            pista: `Es el día en que se estrenó esta serie (${P.anioInicio}).`,
-            ok: "Código aceptado. Esa fecha es nuestra."
-          },
-          recompensa: "Desbloqueaste: Temporada 2 — La Primera Cita 💌"
+          recompensa: "Cupón: celebramos nuestro aniversario como tú quieras 🎉"
         }
       ]
     },
-
-    /* ---------------- TEMPORADA 2 ---------------- */
     {
-      num: 2, titulo: "La Primera Cita", anio: P.anioInicio, clasificacion: "TP",
-      imagen: F.t2, musica: M.temporadas[2], top10: true,
-      sinopsis: `Nervios, ropa elegida tres veces y una mesa en ${P.primeraCita}. ` +
-                `La primera cita que se convirtió en la primera de muchas.`,
+      num: 13, tipo: "serie", titulo: "Tomas Falsas", anio: P.anioInicio + 2, clasificacion: "TP",
+      imagen: "assets/fotos/escenas/s62.webp", ...son(4), top10: false,
+      sinopsis: `Fotos movidas, caras raras y planes que salieron mal. Ninguna historia está completa sin bloopers.`,
+      creditos: cred(["Departamento de comedia", "Los dos"], ["Dobles de riesgo", "Ninguno. Todo fue real."]),
       episodios: [
         {
-          titulo: "Mesa para dos", duracion: 80,
-          descripcion: "Los nervios, la ropa elegida tres veces y una conversación que no queríamos terminar.",
+          titulo: "Fotos Movidas", duracion: 55,
+          descripcion: "Las fotos que nunca subiremos (pero tampoco borraremos).",
           escenas: [
-            { img: "assets/video/preparativos.mp4", poster: "assets/fotos/escenas/s15.webp", texto: [`Primera cita. Tres cambios de ropa.`, `Y los nervios que no cabían en el espejo.`] },
-            { img: "assets/video/escenas/n16.mp4", poster: "assets/fotos/escenas/s16.webp", texto: [`Un último vistazo antes de salir.`, `¿Y si esto resultaba ser especial?`] },
-            { img: "assets/video/escenas/esc07.mp4", poster: "assets/fotos/escenas/s17.webp", texto: [`En ${P.primeraCita} esperaba una mesa para dos.`, `El café se sirvió. Las manos seguían temblando.`] },
-            { img: "assets/video/primera-cita.mp4", poster: "assets/fotos/escenas/s18.webp", texto: [`La primera risa rompió el hielo.`, `La conversación tomó su propio rumbo.`] },
-            { img: "assets/video/escenas/esc08.mp4", poster: "assets/fotos/escenas/s19.webp", texto: [`Pedimos unos minutos más.`, `Ninguno quería despedirse todavía.`] }
-          ],
-          interaccion: {
-            tipo: "quiz", pregunta: "¿Dónde fue nuestra primera cita?",
-            opciones: [P.primeraCita, "Un cine en Plaza Galerías", "La taquería de la esquina"], correcta: 0,
-            ok: `¡Sí! ${P.primeraCita}. Lugar sagrado desde entonces.`
-          },
-          recompensa: "Cupón: repetimos la primera cita, mismo lugar 🍽️"
-        },
-        {
-          titulo: "Lo que nos hizo clic", duracion: 75,
-          descripcion: "Pequeñas cosas que se repiten hasta volverse nuestras.",
-          escenas: [
-            { img: "assets/video/escenas/n20.mp4", poster: "assets/fotos/escenas/s20.webp", texto: [`Después vinieron los encuentros sin plan.`, `Y el deseo de repetirlos.`] },
-            { img: "assets/video/cafe.mp4", poster: "assets/fotos/escenas/s21.webp", texto: [`Un café compartido parecía poca cosa.`, `Hasta que se volvió parte de nosotros.`] },
-            { img: "assets/video/cotidiano.mp4", poster: "assets/fotos/escenas/s22.webp", texto: [`Aprendimos a estar juntos en silencio.`, `También a reírnos de cualquier detalle.`] },
-            { img: "assets/video/escenas/n23.mp4", poster: "assets/fotos/escenas/s23.webp", texto: [`Lo casual se volvió costumbre.`, `Y la costumbre empezó a sentirse como hogar.`] },
-            { img: "assets/video/escenas/esc16.mp4", poster: "assets/fotos/escenas/s24.webp", texto: [`No hubo un gran anuncio.`, `Solo un día en que ya éramos «nosotros».`] }
-          ],
-          interaccion: {
-            tipo: "memory", titulo: "Encuentra las 6 parejas",
-            // Emojis o rutas de imagen ("assets/fotos/m1.webp"). Exactamente 6.
-            pares: ["💌", "🎬", "🍿", "✈️", "🎵", "🌙"],
-            ok: "¡Todas las parejas! Como nosotros: hechos para encajar."
-          },
-          recompensa: "Desbloqueaste: maratón de películas, tú eliges 🍿"
-        }
-      ]
-    },
-
-    /* ---------------- TEMPORADA 3 ---------------- */
-    {
-      num: 3, titulo: "Nuestra Canción", anio: P.anioInicio, clasificacion: "TP",
-      imagen: F.t3, musica: M.temporadas[3], top10: false,
-      sinopsis: `Hay canciones que se escuchan y otras que se viven. "${P.cancion}" dejó de ser una canción ` +
-                `para convertirse en un lugar al que volver.`,
-      episodios: [
-        {
-          titulo: "Play", duracion: 70,
-          descripcion: `"${P.cancion}" empezó a sonar y ya nunca fue solo una canción.`,
-          escenas: [
-            { img: "assets/video/vinilo.mp4", poster: "assets/fotos/escenas/s25.webp", texto: [`Alguien puso música.`, `Y entonces empezó «${P.cancion}».`] },
-            { img: "assets/video/escenas/esc09.mp4", poster: "assets/fotos/escenas/s26.webp", texto: [`Tal vez el mundo siguió como siempre.`, `Para mí, ese instante quedó grabado.`] },
-            { img: "assets/video/baile-nuestra-cancion.mp4", poster: "assets/fotos/escenas/s27.webp", texto: [`Nos miramos cuando llegó el coro.`, `Sin decirlo, elegimos nuestra canción.`] },
-            { img: "assets/video/escenas/n28.mp4", poster: "assets/fotos/escenas/s28.webp", texto: [`Desde entonces, suena distinto.`, `Cada nota me lleva de vuelta a ti.`] },
-            { img: "assets/video/escenas/n29.mp4", poster: "assets/fotos/escenas/s29.webp", texto: [`Dale play otra vez.`, `Esta escena siempre merece repetirse.`] }
-          ],
-          interaccion: {
-            tipo: "completar", frase: "Nuestra canción es ___",
-            respuestas: [P.cancion], // Sin "opciones" = hay que escribirla
-            pista: `La canta ${P.artista}.`,
-            ok: `"${P.cancion}". Dale play cuando quieras.`
-          },
-          recompensa: "Cupón: bailamos nuestra canción en la sala 💃"
-        },
-        {
-          titulo: "Lo que te hace sonreír", duracion: 75,
-          descripcion: `Un episodio dedicado a todo lo que le gusta a ${P.nombreB}.`,
-          escenas: [
-            { img: "assets/video/escenas/n30.mp4", poster: "assets/fotos/escenas/s30.webp", texto: [`Empieza con tu café de olla.`, `Me gusta cómo cambia tu cara con el primer sorbo.`] },
-            { img: "assets/video/pizza.mp4", poster: "assets/fotos/escenas/s31.webp", texto: [`Después vienen las ganas de comer juntos.`, `Aunque terminemos robándonos el último bocado.`] },
-            { img: "assets/video/escenas/n32.mp4", poster: "assets/fotos/escenas/s32.webp", texto: [`Conozco tus gustos de memoria.`, `Y todavía me encanta descubrir otros nuevos.`] },
-            { img: "assets/video/escenas/esc10.mp4", poster: "assets/fotos/escenas/s33.webp", texto: [`Hay días en que basta una tontería.`, `Entonces aparece esa sonrisa tuya.`] },
-            { img: "assets/video/risas-juntos.mp4", poster: "assets/fotos/escenas/s34.webp", texto: [`Quiero seguir provocándola.`, `Un capítulo a la vez.`] }
-          ],
-          interaccion: {
-            tipo: "sopa", titulo: "Encuentra las palabras escondidas",
-            // 5–8 palabras, solo letras A-Z, sin espacios, máx. 10 letras
-            palabras: ["CAFE", "TACOS", "PLAYA", "PERRITO", "SERIES", "BESOS", "JAPON"],
-            ok: "¡Todas encontradas! Te conoces tan bien como yo."
-          },
-          recompensa: "Desbloqueaste: un día entero de tus cosas favoritas ☕"
-        }
-      ]
-    },
-
-    /* ---------------- TEMPORADA 4 ---------------- */
-    {
-      num: 4, titulo: "Kilómetros", anio: P.anioInicio + 1, clasificacion: "TP",
-      imagen: F.t4, musica: M.temporadas[4], top10: true,
-      sinopsis: `${P.viajes.join(", ")}. Maletas, aeropuertos y fotos borrosas. ` +
-                `Descubrimos que el mejor destino es viajar juntos.`,
-      episodios: [
-        {
-          titulo: "Destino: tú", duracion: 80,
-          descripcion: `De ${P.viajes[0]} a donde haga falta.`,
-          escenas: [
-            { img: "assets/video/vuelo.mp4", poster: "assets/fotos/escenas/s35.webp", texto: [`Hicimos maletas sin saber qué nos esperaba.`, `El primer destino fue ${P.viajes[0]}.`] },
-            { img: "assets/video/playa.mp4", poster: "assets/fotos/escenas/s36.webp", texto: [`El mar apareció frente a nosotros.`, `Y la primera foto salió movida, como siempre.`] },
-            { img: "assets/video/escenas/esc12.mp4", poster: "assets/fotos/escenas/s37.webp", texto: [`Después vino ${P.viajes[1]}.`, `Calles nuevas, la misma compañía.`] },
-            { img: "assets/video/foto-viaje.mp4", poster: "assets/fotos/escenas/s38.webp", texto: [`Guardamos imágenes para acordarnos.`, `Aunque lo mejor pasó fuera de cuadro.`] },
-            { img: "assets/video/escenas/n39.mp4", poster: "assets/fotos/escenas/s39.webp", texto: [`También llegó ${P.viajes[2]}.`, `Cambia el lugar; contigo, siempre me siento en casa.`] }
-          ],
-          interaccion: {
-            tipo: "puzzle", titulo: "Arma la foto del viaje",
-            imagen: F.puzzle, // Vacío = imagen generada
-            ok: "¡Recuerdo restaurado!"
-          },
-          recompensa: "Cupón: escapada de fin de semana, destino sorpresa ✈️"
-        },
-        {
-          titulo: "Bitácora", duracion: 75,
-          descripcion: "Nuestra historia en orden cronológico (o casi).",
-          escenas: [
-            { img: "assets/video/escenas/esc19b.mp4", poster: "assets/fotos/escenas/s40.webp", texto: [`Abrimos el álbum.`, `Cada foto recuerda una versión de nosotros.`] },
-            { img: "assets/video/escenas/n41.mp4", poster: "assets/fotos/escenas/s41.webp", texto: [`La primera página empieza en ${P.ciudad}.`, `Ahí todavía no sabíamos el final.`] },
-            { img: "assets/video/escenas/n42.mp4", poster: "assets/fotos/escenas/s42.webp", texto: [`Luego está aquella cita en ${P.primeraCita}.`, `Una mesa pequeña para una historia enorme.`] },
-            { img: "assets/video/escenas/esc13.mp4", poster: "assets/fotos/escenas/s43.webp", texto: [`Pasamos páginas y aparecen los viajes.`, `Más caminos, más recuerdos que ordenar.`] },
-            { img: "assets/video/viaje-juntos.mp4", poster: "assets/fotos/escenas/s44.webp", texto: [`Mira dónde estamos ahora.`, `Cada paso nos trajo hasta aquí.`] }
-          ],
-          interaccion: {
-            tipo: "ordenar", titulo: "Ordena nuestra historia",
-            // En el orden CORRECTO; se muestran desordenados
-            eventos: [
-              `Nos conocimos en ${P.ciudad}`,
-              `Primera cita en ${P.primeraCita}`,
-              `Viaje a ${P.viajes[0]}`,
-              `Viaje a ${P.viajes[1]}`,
-              `Este aniversario`
-            ],
-            ok: "Línea del tiempo perfecta."
-          },
-          recompensa: "Desbloqueaste: álbum de fotos impreso de nuestros viajes 📸"
-        }
-      ]
-    },
-
-    /* ---------------- TEMPORADA 5 ---------------- */
-    {
-      num: 5, titulo: "Tormentas", anio: P.anioInicio + 1, clasificacion: "+13",
-      imagen: F.t5, musica: M.temporadas[5], top10: false,
-      sinopsis: `No todo fue fácil: ${P.dificiles.join(" y ")}. ` +
-                `La temporada más difícil, y la que demostró que lo nuestro aguanta cualquier clima.`,
-      episodios: [
-        {
-          titulo: "Lluvia", duracion: 80,
-          descripcion: "Hubo días grises. Este episodio es sobre cómo los atravesamos.",
-          escenas: [
-            { img: "assets/video/llamada-lluvia.mp4", poster: "assets/fotos/escenas/s45.webp", texto: [`Hubo días que parecían no terminar.`, `${P.dificiles[0]} nos puso a prueba.`] },
-            { img: "assets/video/dias-dificiles.mp4", poster: "assets/fotos/escenas/s46.webp", texto: [`A veces no supimos qué decir.`, `El silencio se hizo demasiado largo.`] },
-            { img: "assets/video/escenas/esc14.mp4", poster: "assets/fotos/escenas/s47.webp", texto: [`Entonces volvimos a hablarnos.`, `De frente, incluso con miedo.`] },
-            { img: "assets/video/reencuentro.mp4", poster: "assets/fotos/escenas/s48.webp", texto: [`Elegimos acercarnos otra vez.`, `No para olvidar: para seguir juntos.`] },
-            { img: "assets/video/escenas/esc15.mp4", poster: "assets/fotos/escenas/s49.webp", texto: [`La tormenta no desapareció de golpe.`, `Pero ya no la cruzábamos solos.`] }
-          ],
-          interaccion: {
-            tipo: "rascar", titulo: "Rasca para revelar",
-            revelar: `Incluso en "${P.dificiles[0]}", te elegí. Y te volvería a elegir.`,
-            imagen: "assets/fotos/e13-1.webp", // Opcional: foto debajo del rasca
-            ok: "Siempre."
-          },
-          recompensa: "Cupón: un día sin preocupaciones, yo me encargo de todo ☔"
-        },
-        {
-          titulo: "Después de la tormenta", duracion: 75,
-          descripcion: "Lo que queda cuando pasa: más confianza y un apodo que nadie más usa.",
-          escenas: [
-            { img: "assets/video/mudanza.mp4", poster: "assets/fotos/escenas/s50.webp", texto: [`Luego vino otra prueba: ${P.dificiles[1]}.`, `Cajas por todas partes y mucho por resolver.`] },
-            { img: "assets/video/escenas/n51.mp4", poster: "assets/fotos/escenas/s51.webp", texto: [`Hubo cansancio y dudas.`, `También descubrimos cuánto podíamos apoyarnos.`] },
-            { img: "assets/video/escenas/n52.mp4", poster: "assets/fotos/escenas/s52.webp", texto: [`Un abrazo no arregló todo.`, `Pero nos recordó por qué valía la pena.`] },
-            { img: "assets/video/escenas/esc20.mp4", poster: "assets/fotos/escenas/s53.webp", texto: [`Poco a poco regresó la calma.`, `Hasta apareció ese apodo que solo yo uso.`] },
-            { img: "assets/video/escenas/n54.mp4", poster: "assets/fotos/escenas/s54.webp", texto: [`Salimos del otro lado.`, `Más cerca que antes.`] }
-          ],
-          interaccion: {
-            tipo: "codigo", modo: "texto",
-            pregunta: "Código secreto: ¿cómo te digo cuando nadie nos escucha?",
-            placeholder: "Escribe el apodo",
-            respuestas: P.apodos,
-            pista: `Empieza con "${String(P.apodo).replace(/[^\p{L}]/gu, "").charAt(0)}".`,
-            ok: `${P.apodo}. Solo yo te digo así.`
-          },
-          recompensa: "Desbloqueaste: Temporada 6 — Tomas Falsas 😂"
-        }
-      ]
-    },
-
-    /* ---------------- TEMPORADA 6 ---------------- */
-    {
-      num: 6, titulo: "Tomas Falsas", anio: P.anioInicio + 2, clasificacion: "TP",
-      imagen: F.t6, musica: M.temporadas[6], top10: false,
-      sinopsis: `Ninguna serie está completa sin bloopers. Incluye: ${P.anecdota}. ` +
-                `Advertencia: puede causar risa incontrolable.`,
-      episodios: [
-        {
-          titulo: "La vez que…", duracion: 70,
-          descripcion: "La anécdota que contamos en cada reunión (y nadie nos cree).",
-          escenas: [
-            { img: "assets/video/escenas/n55.mp4", poster: "assets/fotos/escenas/s55.webp", texto: [`Eran las dos de la mañana.`, `La ciudad seguía despierta. Nosotros queríamos entrar.`] },
-            { img: "assets/video/escenas/n56.mp4", poster: "assets/fotos/escenas/s56.webp", texto: [`Y entonces descubrimos el problema.`, `${P.anecdota}.`] },
-            { img: "assets/video/escenas/n57.mp4", poster: "assets/fotos/escenas/s57.webp", texto: [`Probamos llamar. Luego volver a probar.`, `Cada idea era peor que la anterior.`] },
-            { img: "assets/video/escenas/esc19.mp4", poster: "assets/fotos/escenas/s58.webp", texto: [`Al final, no pudimos evitar reírnos.`, `En pijama y sin un plan mejor.`] },
-            { img: "assets/video/escenas/esc17.mp4", poster: "assets/fotos/escenas/s59.webp", texto: [`Hoy lo contamos como si fuera una película.`, `Y todavía discutimos de quién fue la culpa.`] }
-          ],
-          interaccion: {
-            tipo: "quiz", pregunta: `"${P.anecdota}". ¿Quién tuvo la culpa?`,
-            opciones: [P.nombreA, P.nombreB, "Los dos (obviamente)"], correcta: P.culpableAnecdota,
-            ok: "Respuesta correcta. Caso cerrado."
-          },
-          recompensa: "Cupón: noche de comedia y tu comida favorita 🍕"
-        },
-        {
-          titulo: "Risas enlatadas", duracion: 70,
-          descripcion: "Ataques de risa, caras raras y fotos que nunca subiremos.",
-          escenas: [
-            { img: "assets/video/escenas/n60.mp4", poster: "assets/fotos/escenas/s60.webp", texto: [`A veces el plan sale mal.`, `Y ahí empieza la mejor parte.`] },
-            { img: "assets/video/escenas/n61.mp4", poster: "assets/fotos/escenas/s61.webp", texto: [`Una foto movida. Otra con los ojos cerrados.`, `Terminamos guardándolas todas.`] },
-            { img: "assets/video/escenas/n62.mp4", poster: "assets/fotos/escenas/s62.webp", texto: [`Las caras raras no necesitan filtro.`, `Son nuestras tomas favoritas.`] },
-            { img: "assets/video/escenas/n63.mp4", poster: "assets/fotos/escenas/s63.webp", texto: [`Hicimos una pausa para comer.`, `Y apareció otra historia que no sabremos contar serios.`] },
-            { img: "assets/video/escenas/n64.mp4", poster: "assets/fotos/escenas/s64.webp", texto: [`Si esta serie tiene bloopers...`, `Quiero seguir grabándolos contigo.`] }
+            E(60, `Cuando el plan sale mal, me da risa nerviosa.`, `Contigo hasta los desastres son divertidos.`),
+            E(61, `Vergüenza: ojos cerrados, foto movida.`, `Y aun así, la guardamos.`),
+            E(62, `Nos sentíamos niños otra vez.`, `Las caras raras son nuestro idioma.`),
+            E(63, `Ese ataque de risa en plena comida…`, `todavía me duele el estómago de recordarlo.`)
           ],
           interaccion: {
             tipo: "completar", frase: "Nadie me hace reír como ___",
             respuestas: [P.nombreB, ...P.apodos, "tu", "tú", "ti"],
-            pista: "Está leyendo esto ahora mismo.",
+            pista: "Está viendo esto ahora mismo.",
             ok: "Nadie. Jamás."
           },
-          recompensa: "Desbloqueaste: Temporada 7 — Lo que Viene 🌅"
+          recompensa: "Cupón: sesión de fotos ridículas, sin borrar ninguna 📸"
+        },
+        {
+          titulo: "Sobremesa", duracion: 55,
+          descripcion: "Las historias que contamos una y otra vez.",
+          escenas: [
+            E(59, `Orgullo de contar nuestras historias.`, `Aunque cada vez las exageramos un poco más.`),
+            E(64, `Alegría pura.`, `Quiero seguir grabando bloopers contigo.`),
+            E(34, `Me siento ligero cuando nos reímos así.`, `Sin motivo y sin vergüenza.`),
+            E(29, `Y cuando suena música, nos sentimos imparables.`, `Nadie nos detiene.`)
+          ],
+          recompensa: "Cupón: noche de juegos de mesa, el que pierde lava los trastes 🎲"
         }
       ]
     },
-
-    /* ---------------- TEMPORADA 7 ---------------- */
     {
-      num: 7, titulo: "Lo que Viene", anio: new Date().getFullYear(), clasificacion: "TP",
-      imagen: F.t7, musica: M.temporadas[7], top10: true,
-      sinopsis: `${P.suenos.join(", ")}. La temporada que aún estamos escribiendo. ` +
-                `Spoiler: tiene final feliz.`,
+      num: 14, tipo: "serie", titulo: "Lo que Viene", anio: new Date().getFullYear(), clasificacion: "TP",
+      imagen: F.t7, ...son(5), top10: true,
+      sinopsis: `${P.suenos.join(", ")}. La serie que aún estamos escribiendo. Spoiler: tiene final feliz.`,
+      creditos: cred(["Guion", "Aún en proceso"], ["Próximas locaciones", P.suenos.join(" · ")]),
       episodios: [
         {
-          titulo: "Planes", duracion: 75,
-          descripcion: "Lo que soñamos cuando nadie nos escucha.",
+          titulo: "La Lista", duracion: 60,
+          descripcion: "Los sueños que tenemos anotados.",
           escenas: [
-            { img: "assets/video/atardecer.mp4", poster: "assets/fotos/escenas/s65.webp", texto: [`Lo mejor de esta serie...`, `es que todavía estamos escribiéndola.`] },
-            { img: "assets/video/tokio.mp4", poster: "assets/fotos/escenas/s66.webp", texto: [`Primer sueño en la lista: ${P.suenos[0]}.`, `Ya imaginamos cómo sería llegar juntos.`] },
-            { img: "assets/video/escenas/esc21.mp4", poster: "assets/fotos/escenas/s67.webp", texto: [`Después viene ${P.suenos[1]}.`, `Ya hasta discutimos quién elegirá el nombre.`] },
-            { img: "assets/video/escenas/n68.mp4", poster: "assets/fotos/escenas/s68.webp", texto: [`Y algún día: ${P.suenos[2]}.`, `Un espacio para todas nuestras cosas y recuerdos.`] },
-            { img: "assets/video/final-prueba.mp4", poster: "assets/fotos/escenas/s69.webp", texto: [`No sabemos cuándo llegará cada sueño.`, `Sí sabemos con quién queremos intentarlo.`] }
+            E(41, `Ilusión.`, `Allá afuera hay un mundo esperándonos.`),
+            E(66, `Emoción de solo imaginarlo: ${P.suenos[0]}.`, `Ya casi puedo sentirlo.`),
+            E(67, `Ternura de solo pensarlo: ${P.suenos[1]}.`, `Ya hasta discutimos el nombre.`),
+            E(68, `Ganas de que llegue el día: ${P.suenos[2]}.`, `Nuestro propio lugar.`),
+            E(70, `Curiosidad por todo lo que falta.`, `Y la certeza de vivirlo contigo.`)
           ],
           interaccion: {
             tipo: "rascar", titulo: "Rasca para ver el próximo capítulo",
@@ -459,21 +552,20 @@ window.TDN = (function () {
           recompensa: `Cupón: damos el primer paso hacia "${P.suenos[0]}" 🗺️`
         },
         {
-          titulo: "Continuará…", duracion: 70,
-          descripcion: "El episodio que te prepara para la Temporada Final.",
+          titulo: "Continuará…", duracion: 55,
+          descripcion: "El episodio que te lleva al final.",
           escenas: [
-            { img: "assets/video/escenas/n70.mp4", poster: "assets/fotos/escenas/s70.webp", texto: [`Quedan lugares por conocer.`, `La lista empieza en ${P.suenos[0]}.`] },
-            { img: "assets/video/escenas/n71.mp4", poster: "assets/fotos/escenas/s71.webp", texto: [`También hay sitio para ${P.suenos[1]}.`, `Y para las sorpresas que aún no imaginamos.`] },
-            { img: "assets/video/escenas/n72.mp4", poster: "assets/fotos/escenas/s72.webp", texto: [`Algún día construiremos ${P.suenos[2]}.`, `Con espacio para repetir nuestras escenas favoritas.`] },
-            { img: "assets/video/escenas/n73.mp4", poster: "assets/fotos/escenas/s73.webp", texto: [`Hasta entonces, seguimos aquí.`, `Haciendo extraordinario lo cotidiano.`] },
-            { img: "assets/video/escenas/esc11.mp4", poster: "assets/fotos/escenas/s74.webp", texto: [`Esta historia continuará.`, `Pero antes… queda una Temporada Final.`] }
+            E(71, `Emoción por las sorpresas que vienen.`, `Las que aún no imaginamos.`),
+            E(72, `Esperanza.`, `Algún día abriremos la puerta de nuestra casa.`),
+            E(73, `Hoy me siento agradecido.`, `Por lo extraordinario de lo cotidiano.`),
+            E(9, `Y una certeza:`, `esta historia continuará. Ahora te toca a ti.`)
           ],
           interaccion: {
-            tipo: "quiz", pregunta: "¿Lista para la Temporada Final?",
+            tipo: "quiz", pregunta: `¿Lista para el final, ${P.apodo}?`,
             opciones: ["Sí", "Obvio", "Nací para esto"], correcta: "todas",
             ok: "Sabía que dirías eso."
           },
-          recompensa: "Desbloqueaste: LA TEMPORADA FINAL 🔴"
+          recompensa: "Ya puedes ver: EL FINAL 🔴"
         }
       ]
     }
@@ -494,12 +586,12 @@ window.TDN = (function () {
      7. TEMPORADA FINAL
      ------------------------------------------------------------- */
   const final = {
-    titulo: "Temporada Final",
-    sinopsis: `Después de ${P.anios} ${P.anios === 1 ? "año" : "años"} y ${temporadas.length} temporadas, ` +
-              `la protagonista toma la palabra. En este episodio, ${P.nombreB} escribe el guion.`,
+    titulo: "El Final: Tu Turno",
+    sinopsis: `Después de ${P.anios} ${P.anios === 1 ? "año" : "años"}, 12 películas y 3 series, ` +
+              `la protagonista toma la palabra. En este final, ${P.nombreB} escribe el guion.`,
     imagen: F.final,
     preguntas: [
-      "¿Cuál ha sido tu episodio favorito de nuestra historia y por qué?",
+      "¿Cuál es tu película o serie favorita de nuestra historia y por qué?",
       "¿Qué es lo que más te gusta de nosotros?",
       "Si pudieras repetir un solo día juntos, ¿cuál sería?",
       "¿Qué sueño quieres que cumplamos en la próxima temporada?",
@@ -509,9 +601,9 @@ window.TDN = (function () {
     carta: (r) =>
 `${P.apodo}:
 
-Llegaste al final de la serie, pero no de la historia.
+Llegaste al final del catálogo, pero no de la historia.
 
-Dices que tu episodio favorito es "${r[0]}". El mío es cualquiera en el que sales tú.
+Dices que tu título favorito es "${r[0]}". El mío es cualquiera en el que sales tú.
 
 Lo que más te gusta de nosotros: ${r[1]}. Lo que más me gusta a mí es que existe un "nosotros".
 
@@ -529,7 +621,7 @@ ${P.nombreA}`
      8. CRÉDITOS Y POST-CRÉDITOS
      ------------------------------------------------------------- */
   const creditos = [
-    ["Una serie original de", P.nombreA],
+    ["Una producción original de", P.nombreA],
     ["Protagonizada por", P.nombreB],
     ["Coprotagonista", P.nombreA],
     ["Dirección", "El destino"],
@@ -545,14 +637,14 @@ ${P.nombreA}`
     ["Departamento de comedia", P.anecdota],
     ["Producción ejecutiva", `${P.anios} ${P.anios === 1 ? "año" : "años"} juntos`],
     ["Agradecimientos especiales", "A cada casualidad que nos juntó"],
-    ["", "Ningún corazón fue dañado durante la filmación de esta serie."],
+    ["", "Ningún corazón fue dañado durante la filmación de estas películas y series."],
     ["", `© ${P.anioInicio}–${new Date().getFullYear()} ${P.nombreA} & ${P.nombreB}. Todos los derechos reservados (para nosotros).`]
   ];
 
   const postCreditos = {
     imagen: F.postCreditos,
     etiqueta: "ESCENA POST-CRÉDITOS",
-    texto: `${P.nombreB}… esta serie acaba de ser renovada.`,
+    texto: `${P.nombreB}… nuestra historia acaba de ser renovada.`,
     anuncio: `Temporada ${P.anios + 1}`,
     subtitulo: "Próximamente. Y para siempre.",
     sorpresa: "Mira debajo de tu almohada 💝"

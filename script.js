@@ -77,6 +77,13 @@
 
   const epById = (id) => EPS.find((x) => x.id === id);
   const seasonByNum = (n) => SEASONS.find((s) => String(s.num) === String(n));
+  // Películas (1 episodio) y series (varios episodios cortos)
+  const isMovie = (s) => s.tipo === "pelicula";
+  const kindName = (s) => (isMovie(s) ? "Película" : "Serie");
+  const epCode = (ep) => (isMovie(ep.season) ? "Película" : `E${ep.e}`);
+  const epLabel = (ep) => (isMovie(ep.season) ? "Película" : `${ep.season.titulo} · Episodio ${ep.e}`);
+  const epFull = (ep) => (isMovie(ep.season) ? ep.titulo : `${ep.season.titulo} · E${ep.e} «${ep.titulo}»`);
+  const countLabel = (s) => (isMovie(s) ? epMin(s.episodios[0]) : `${s.episodios.length} episodios`);
   const epImg = (ep) => {
     const scene = (ep.escenas || []).find((x) => x.img);
     return ep.imagen || scene?.poster || scene?.img || ep.season.imagen || "";
@@ -89,7 +96,7 @@
   const save = () => ls.set(KEY, S);
 
   const isDone = (id) => !!S.done[id];
-  const unlocked = (ep) => ep.idx === 0 || isDone(EPS[ep.idx - 1].id);
+  const unlocked = () => true; // Todo el contenido está disponible desde el inicio
   const nextEp = () => EPS.find((e) => !isDone(e.id)) || null;
   const allDone = () => EPS.every((e) => isDone(e.id));
   const seasonUnlocked = (s) => unlocked(s.episodios[0]);
@@ -231,11 +238,11 @@
   function epCard(ep, o = {}) {
     const lock = !unlocked(ep), done = isDone(ep.id), w = S.watch[ep.id] || 0, img = epImg(ep);
     const isNew = !lock && !done;
-    return `<div class="card" tabindex="0" role="button" data-kind="ep" data-id="${ep.id}" aria-label="T${ep.t}:E${ep.e} ${esc(ep.titulo)}${lock ? " (bloqueado)" : ""}">
+    return `<div class="card" tabindex="0" role="button" data-kind="ep" data-id="${ep.id}" aria-label="${esc(epFull(ep))}">
       <div class="thumb ${img ? "" : "has-ph"} ${isNew ? "has-new" : ""}">${media(img, ep.titulo, ep.id)}
         <span class="badge-letter">T</span>
-        <div class="thumb-title"><small>T${ep.t}:E${ep.e}</small>${esc(ep.titulo)}</div>
-        ${isNew ? '<span class="tag-new">Nuevo episodio</span>' : ""}
+        <div class="thumb-title"><small>${esc(epCode(ep))}</small>${esc(ep.titulo)}</div>
+        ${isNew ? `<span class="tag-new">${isMovie(ep.season) ? "Nueva película" : "Nuevo episodio"}</span>` : ""}
         ${lock ? lockHtml("Completa el episodio anterior") : ""}
       </div>
       ${o.progress ? `<div class="card-progress"><i style="width:${Math.max(4, w * 100)}%"></i></div>` : ""}
@@ -245,21 +252,21 @@
   function seasonCard(s) {
     const lock = !seasonUnlocked(s), img = s.imagen;
     const isNew = !lock && seasonHasNew(s);
-    return `<div class="card" tabindex="0" role="button" data-kind="season" data-id="${s.num}" aria-label="Temporada ${s.num}: ${esc(s.titulo)}">
+    return `<div class="card" tabindex="0" role="button" data-kind="season" data-id="${s.num}" aria-label="${kindName(s)}: ${esc(s.titulo)}">
       <div class="thumb ${img ? "" : "has-ph"} ${isNew ? "has-new" : ""}">${media(img, s.titulo, "s" + s.num)}
         <span class="badge-letter">T</span>
         ${s.top10 ? '<span class="badge-top10">TOP<b>10</b></span>' : ""}
-        <div class="thumb-title"><small>Temporada ${s.num}</small>${esc(s.titulo)}</div>
-        ${isNew ? '<span class="tag-new">Nuevo episodio</span>' : ""}
+        <div class="thumb-title"><small>${kindName(s)}</small>${esc(s.titulo)}</div>
+        ${isNew ? `<span class="tag-new">${isMovie(s) ? "Nueva película" : "Nuevos episodios"}</span>` : ""}
         ${lock ? lockHtml("Completa la temporada anterior") : ""}
       </div></div>`;
   }
   function finalCard() {
-    const lock = !allDone();
-    return `<div class="card" tabindex="0" role="button" data-kind="final" data-id="final" aria-label="Temporada Final">
+    const lock = false;
+    return `<div class="card" tabindex="0" role="button" data-kind="final" data-id="final" aria-label="${esc(C.final.titulo)}">
       <div class="thumb ${C.final.imagen ? "" : "has-ph"} ${!lock ? "has-new" : ""}">${media(C.final.imagen, "Final", "final")}
         <span class="badge-letter">T</span><span class="badge-top10">TOP<b>1</b></span>
-        <div class="thumb-title"><small>Final de temporada</small>${esc(C.final.titulo)}</div>
+        <div class="thumb-title"><small>El final</small>${esc(C.final.titulo)}</div>
         ${!lock ? '<span class="tag-new">Disponible ahora</span>' : ""}
         ${lock ? lockHtml("Se desbloquea al terminar todo") : ""}
       </div></div>`;
@@ -277,7 +284,7 @@
       <span class="top-num" aria-hidden="true">${rank}</span>
       <div class="thumb ${s.imagen ? "" : "has-ph"}">${media(s.imagen, s.titulo, "s" + s.num)}
         <span class="badge-letter">T</span>
-        <div class="thumb-title"><small>T${s.num}</small>${esc(s.titulo)}</div>
+        <div class="thumb-title"><small>${kindName(s)}</small>${esc(s.titulo)}</div>
         ${lock ? lockHtml("Bloqueado") : ""}
       </div></div>`;
   }
@@ -285,17 +292,17 @@
   /* ================= 7. NAVBAR ================= */
   function notifications() {
     const items = [];
-    if (allDone()) items.push({ t: "La Temporada Final ya está disponible", s: "Solo para ti", img: C.final.imagen, seed: "final", url: "final.html" });
     const n = nextEp();
-    if (n) items.push({ t: `Nuevo episodio: ${n.titulo}`, s: `T${n.t}:E${n.e} · ${n.season.titulo}`, img: epImg(n), seed: n.id, url: epUrl(n) });
-    SEASONS.filter((s) => seasonUnlocked(s) && !s.episodios.some((e) => isDone(e.id)) && s !== n?.season)
-      .forEach((s) => items.push({ t: `Ya puedes ver la Temporada ${s.num}`, s: s.titulo, img: s.imagen, seed: "s" + s.num, url: `temporada.html?t=${s.num}` }));
-    items.push({ t: "Estreno: Temporadas de Nosotros", s: `Una serie original para ${P.nombreB}`, img: F.hero, seed: "hero", url: "index.html" });
+    if (n) items.push({ t: `Sigue viendo: ${n.titulo}`, s: epLabel(n), img: epImg(n), seed: n.id, url: epUrl(n) });
+    SEASONS.filter((s) => !s.episodios.some((e) => isDone(e.id)) && s !== n?.season).slice(0, 4)
+      .forEach((s) => items.push({ t: `${kindName(s)} disponible: ${s.titulo}`, s: String(s.anio), img: s.imagen, seed: "s" + s.num, url: `temporada.html?t=${s.num}` }));
+    items.push({ t: `Ya disponible: ${C.final.titulo}`, s: "Solo para ti", img: C.final.imagen, seed: "final", url: "final.html" });
+    items.push({ t: "Estreno: Temporadas de Nosotros", s: `12 películas y 3 series originales para ${P.nombreB}`, img: F.hero, seed: "hero", url: "index.html" });
     return items;
   }
 
   function renderNav(active) {
-    const links = [["home", "Inicio", "index.html"], ["series", "Series", "index.html#temporadas"], ["games", "Juegos", "juegos.html"], ["list", "Mi lista", "index.html#mi-lista"], ["new", "Novedades", "index.html#novedades"]];
+    const links = [["home", "Inicio", "index.html"], ["movies", "Películas", "index.html#peliculas"], ["series", "Series", "index.html#series"], ["games", "Juegos", "juegos.html"], ["list", "Mi lista", "index.html#mi-lista"], ["new", "Novedades", "index.html#novedades"]];
     const pr = profile(), notes = notifications();
     const sig = notes.map((n) => n.t).join("|");
     const unread = S.notifSeen === sig ? 0 : notes.length;
@@ -320,7 +327,7 @@
     const drawer = h(`<nav class="drawer" aria-label="Menú">
       <div class="drawer-head">${avatarHtml(pr)}<div><b>${esc(pr.name)}</b><br><a href="profiles.html" data-switch style="padding:0;color:var(--netflix-gray);font-size:.85rem">Cambiar perfil</a></div></div>
       ${links.map(([k, l, u]) => `<a href="${u}" class="${k === active ? "active" : ""}">${l}</a>`).join("")}
-      <a href="final.html">Temporada Final ${allDone() ? "" : "🔒"}</a>
+      <a href="final.html">${esc(C.final.titulo)}</a>
       <button type="button" data-reset>Reiniciar progreso</button></nav>`);
     const back = h('<div class="drawer-backdrop"></div>');
     document.body.prepend(back); document.body.prepend(drawer); document.body.prepend(nav);
@@ -402,10 +409,7 @@
       if (!seasonUnlocked(s)) return toast(`🔒 La Temporada ${s.num} se desbloquea al terminar la anterior`);
       return expandTo(card, `temporada.html?t=${s.num}`);
     }
-    if (kind === "final") {
-      if (!allDone()) return toast(`🔒 Te faltan ${EPS.length - doneCount()} episodios para la Temporada Final`);
-      return expandTo(card, "final.html");
-    }
+    if (kind === "final") return expandTo(card, "final.html");
     if (kind === "extra") return openModal(C.extras[+id], "x" + id);
   }
 
@@ -450,12 +454,12 @@
     let meta, sub = "", key, label, playable = true, w = 0;
     if (kind === "ep") {
       const ep = epById(id); key = "e:" + id; label = ep.titulo; playable = unlocked(ep); w = S.watch[id] || 0;
-      meta = `<span>${epMin(ep)}</span>`; sub = `T${ep.t}:E${ep.e} «${esc(ep.titulo)}» · ${esc(ep.descripcion)}`;
+      meta = `<span>${epMin(ep)}</span>`; sub = `${esc(epFull(ep))} · ${esc(ep.descripcion)}`;
     } else if (kind === "season") {
       const s = seasonByNum(id); key = "s:" + id; label = s.titulo; playable = seasonUnlocked(s);
-      meta = `<span>${s.episodios.length} episodio${s.episodios.length > 1 ? "s" : ""}</span>`; sub = esc(s.sinopsis);
+      meta = `<span>${kindName(s)}</span><span>${countLabel(s)}</span>`; sub = esc(s.sinopsis);
     } else if (kind === "final") {
-      key = "final"; label = C.final.titulo; playable = allDone(); meta = "<span>1 episodio</span>"; sub = esc(C.final.sinopsis);
+      key = "final"; label = C.final.titulo; playable = true; meta = "<span>Final</span>"; sub = esc(C.final.sinopsis);
     } else {
       const x = C.extras[+id]; key = "x:" + id; label = x.titulo; meta = "<span>Extra</span>"; sub = esc(x.texto);
     }
@@ -557,7 +561,7 @@
     root.innerHTML = `<div class="splash" id="splash">${muteBtn()}
       <div class="splash-start" id="start">
         <div class="logo" data-logo="TEMPORADAS DE NOSOTROS"></div>
-        <p>Una serie original para <b style="color:#fff">${esc(P.nombreB)}</b></p>
+        <p>Películas y series originales para <b style="color:#fff">${esc(P.nombreB)}</b></p>
         <button class="btn btn-red" id="go">${I.play} Comenzar</button>
         <p style="font-size:.8rem">Mejor con sonido 🔊</p>
       </div>
@@ -629,8 +633,8 @@
   /* ---------- HOME ---------- */
   function pageHome() {
     renderNav("home");
-    const nx = nextEp(), feat = (nx || EPS[EPS.length - 1]).season, pr = profile();
-    const playTarget = nx ? epUrl(nx) : "final.html";
+    const nx = nextEp(), feat = (nx || EPS[0]).season, pr = profile();
+    const playTarget = nx ? epUrl(nx) : epUrl(EPS[0]);
     const resume = nx && S.watch[nx.id] > 0;
     const heroImg = F.hero || feat.imagen;
 
@@ -639,12 +643,12 @@
       <section class="hero home-hero" aria-label="Destacado">
         <div class="hero-bg">${heroImg ? media(heroImg, "", "hero") : media("", "Nosotros", "hero")}</div>
         <div class="hero-content">
-          <div class="hero-kicker"><span class="logo-mono">T</span>Serie</div>
+          <div class="hero-kicker"><span class="logo-mono">T</span>Original</div>
           <h1 class="hero-title">Temporadas de Nosotros</h1>
           <div class="hero-tags"><span class="tag-red">${esc(C.sitio.heroTag)}</span><span class="top10-mini">TOP<b>10</b></span><span>${esc(C.sitio.heroTop)}</span></div>
           <p class="hero-synopsis">${esc(C.sitio.sinopsis)}</p>
           <div class="hero-btns">
-            <button class="btn btn-play" id="hPlay">${I.play} ${allDone() ? "Temporada Final" : resume ? "Reanudar" : "Reproducir"}</button>
+            <button class="btn btn-play" id="hPlay">${I.play} ${resume ? "Reanudar" : "Reproducir"}</button>
             <button class="btn btn-gray" id="hList">${S.list.includes("serie") ? I.check : I.plus} Mi lista</button>
             <button class="btn btn-gray" id="hInfo">${I.info} Más información</button>
           </div>
@@ -665,9 +669,10 @@
     rowsEl.innerHTML =
       (continuing.length ? row("continuar", `Continuar viendo como ${esc(pr.name)}`, continuing.map((e) => epCard(e, { progress: true })).join("")) : "") +
       `<a class="games-promo" href="juegos.html"><span class="games-promo-mark">🎮</span><span><b>Juegos de nuestra historia</b><small>Trivias, recuerdos y sorpresas · Juega cuando quieras</small></span><span class="games-promo-arrow">${I.right}</span></a>` +
-      row("temporadas", "Temporadas de Nosotros", SEASONS.map(seasonCard).join("") + finalCard()) +
+      row("peliculas", "Películas de nosotros", SEASONS.filter(isMovie).map(seasonCard).join("")) +
+      row("series", "Series de nosotros", SEASONS.filter((x) => !isMovie(x)).map(seasonCard).join("") + finalCard()) +
       row("top10", "Top 10 en tu corazón hoy", tops.map((s, i) => topCard(s, i + 1)).join("")) +
-      row("novedades", "Momentos destacados", EPS.map((e) => epCard(e)).join("")) +
+      row("novedades", "Episodios de nuestras series", EPS.filter((e) => !isMovie(e.season)).map((e) => epCard(e)).join("")) +
       row("detras", "Detrás de cámaras", C.extras.map(extraCard).join("")) +
       row("porque", `Porque viste '${esc(C.sitio.filaRecomendada)}'`, later.map(seasonCard).join("") + finalCard()) +
       `<div id="mi-lista-slot"></div>`;
@@ -708,7 +713,7 @@
     res.classList.toggle("show", !!n);
     if (!n) return;
     const hit = (...txt) => txt.some((t) => norm(t).includes(n));
-    const eps = EPS.filter((e) => hit(e.titulo, e.descripcion, e.season.titulo));
+    const eps = EPS.filter((e) => !isMovie(e.season) && hit(e.titulo, e.descripcion, e.season.titulo));
     const ss_ = SEASONS.filter((s) => hit(s.titulo, s.sinopsis));
     const cards = ss_.map(seasonCard).join("") + eps.map((e) => epCard(e, { caption: true })).join("");
     res.innerHTML = cards
@@ -719,7 +724,7 @@
   /* ---------- DETALLE DE TEMPORADA ---------- */
   function pageSeason() {
     const s = seasonByNum(param("t")) || SEASONS[0];
-    document.title = `Temporada ${s.num}: ${s.titulo} | Temporadas de Nosotros`;
+    document.title = `${s.titulo} | Temporadas de Nosotros`;
     renderNav("series");
     const lock = !seasonUnlocked(s), nx = seasonNext(s);
     const inL = S.list.includes("s:" + s.num);
@@ -728,25 +733,28 @@
       <section class="hero season-hero">
         <div class="hero-bg">${media(s.imagen, s.titulo, "s" + s.num)}</div>
         <div class="hero-content">
-          <div class="hero-kicker"><span class="logo-mono">T</span>Serie</div>
-          <h1 class="hero-title"><small>Temporada ${s.num}</small>${esc(s.titulo)}</h1>
-          <div class="meta season-meta"><span class="match">${C.sitio.coincidencia}% para ti</span><span>${s.anio}</span><span class="age-box">${esc(s.clasificacion || C.sitio.clasificacion)}</span><span>${s.episodios.length} episodio${s.episodios.length > 1 ? "s" : ""}</span><span class="hd">HD</span><span class="hd">5.1</span></div>
-          ${s.top10 ? `<div class="hero-tags"><span class="top10-mini">TOP<b>10</b></span><span>N.º ${s.num || 1} en momentos inolvidables</span></div>` : ""}
+          <div class="hero-kicker"><span class="logo-mono">T</span>${kindName(s)}</div>
+          <h1 class="hero-title">${esc(s.titulo)}</h1>
+          <div class="meta season-meta"><span class="match">${C.sitio.coincidencia}% para ti</span><span>${s.anio}</span><span class="age-box">${esc(s.clasificacion || C.sitio.clasificacion)}</span><span>${countLabel(s)}</span><span class="hd">HD</span><span class="hd">5.1</span></div>
+          ${s.top10 ? `<div class="hero-tags"><span class="top10-mini">TOP<b>10</b></span><span>Top 10 en momentos inolvidables</span></div>` : ""}
           <p class="hero-synopsis">${esc(s.sinopsis)}</p>
-          <p class="season-song">♫ Banda sonora: <strong>${esc(C.media.canciones?.[s.num] || `Temporada ${s.num}`)}</strong></p>
+          <p class="season-song">♫ Banda sonora: <strong>${esc(s.cancion || s.titulo)}</strong></p>
           <div class="hero-btns">
             <button class="btn btn-play" id="sPlay" ${lock ? "disabled" : ""}>${lock ? I.lock : I.play} ${lock ? "Bloqueada" : S.watch[nx.id] ? "Reanudar" : isDone(nx.id) ? "Volver a ver" : "Reproducir"}</button>
             <button class="btn btn-gray" id="sList">${inL ? I.check : I.plus} Mi lista</button>
           </div>
-          ${!lock ? `<p style="color:var(--netflix-gray);margin:.8rem 0 0;font-size:.9rem">T${nx.t}:E${nx.e} «${esc(nx.titulo)}»</p>` : ""}
+          ${!isMovie(s) ? `<p style="color:var(--netflix-gray);margin:.8rem 0 0;font-size:.9rem">E${nx.e} «${esc(nx.titulo)}»</p>` : ""}
         </div>
       </section>
-      <div class="season-wrap">
-        <div class="ep-head"><h2>Episodios</h2>
-          <select class="season-select" id="sel" aria-label="Elegir temporada">
-            ${SEASONS.map((x) => `<option value="${x.num}" ${x === s ? "selected" : ""}>Temporada ${x.num}${seasonUnlocked(x) ? "" : " 🔒"}</option>`).join("")}
-            <option value="final">Temporada Final${allDone() ? "" : " 🔒"}</option>
-          </select></div>
+      <div class="season-wrap">${isMovie(s) ? `
+        <div class="ep-head"><h2>Acerca de «${esc(s.titulo)}»</h2></div>
+        <div class="movie-about">
+          ${(s.creditos || []).map(([r, w]) => `<p><span>${esc(r)}:</span> ${esc(w)}</p>`).join("")}
+          <p><span>Géneros:</span> ${C.sitio.generos.map(esc).join(", ")}</p>
+          <p><span>Banda sonora:</span> ${esc(s.cancion || "")}</p>
+          <p><span>Clasificación:</span> <span class="age-box">${esc(s.clasificacion || C.sitio.clasificacion)}</span> ${esc(C.sitio.clasificacionTexto)}</p>
+        </div>` : `
+        <div class="ep-head"><h2>Episodios</h2><span class="season-select" style="pointer-events:none">Temporada 1</span></div>
         <div class="ep-list">${s.episodios.map((ep) => {
           const l = !unlocked(ep), d = isDone(ep.id), w = S.watch[ep.id] || 0, img = epImg(ep);
           return `<div class="ep ${l ? "locked" : ""} ${ep === nx && !l ? "current" : ""}" id="ep-${ep.id}" data-id="${ep.id}" tabindex="0" role="button" aria-label="Episodio ${ep.e}: ${esc(ep.titulo)}">
@@ -758,17 +766,17 @@
               <div class="ep-flags">${l ? '<span class="done">🔒 Bloqueado</span>' : d ? '<span class="done">✓ Visto</span>' : '<span class="new">Nuevo episodio</span>'}<span class="hd">HD</span></div></div>
             <p class="ep-desc mobile">${esc(ep.descripcion)}</p>
           </div>`;
-        }).join("")}</div>
+        }).join("")}</div>`}
       </div>
-      <main class="rows" style="margin-top:0">${row("mas", "Más temporadas", SEASONS.filter((x) => x !== s).map(seasonCard).join("") + finalCard())}</main>
+      <main class="rows" style="margin-top:0">${row("mas", "Más títulos", SEASONS.filter((x) => x !== s).map(seasonCard).join("") + finalCard())}</main>
       ${footer()}`;
     initSliders(app); bindCards($("main.rows"));
 
-    if (!lock) $("#sPlay").onclick = () => expandTo($(`#ep-${nx.id}`), epUrl(nx));
+    if (!lock) $("#sPlay").onclick = () => expandTo($(`#ep-${nx.id}`) || $(".hero"), epUrl(nx));
     $("#sList").onclick = (e) => { const on = toggleList("s:" + s.num, s.titulo); e.currentTarget.innerHTML = `${on ? I.check : I.plus} Mi lista`; };
-    $("#sel").onchange = (e) => {
+    if ($("#sel")) $("#sel").onchange = (e) => {
       const v = e.target.value;
-      if (v === "final") return allDone() ? go("final.html") : (toast("🔒 La Temporada Final aún está bloqueada"), (e.target.value = s.num));
+      if (v === "final") return go("final.html");
       go(`temporada.html?t=${v}`);
     };
     const open = (el) => {
@@ -789,7 +797,7 @@
     const ep = epById(`${param("t")}-${param("e")}`);
     if (!ep) return location.replace("index.html");
     if (!unlocked(ep)) { ss.set("tdn_toast", "🔒 Ese episodio aún está bloqueado"); return location.replace(`temporada.html?t=${ep.t}`); }
-    document.title = `T${ep.t}:E${ep.e} ${ep.titulo} | Temporadas de Nosotros`;
+    document.title = `${epFull(ep)} | Temporadas de Nosotros`;
 
     const D = ep.duracion || 75, INTRO = 6;
     let t = !isDone(ep.id) && S.watch[ep.id] ? S.watch[ep.id] * D : 0;
@@ -808,10 +816,10 @@
       <div class="stage" id="stage">${scenes.map(sceneHtml).join("")}</div>
       <div class="subtitle" id="sub" aria-live="polite"></div>
       <div class="intro-card ${t >= INTRO ? "hide" : ""}" id="intro"><div class="logo" data-logo="TEMPORADAS DE NOSOTROS"></div>
-        <div class="ep-label">Temporada ${ep.t} · Episodio ${ep.e}</div><h1>${esc(ep.titulo)}</h1></div>
+        <div class="ep-label">${isMovie(ep.season) ? "Una película original" : `Serie original · ${esc(ep.season.titulo)} · Episodio ${ep.e}`}</div><h1>${esc(ep.titulo)}</h1></div>
       <div class="big-play" id="bigPlay"><span></span></div>
       <button class="skip-intro hidden" id="skip">Saltar intro</button>
-      <div class="p-top"><button class="back" id="back" aria-label="Volver">${I.back}</button><span class="p-title">T${ep.t}:E${ep.e} · ${esc(ep.titulo)}</span></div>
+      <div class="p-top"><button class="back" id="back" aria-label="Volver">${I.back}</button><span class="p-title">${esc(epFull(ep))}</span></div>
       <div class="p-bottom">
         <div class="p-bar-row"><div class="p-bar" id="bar" role="slider" aria-label="Progreso" aria-valuemin="0" aria-valuemax="${D}" tabindex="0">
           <div class="p-track"><div class="p-buffer" id="buf"></div><div class="p-fill" id="fill"></div>
@@ -823,8 +831,8 @@
           <button class="p-btn hide-xs" data-a="fwd10" aria-label="Adelantar 10 s">${I.fwd10}</button>
           <div class="vol"><button class="p-btn" data-a="mute" aria-label="Volumen"></button>
             <div class="vol-slider"><input type="range" min="0" max="1" step="0.05" id="volR" aria-label="Volumen"></div></div>
-          <div class="p-name"><b>${esc(C.media.canciones?.[ep.t] || "Temporadas de Nosotros")}</b> &nbsp;T${ep.t}:E${ep.e} «${esc(ep.titulo)}»</div>
-          <button class="p-btn" data-a="next" aria-label="Siguiente episodio">${I.next}</button>
+          <div class="p-name"><b>${esc(ep.season.cancion || "Temporadas de Nosotros")}</b> &nbsp;${esc(epFull(ep))}</div>
+          <button class="p-btn" data-a="next" aria-label="Siguiente título">${I.next}</button>
           <button class="p-btn" data-a="subs" aria-label="Subtítulos">${I.subs}</button>
           <button class="p-btn" data-a="full" aria-label="Pantalla completa">${I.full}</button>
         </div></div></div>`;
@@ -833,7 +841,7 @@
     const player = $("#player"), sceneEls = $$(".scene"), sub = $("#sub"), intro = $("#intro"), skip = $("#skip");
     const fill = $("#fill"), knob = $("#knob"), buf = $("#buf"), timeEl = $("#time"), bar = $("#bar");
     const playBtn = $('[data-a="play"]'), muteBtn = $('[data-a="mute"]'), volR = $("#volR");
-    let playing = false, last = 0, cur = -1, curBeat = -1, ended = false, savedAt = 0;
+    let playing = false, last = 0, cur = -1, curBeat = -1, ended = false, savedAt = 0, introSound = false;
 
     // --- Audio (música opcional) ---
     let vol = ls.get("tdn_vol", 0.8);
@@ -857,7 +865,8 @@
     function play() {
       if (ended) return;
       playing = true; playBtn.innerHTML = I.pause;
-      music?.play().catch(() => {});
+      if (t < INTRO && !introSound) { introSound = true; Sound.tadum(); }
+      if (t >= INTRO) music?.play().catch(() => {});
       const v = $(".scene.on video"); v?.play().catch(() => {});
       flash(I.play); poke();
     }
@@ -907,6 +916,7 @@
         sub.classList.remove("beat-in"); sub.offsetWidth; sub.classList.add("beat-in");
         curBeat = beat;
       }
+      if (playing && t >= INTRO && music?.paused) { Sound.introAudio?.pause(); music.play().catch(() => {}); }
       if (playing) saveWatch();
     }
 
@@ -953,10 +963,7 @@
       back10: () => seek(t - 10),
       fwd10: () => seek(t + 10),
       mute: () => { Sound.muted = !Sound.muted; if (!Sound.muted && vol === 0) vol = 0.8; applyVol(); },
-      next: () => {
-        if (!isDone(ep.id)) return toast("Termina este episodio para desbloquear el siguiente");
-        go(nxt ? epUrl(nxt) : "final.html");
-      },
+      next: () => { saveWatch(true); go(nxt ? epUrl(nxt) : "final.html"); },
       subs: () => { const on = !subsOn(); ls.set("tdn_subs", on); player.classList.toggle("no-subs", !on); $('[data-a="subs"]').classList.toggle("off", !on); toast(on ? "Subtítulos: Español" : "Subtítulos desactivados"); },
       full: () => {
         if (isFs()) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
@@ -988,31 +995,60 @@
       S.done[ep.id] = true; delete S.watch[ep.id]; save();
       if (music) { const fade = setInterval(() => { music.volume = Math.max(0, music.volume - 0.05); if (music.volume <= 0.01) { music.pause(); clearInterval(fade); } }, 80); }
       const seasonEnd = ep.e === ep.season.episodios.length;
+      if (seasonEnd) rollCredits(endScreen); else endScreen();
+    }
+
+    // Créditos de cada película o serie
+    function rollCredits(then) {
+      const s = ep.season;
+      const list = [...(s.creditos || []), ["Banda sonora", s.cancion || C.sitio.generos.join(" · ")], ["", `© ${s.anio} ${P.nombreA} & ${P.nombreB}`]];
+      const el = h(`<div class="title-credits"><div class="credits"><div class="credits-roll">
+          <div class="logo" data-logo="TEMPORADAS DE NOSOTROS"></div>
+          <div class="credit solo" style="margin:0 auto 2.4rem;font-style:normal;color:#fff;font-size:1.5rem">${esc(s.titulo)}</div>
+          ${list.map(([r, w]) => r ? `<div class="credit"><div class="role">${esc(r)}</div><div class="who">${esc(w)}</div></div>` : `<div class="credit solo">${esc(w)}</div>`).join("")}
+        </div></div><div class="credits-ui"><button class="btn btn-gray" type="button">Saltar créditos</button></div></div>`);
+      player.append(el); renderLogos(el);
+      requestAnimationFrame(() => el.classList.add("show"));
+      const roll = $(".credits-roll", el), H = roll.offsetHeight + innerHeight * 0.75;
+      let y = 0, lastTs = 0, closed = false;
+      const close = () => { if (closed) return; closed = true; el.classList.remove("show"); setTimeout(() => el.remove(), 500); then(); };
+      const step = (ts) => {
+        if (closed) return;
+        const dt = lastTs ? (ts - lastTs) / 1000 : 0; lastTs = ts;
+        y += 70 * dt; roll.style.transform = `translateY(${-y}px)`;
+        if (y < H) requestAnimationFrame(step); else close();
+      };
+      requestAnimationFrame(step);
+      $("button", el).onclick = (e) => { e.stopPropagation(); close(); };
+    }
+
+    function endScreen() {
+      const seasonEnd = ep.e === ep.season.episodios.length;
       const target = nxt ? epUrl(nxt) : "final.html";
       const es = h(`<div class="endscreen"><div class="end-grid">
         <div class="end-left">
-          <div class="inter-kicker" style="margin:0">Episodio completado</div>
-          <h2>T${ep.t}:E${ep.e} «${esc(ep.titulo)}»</h2>
-          ${seasonEnd ? `<p style="color:var(--netflix-gray);margin:0 0 1rem">🎉 Completaste la <b style="color:#fff">Temporada ${ep.t}: ${esc(ep.season.titulo)}</b></p>` : ""}
+          <div class="inter-kicker" style="margin:0">${isMovie(ep.season) ? "Película terminada" : "Episodio completado"}</div>
+          <h2>${esc(epFull(ep))}</h2>
+          ${seasonEnd && !isMovie(ep.season) ? `<p style="color:var(--netflix-gray);margin:0 0 1rem">🎉 Terminaste la serie <b style="color:#fff">${esc(ep.season.titulo)}</b></p>` : ""}
           ${ep.recompensa ? `<div class="reward"><span class="gift">🎁</span><div><small>Recompensa desbloqueada</small>${esc(ep.recompensa)}</div></div>` : ""}
           <div class="end-links">
             <button class="btn btn-gray" id="again">${I.replay} Volver a ver</button>
             ${ep.interaccion ? `<a class="btn btn-gray" href="juegos.html?j=${ep.id}">🎮 Jugar reto</a>` : ""}
-            <a class="btn btn-gray" href="temporada.html?t=${ep.t}">Episodios</a>
+            <a class="btn btn-gray" href="temporada.html?t=${ep.t}">Ver ficha</a>
             <a class="btn btn-gray" href="index.html">Inicio</a>
           </div></div>
         <div class="next-card">
           <div class="thumb ${nxt && epImg(nxt) ? "" : "has-ph"}">${nxt ? media(epImg(nxt), nxt.titulo, nxt.id) : media(C.final.imagen, "Final", "final")}
-            <div class="thumb-title"><small>${nxt ? `T${nxt.t}:E${nxt.e}` : "Desbloqueada"}</small>${esc(nxt ? nxt.titulo : C.final.titulo)}</div></div>
-          <div class="nc-body"><small>${nxt ? (nxt.t !== ep.t ? `Temporada ${nxt.t}: ${esc(nxt.season.titulo)}` : "Siguiente episodio") : "Llegaste al final… casi"}</small>
-            <h3>${esc(nxt ? nxt.titulo : "La Temporada Final")}</h3>
+            <div class="thumb-title"><small>${nxt ? esc(epCode(nxt)) : "El final"}</small>${esc(nxt ? nxt.titulo : C.final.titulo)}</div></div>
+          <div class="nc-body"><small>${nxt ? (nxt.t !== ep.t ? `A continuación · ${kindName(nxt.season)}` : "Siguiente episodio") : "Llegaste al final… casi"}</small>
+            <h3>${esc(nxt ? nxt.titulo : C.final.titulo)}</h3>
             <p>${esc(nxt ? nxt.descripcion : C.final.sinopsis)}</p>
-            <button class="btn btn-play btn-count" id="nextBtn"><span class="fill"></span><span>${I.play}</span><span id="nextTxt">${nxt ? "Siguiente episodio" : "Ver Temporada Final"} en 10</span></button>
+            <button class="btn btn-play btn-count" id="nextBtn"><span class="fill"></span><span>${I.play}</span><span id="nextTxt">${nxt ? "Ver siguiente" : "Ver el final"} en 10</span></button>
           </div></div></div></div>`);
       player.append(es);
       requestAnimationFrame(() => { es.classList.add("show"); $("#nextBtn").classList.add("run"); });
       let n = 10;
-      const label = nxt ? "Siguiente episodio" : "Ver Temporada Final";
+      const label = nxt ? "Ver siguiente" : "Ver el final";
       const iv = setInterval(() => { n--; $("#nextTxt").textContent = n > 0 ? `${label} en ${n}` : label; if (n <= 0) { clearInterval(iv); go(target); } }, 1000);
       $("#nextBtn").onclick = () => { clearInterval(iv); go(target); };
       $("#again").onclick = () => { clearInterval(iv); es.remove(); ended = false; t = 0; cur = -1; curBeat = -1; render(true); play(); };
@@ -1027,7 +1063,7 @@
   function pageFinal() {
     renderNav("home");
     const app = $("#app");
-    if (!allDone()) {
+    if (false) {
       const n = nextEp(), d = doneCount();
       app.innerHTML = `<div class="locked-screen">${I.lock.replace("<svg", '<svg class="big-lock"')}
         <h1 style="margin:0">La Temporada Final está bloqueada</h1>
@@ -1042,7 +1078,7 @@
         <div class="hero-bg">${media(fin.imagen, "Final", "final")}</div>
         <div class="hero-content">
           <div class="hero-kicker"><span class="logo-mono">T</span>Serie</div>
-          <div class="hero-tags"><span class="tag-red">FINAL DE TEMPORADA</span></div>
+          <div class="hero-tags"><span class="tag-red">EL FINAL</span></div>
           <h1 class="hero-title">${esc(fin.titulo)}</h1>
           <div class="meta season-meta"><span class="match">100% para ti</span><span>${new Date().getFullYear()}</span><span class="age-box">TP</span><span>1 episodio</span><span class="hd">HD</span></div>
           <p class="hero-synopsis">${esc(fin.sinopsis)}</p>
@@ -1132,7 +1168,6 @@
   /* ---------- CRÉDITOS + POST-CRÉDITOS ---------- */
   function pageCredits() {
     document.body.classList.add("credits-page");
-    if (!allDone()) { ss.set("tdn_toast", "🔒 Los créditos aparecen al terminar la serie"); return location.replace("index.html"); }
     const pc = C.postCreditos;
     $("#app").innerHTML = `<div class="credits"><div class="credits-roll" id="roll">
         <div class="logo" data-logo="TEMPORADAS DE NOSOTROS"></div>
@@ -1443,14 +1478,14 @@
     if (!selected) {
       $("#app").innerHTML = `<main class="games-page">
         <header class="games-header"><span class="inter-kicker">Una serie para jugar</span><h1>Juegos de nosotros</h1>
-          <p>Las trivias y retos de cada episodio están aquí. Puedes jugarlos cuando quieras, sin interrumpir la serie.</p>
+          <p>Las trivias y retos de cada película y serie están aquí. Puedes jugarlos cuando quieras, sin interrumpir la serie.</p>
           <span class="games-progress">${done} de ${games.length} completados</span></header>
         <div class="games-grid">${games.map((ep) => {
           const raw = epImg(ep), img = isVideo(raw) ? ep.season.imagen : raw;
           const played = !!S.inter[ep.id];
           return `<a class="game-card ${played ? "completed" : ""}" href="juegos.html?j=${ep.id}">
             <span class="game-card-art">${media(img, ep.titulo, ep.id)}<span class="game-card-badge">${played ? "✓ Completado" : esc(names[ep.interaccion.tipo] || "Juego")}</span></span>
-            <span class="game-card-copy"><small>Temporada ${ep.t} · Episodio ${ep.e}</small><strong>${esc(ep.titulo)}</strong><span>${played ? "Volver a jugar" : "Jugar ahora"} ${I.right}</span></span></a>`;
+            <span class="game-card-copy"><small>${esc(epLabel(ep))}${isMovie(ep.season) ? ` · ${esc(ep.season.titulo)}` : ""}</small><strong>${esc(ep.titulo)}</strong><span>${played ? "Volver a jugar" : "Jugar ahora"} ${I.right}</span></span></a>`;
         }).join("")}</div></main>${footer()}`;
       return;
     }
@@ -1459,7 +1494,7 @@
     const [title, subtitle] = INTER_META[game.tipo]?.(game) || [selected.titulo, "Resuelve el reto"];
     $("#app").innerHTML = `<main class="games-page game-detail">
       <a class="games-back" href="juegos.html">${I.left} Todos los juegos</a>
-      <div class="game-context"><span class="inter-kicker">T${selected.t}:E${selected.e} · ${esc(selected.season.titulo)}</span><h1>${esc(selected.titulo)}</h1></div>
+      <div class="game-context"><span class="inter-kicker">${esc(kindName(selected.season))} · ${esc(selected.season.titulo)}</span><h1>${esc(selected.titulo)}</h1></div>
       <section class="game-panel" aria-label="Juego de ${esc(selected.titulo)}">
         <span class="game-type">${esc(names[game.tipo] || "Juego")}</span>
         <h2 class="inter-title">${esc(title)}</h2><p class="inter-sub">${esc(subtitle)}</p>
@@ -1477,7 +1512,7 @@
       panel.innerHTML = `<div class="inter-done"><div class="check">${I.check}</div>
         <h2 class="inter-title">${esc(game.ok || "¡Juego completado!")}</h2>
         <div class="game-actions"><a class="btn btn-play" href="juegos.html">Ver más juegos</a>
-          <a class="btn btn-gray" href="${unlocked(selected) ? epUrl(selected) : `temporada.html?t=${selected.t}`}">${unlocked(selected) ? "Ver episodio" : "Ver temporada"}</a></div></div>`;
+          <a class="btn btn-gray" href="${unlocked(selected) ? epUrl(selected) : `temporada.html?t=${selected.t}`}">${isMovie(selected.season) ? "Ver película" : "Ver episodio"}</a></div></div>`;
     };
     GAMES[game.tipo]($(".inter-body", panel), game, api, complete);
   }
