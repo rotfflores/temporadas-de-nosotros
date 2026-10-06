@@ -302,7 +302,7 @@
   }
 
   function renderNav(active) {
-    const links = [["home", "Inicio", "index.html"], ["movies", "Películas", "index.html#peliculas"], ["series", "Series", "index.html#series"], ["games", "Juegos", "juegos.html"], ["list", "Mi lista", "index.html#mi-lista"], ["new", "Novedades", "index.html#novedades"]];
+    const links = [["home", "Inicio", "index.html"], ["movies", "Películas", "index.html?ver=peliculas"], ["series", "Series", "index.html?ver=series"], ["games", "Juegos", "juegos.html"], ["list", "Mi lista", "index.html#mi-lista"], ["new", "Novedades", "index.html#novedades"]];
     const pr = profile(), notes = notifications();
     const sig = notes.map((n) => n.t).join("|");
     const unread = S.notifSeen === sig ? 0 : notes.length;
@@ -632,21 +632,26 @@
 
   /* ---------- HOME ---------- */
   function pageHome() {
-    renderNav("home");
-    const nx = nextEp(), feat = (nx || EPS[0]).season, pr = profile();
-    const playTarget = nx ? epUrl(nx) : epUrl(EPS[0]);
+    // ?ver=peliculas o ?ver=series: la página muestra solo ese tipo de título
+    const ver = param("ver");
+    const only = ver === "peliculas" ? isMovie : ver === "series" ? (x) => !isMovie(x) : null;
+    renderNav(ver === "peliculas" ? "movies" : ver === "series" ? "series" : "home");
+    const pool = only ? EPS.filter((e) => only(e.season)) : EPS;
+    const nx = pool.find((e) => !isDone(e.id)) || null, feat = (nx || pool[0]).season, pr = profile();
+    const playTarget = only ? epUrl(feat.episodios.find((e) => !isDone(e.id)) || feat.episodios[0]) : nx ? epUrl(nx) : epUrl(EPS[0]);
     const resume = nx && S.watch[nx.id] > 0;
-    const heroImg = F.hero || feat.imagen;
+    const heroImg = only ? feat.imagen : F.hero || feat.imagen;
+    if (only) document.title = `${ver === "peliculas" ? "Películas" : "Series"} | Temporadas de Nosotros`;
 
     const app = $("#app");
     app.innerHTML = `
       <section class="hero home-hero" aria-label="Destacado">
         <div class="hero-bg">${heroImg ? media(heroImg, "", "hero") : media("", "Nosotros", "hero")}</div>
         <div class="hero-content">
-          <div class="hero-kicker"><span class="logo-mono">T</span>Original</div>
-          <h1 class="hero-title">Temporadas de Nosotros</h1>
+          <div class="hero-kicker"><span class="logo-mono">T</span>${only ? kindName(feat) : "Original"}</div>
+          <h1 class="hero-title">${esc(only ? feat.titulo : "Temporadas de Nosotros")}</h1>
           <div class="hero-tags"><span class="tag-red">${esc(C.sitio.heroTag)}</span><span class="top10-mini">TOP<b>10</b></span><span>${esc(C.sitio.heroTop)}</span></div>
-          <p class="hero-synopsis">${esc(C.sitio.sinopsis)}</p>
+          <p class="hero-synopsis">${esc(only ? feat.sinopsis : C.sitio.sinopsis)}</p>
           <div class="hero-btns">
             <button class="btn btn-play" id="hPlay">${I.play} ${resume ? "Reanudar" : "Reproducir"}</button>
             <button class="btn btn-gray" id="hList">${S.list.includes("serie") ? I.check : I.plus} Mi lista</button>
@@ -661,12 +666,22 @@
       ${footer()}`;
 
     const rowsEl = $("#rows");
-    const continuing = EPS.filter((e) => S.watch[e.id] > 0 && !isDone(e.id));
+    const continuing = pool.filter((e) => S.watch[e.id] > 0 && !isDone(e.id));
     if (!continuing.length && nx) continuing.push(nx);
     const later = SEASONS.filter((s) => s.num >= Math.ceil(SEASONS.length / 2));
     const tops = [...SEASONS].sort((a, b) => (b.top10 ? 1 : 0) - (a.top10 ? 1 : 0)).slice(0, 10);
 
-    rowsEl.innerHTML =
+    const movies = SEASONS.filter(isMovie), series = SEASONS.filter((x) => !isMovie(x));
+    const cont = continuing.length ? row("continuar", `Continuar viendo como ${esc(pr.name)}`, continuing.map((e) => epCard(e, { progress: true })).join("")) : "";
+    if (ver === "peliculas") rowsEl.innerHTML = cont +
+      row("peliculas", "Películas de nosotros", movies.map(seasonCard).join("")) +
+      row("top10", "Top 10 películas en tu corazón", movies.filter((x) => x.top10).concat(movies.filter((x) => !x.top10)).slice(0, 10).map((x, i) => topCard(x, i + 1)).join("")) +
+      row("porque", "Para volver a ver", [...movies].reverse().map(seasonCard).join(""));
+    else if (ver === "series") rowsEl.innerHTML = cont +
+      row("series", "Series de nosotros", series.map(seasonCard).join("") + finalCard()) +
+      row("novedades", "Episodios de nuestras series", EPS.filter((e) => !isMovie(e.season)).map((e) => epCard(e)).join("")) +
+      row("top10", "Top series en tu corazón", series.map((x, i) => topCard(x, i + 1)).join(""));
+    else rowsEl.innerHTML =
       (continuing.length ? row("continuar", `Continuar viendo como ${esc(pr.name)}`, continuing.map((e) => epCard(e, { progress: true })).join("")) : "") +
       `<a class="games-promo" href="juegos.html"><span class="games-promo-mark">🎮</span><span><b>Juegos de nuestra historia</b><small>Trivias, recuerdos y sorpresas · Juega cuando quieras</small></span><span class="games-promo-arrow">${I.right}</span></a>` +
       row("peliculas", "Películas de nosotros", SEASONS.filter(isMovie).map(seasonCard).join("")) +
@@ -679,6 +694,7 @@
 
     refreshList = () => {
       const slot = $("#mi-lista-slot");
+      if (!slot) return;
       const cards = S.list.map((k) => {
         if (k === "serie") return "";
         if (k === "final") return finalCard();
@@ -698,7 +714,7 @@
 
     $("#hPlay").onclick = (e) => expandTo($(".hero"), playTarget);
     $("#hInfo").onclick = () => expandTo($(".hero"), `temporada.html?t=${feat.num}`);
-    $("#hList").onclick = (e) => { const on = toggleList("serie", "Temporadas de Nosotros"); e.currentTarget.innerHTML = `${on ? I.check : I.plus} Mi lista`; };
+    $("#hList").onclick = (e) => { const on = only ? toggleList("s:" + feat.num, feat.titulo) : toggleList("serie", "Temporadas de Nosotros"); e.currentTarget.innerHTML = `${on ? I.check : I.plus} Mi lista`; };
     $("#hMute").onclick = (e) => { Sound.muted = !Sound.muted; e.currentTarget.innerHTML = Sound.muted ? I.mute : I.vol; toast(Sound.muted ? "Sonido desactivado" : "Sonido activado"); };
 
     const q = param("q");
@@ -940,7 +956,7 @@
     player.addEventListener("mousemove", poke);
     // Tocar la imagen: con mouse pausa/reanuda; en táctil, primero muestra controles
     player.addEventListener("pointerup", (e) => {
-      if (e.target.closest(".p-top, .p-bottom, .skip-intro, .endscreen")) return;
+      if (ended || e.target.closest(".p-top, .p-bottom, .skip-intro, .endscreen, .title-credits")) return;
       if (e.pointerType === "mouse") return toggle();
       if (!player.classList.contains("controls-on")) poke(); else toggle();
     });
@@ -993,9 +1009,13 @@
       if (ended) return;
       ended = true; playing = false; playBtn.innerHTML = I.play;
       S.done[ep.id] = true; delete S.watch[ep.id]; save();
-      if (music) { const fade = setInterval(() => { music.volume = Math.max(0, music.volume - 0.05); if (music.volume <= 0.01) { music.pause(); clearInterval(fade); } }, 80); }
       const seasonEnd = ep.e === ep.season.episodios.length;
-      if (seasonEnd) rollCredits(endScreen); else endScreen();
+      if (seasonEnd) { music?.play().catch(() => {}); rollCredits(() => { fadeMusic(); endScreen(); }); }
+      else { fadeMusic(); endScreen(); }
+    }
+    function fadeMusic() {
+      if (!music) return;
+      const fade = setInterval(() => { music.volume = Math.max(0, music.volume - 0.05); if (music.volume <= 0.01) { music.pause(); clearInterval(fade); } }, 80);
     }
 
     // Créditos de cada película o serie
@@ -1006,7 +1026,8 @@
           <div class="logo" data-logo="TEMPORADAS DE NOSOTROS"></div>
           <div class="credit solo" style="margin:0 auto 2.4rem;font-style:normal;color:#fff;font-size:1.5rem">${esc(s.titulo)}</div>
           ${list.map(([r, w]) => r ? `<div class="credit"><div class="role">${esc(r)}</div><div class="who">${esc(w)}</div></div>` : `<div class="credit solo">${esc(w)}</div>`).join("")}
-        </div></div><div class="credits-ui"><button class="btn btn-gray" type="button">Saltar créditos</button></div></div>`);
+        </div></div><button class="credits-back end-back" type="button" aria-label="Volver al inicio">${I.back}</button>
+        <div class="credits-ui"><button class="btn btn-gray" type="button">Saltar créditos</button></div></div>`);
       player.append(el); renderLogos(el);
       requestAnimationFrame(() => el.classList.add("show"));
       const roll = $(".credits-roll", el), H = roll.offsetHeight + innerHeight * 0.75;
@@ -1019,13 +1040,14 @@
         if (y < H) requestAnimationFrame(step); else close();
       };
       requestAnimationFrame(step);
-      $("button", el).onclick = (e) => { e.stopPropagation(); close(); };
+      $(".credits-ui button", el).onclick = (e) => { e.stopPropagation(); close(); };
+      $(".end-back", el).onclick = (e) => { e.stopPropagation(); closed = true; music?.pause(); go("index.html"); };
     }
 
     function endScreen() {
       const seasonEnd = ep.e === ep.season.episodios.length;
       const target = nxt ? epUrl(nxt) : "final.html";
-      const es = h(`<div class="endscreen"><div class="end-grid">
+      const es = h(`<div class="endscreen"><button class="credits-back end-back" type="button" aria-label="Volver al inicio">${I.back}</button><div class="end-grid">
         <div class="end-left">
           <div class="inter-kicker" style="margin:0">${isMovie(ep.season) ? "Película terminada" : "Episodio completado"}</div>
           <h2>${esc(epFull(ep))}</h2>
@@ -1035,7 +1057,7 @@
             <button class="btn btn-gray" id="again">${I.replay} Volver a ver</button>
             ${ep.interaccion ? `<a class="btn btn-gray" href="juegos.html?j=${ep.id}">🎮 Jugar reto</a>` : ""}
             <a class="btn btn-gray" href="temporada.html?t=${ep.t}">Ver ficha</a>
-            <a class="btn btn-gray" href="index.html">Inicio</a>
+            <a class="btn btn-gray" href="index.html">Explorar más títulos</a>
           </div></div>
         <div class="next-card">
           <div class="thumb ${nxt && epImg(nxt) ? "" : "has-ph"}">${nxt ? media(epImg(nxt), nxt.titulo, nxt.id) : media(C.final.imagen, "Final", "final")}
@@ -1046,10 +1068,14 @@
             <button class="btn btn-play btn-count" id="nextBtn"><span class="fill"></span><span>${I.play}</span><span id="nextTxt">${nxt ? "Ver siguiente" : "Ver el final"} en 10</span></button>
           </div></div></div></div>`);
       player.append(es);
-      requestAnimationFrame(() => { es.classList.add("show"); $("#nextBtn").classList.add("run"); });
+      // Solo pasa solo al siguiente episodio dentro de una serie; al terminar un título no se reproduce nada más
+      const autoNext = !seasonEnd && nxt;
+      requestAnimationFrame(() => { es.classList.add("show"); if (autoNext) $("#nextBtn").classList.add("run"); });
       let n = 10;
       const label = nxt ? "Ver siguiente" : "Ver el final";
-      const iv = setInterval(() => { n--; $("#nextTxt").textContent = n > 0 ? `${label} en ${n}` : label; if (n <= 0) { clearInterval(iv); go(target); } }, 1000);
+      if (!autoNext) $("#nextTxt").textContent = label;
+      const iv = autoNext ? setInterval(() => { n--; $("#nextTxt").textContent = n > 0 ? `${label} en ${n}` : label; if (n <= 0) { clearInterval(iv); go(target); } }, 1000) : 0;
+      $(".end-back", es).onclick = () => { clearInterval(iv); go("index.html"); };
       $("#nextBtn").onclick = () => { clearInterval(iv); go(target); };
       $("#again").onclick = () => { clearInterval(iv); es.remove(); ended = false; t = 0; cur = -1; curBeat = -1; render(true); play(); };
     }
@@ -1189,6 +1215,9 @@
             <div class="actions" style="justify-content:center"><a class="btn btn-gray" href="index.html">Volver al inicio</a></div>
           </div></div></div>`;
     renderLogos();
+    // Nuestra canción acompaña los créditos
+    const songSrc = C.media.temporadas?.[3];
+    if (songSrc && !Sound.muted) { const song = new Audio(songSrc); song.loop = true; song.volume = 0.7; song.play().catch(() => {}); }
     const roll = $("#roll"), H = roll.offsetHeight + innerHeight;
     let y = 0, speed = 48, last = 0, done = false;
     const step = (ts) => {

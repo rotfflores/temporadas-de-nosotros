@@ -936,3 +936,4 @@ body.searching .hero, body.searching main.rows { display: none; }
 .movie-about { color: var(--netflix-gray); font-size: .95rem; line-height: 1.5; max-width: 900px; }
 .movie-about p { margin: .35rem 0; color: #fff; }
 .movie-about p > span:first-child { color: var(--netflix-gray); }
+.endscreen .end-back, .title-credits .end-back { position: absolute; z-index: 6; top: 1rem; left: var(--gutter); background: none; border: 0; color: #fff; cursor: pointer; }
