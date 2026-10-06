@@ -678,7 +678,7 @@
       row("top10", "Top 10 películas en tu corazón", movies.filter((x) => x.top10).concat(movies.filter((x) => !x.top10)).slice(0, 10).map((x, i) => topCard(x, i + 1)).join("")) +
       row("porque", "Para volver a ver", [...movies].reverse().map(seasonCard).join(""));
     else if (ver === "series") rowsEl.innerHTML = cont +
-      row("series", "Series de nosotros", series.map(seasonCard).join("") + finalCard()) +
+      row("series", "Series de nosotros", series.map(seasonCard).join("")) +
       row("novedades", "Episodios de nuestras series", EPS.filter((e) => !isMovie(e.season)).map((e) => epCard(e)).join("")) +
       row("top10", "Top series en tu corazón", series.map((x, i) => topCard(x, i + 1)).join(""));
     else rowsEl.innerHTML =
@@ -729,8 +729,10 @@
     res.classList.toggle("show", !!n);
     if (!n) return;
     const hit = (...txt) => txt.some((t) => norm(t).includes(n));
-    const eps = EPS.filter((e) => !isMovie(e.season) && hit(e.titulo, e.descripcion, e.season.titulo));
-    const ss_ = SEASONS.filter((s) => hit(s.titulo, s.sinopsis));
+    const ver = param("ver");
+    const matchesView = (s) => ver === "peliculas" ? isMovie(s) : ver === "series" ? !isMovie(s) : true;
+    const eps = EPS.filter((e) => matchesView(e.season) && !isMovie(e.season) && hit(e.titulo, e.descripcion, e.season.titulo));
+    const ss_ = SEASONS.filter((s) => matchesView(s) && hit(s.titulo, s.sinopsis));
     const cards = ss_.map(seasonCard).join("") + eps.map((e) => epCard(e, { caption: true })).join("");
     res.innerHTML = cards
       ? `<p style="color:var(--netflix-gray)">Resultados para «${esc(q)}»</p><div class="search-grid">${cards}</div>`
