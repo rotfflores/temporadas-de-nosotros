@@ -1400,9 +1400,10 @@
       const check = () => {
         const s = sel.map((x) => x.textContent).join(""), rev = [...s].reverse().join("");
         const w = placed.find((p) => (p === s || p === rev) && !$(`[data-w="${p}"]`, body).classList.contains("found"));
+        const selectedCells = sel.slice();
         hl([]);
         if (w) {
-          sel.forEach((x) => x.classList.add("found"));
+          selectedCells.forEach((x) => x.classList.add("found"));
           $(`[data-w="${w}"]`, body).classList.add("found");
           const left = placed.filter((p) => !$(`[data-w="${p}"]`, body).classList.contains("found")).length;
           if (!left) { api.ok("¡Todas encontradas!"); setTimeout(done, 1000); } else api.ok(`¡${w}! Te faltan ${left}.`);
@@ -1501,16 +1502,69 @@
   function pageGames() {
     renderNav("games");
     const games = EPS.filter((ep) => ep.interaccion && GAMES[ep.interaccion.tipo]);
+    const arcadeId = param("arcade");
+    const arcades = [
+      { id: "flappy", name: "Vuelo de corazones", type: "Acción", desc: "Vuela entre obstáculos y supera tu mejor marca.", img: F.t1 },
+      { id: "sopa", name: "Sopa de nuestra historia", type: "Palabras", desc: "Encuentra lugares y recuerdos escondidos.", img: F.t2 },
+      { id: "racha", name: "Racha de recuerdos", type: "Récord infinito", desc: "Atrapa fotos, esquiva tormentas y suma puntos sin límite.", img: F.t5 },
+      { id: "memory", name: "Memorama de fotos", type: "Memoria", desc: "Encuentra las parejas con fotos del proyecto.", img: F.t3 },
+      { id: "puzzle", name: "Rompecabezas de recuerdos", type: "Puzzle", desc: "Elige una imagen y arma sus nueve piezas.", img: F.puzzle }
+    ];
+    const arcade = arcades.find((x) => x.id === arcadeId);
     const selected = games.find((ep) => ep.id === param("j"));
     const done = games.filter((ep) => S.inter[ep.id]).length;
-    document.title = `${selected ? selected.titulo + " | " : ""}Juegos | Temporadas de Nosotros`;
+    document.title = `${arcade ? arcade.name + " | " : selected ? selected.titulo + " | " : ""}Juegos | Temporadas de Nosotros`;
     const names = { quiz: "Trivia", memory: "Memoria", puzzle: "Rompecabezas", sopa: "Sopa de letras", rascar: "Rasca y descubre", codigo: "Código secreto", ordenar: "Ordena la historia", adivinanza: "Adivinanza", completar: "Completa la frase" };
+
+    if (arcade) {
+      const photoChoices = [F.puzzle, F.t1, F.t3, F.t5, F.t7].filter(Boolean);
+      const photoPairs = [F.t0, F.t1, F.t2, F.t3, F.t4, F.t5].filter(Boolean);
+      const isAction = arcade.id === "flappy" || arcade.id === "racha";
+      $("#app").innerHTML = `<main class="games-page game-detail">
+        <a class="games-back" href="juegos.html">${I.left} Todos los juegos</a>
+        <div class="game-context"><span class="inter-kicker">Juegos de nosotros · ${esc(arcade.type)}</span><h1>${esc(arcade.name)}</h1><p>${esc(arcade.desc)}</p></div>
+        <section class="game-panel ${isAction ? "arcade-panel" : ""}" aria-label="${esc(arcade.name)}">
+          ${arcade.id === "puzzle" ? `<div class="photo-picker" aria-label="Elige una foto">${photoChoices.map((src, i) => `<button type="button" data-photo="${i}" class="${i === 0 ? "selected" : ""}" aria-label="Foto ${i + 1}" aria-pressed="${i === 0}"><img src="${esc(src)}" alt="Foto ${i + 1}"></button>`).join("")}</div>` : ""}
+          <div class="inter-body"></div><div class="feedback" role="status" aria-live="polite"></div>
+        </section></main>${footer()}`;
+      const panel = $(".game-panel"), body = $(".inter-body", panel), fb = $(".feedback", panel);
+      const api = {
+        ok: (m) => { fb.className = "feedback ok"; fb.textContent = m; },
+        bad: (m) => { fb.className = "feedback bad"; fb.textContent = m; },
+        info: (m) => { fb.className = "feedback"; fb.textContent = m; }
+      };
+      const complete = () => {
+        S.inter[`arcade:${arcade.id}`] = true; save(); Sound.chime();
+        panel.innerHTML = `<div class="inter-done"><div class="check">${I.check}</div><h2 class="inter-title">¡Juego completado!</h2>
+          <div class="game-actions"><a class="btn btn-play" href="juegos.html?arcade=${arcade.id}">Volver a jugar</a><a class="btn btn-gray" href="juegos.html">Todos los juegos</a></div></div>`;
+      };
+      if (isAction) {
+        window.TDNArcade?.mount(arcade.id, body, [F.t0, F.t1, F.t2, F.t3, F.t4, F.t5, F.t6, F.t7].filter(Boolean));
+      } else if (arcade.id === "memory") {
+        GAMES.memory(body, { pares: photoPairs }, api, complete);
+      } else if (arcade.id === "sopa") {
+        GAMES.sopa(body, { palabras: [P.nombreA, P.nombreB, P.ciudad, ...P.viajes, "RECUERDOS", "AMOR"] }, api, complete);
+      } else {
+        const playPhoto = (i) => {
+          $$(".photo-picker button", panel).forEach((button, k) => { button.classList.toggle("selected", k === i); button.setAttribute("aria-pressed", k === i); });
+          fb.textContent = "";
+          GAMES.puzzle(body, { imagen: photoChoices[i] }, api, complete);
+        };
+        $$(".photo-picker button", panel).forEach((button) => button.addEventListener("click", () => playPhoto(+button.dataset.photo)));
+        playPhoto(0);
+      }
+      return;
+    }
 
     if (!selected) {
       $("#app").innerHTML = `<main class="games-page">
         <header class="games-header"><span class="inter-kicker">Una serie para jugar</span><h1>Juegos de nosotros</h1>
-          <p>Las trivias y retos de cada película y serie están aquí. Puedes jugarlos cuando quieras, sin interrumpir la serie.</p>
-          <span class="games-progress">${done} de ${games.length} completados</span></header>
+          <p>Juega cuando quieras, sin interrumpir las películas ni las series.</p></header>
+        <h2 class="games-section-title">Para jugar ahora</h2>
+        <div class="games-grid arcade-grid">${arcades.map((item) => `<a class="game-card" href="juegos.html?arcade=${item.id}">
+          <span class="game-card-art">${media(item.img, item.name, item.id)}<span class="game-card-badge">${esc(item.type)}</span></span>
+          <span class="game-card-copy"><small>${esc(item.desc)}</small><strong>${esc(item.name)}</strong><span>Jugar ahora ${I.right}</span></span></a>`).join("")}</div>
+        <h2 class="games-section-title">Retos de la historia <small>${done} de ${games.length} completados</small></h2>
         <div class="games-grid">${games.map((ep) => {
           const raw = epImg(ep), img = isVideo(raw) ? ep.season.imagen : raw;
           const played = !!S.inter[ep.id];

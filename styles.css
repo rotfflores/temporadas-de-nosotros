@@ -740,6 +740,25 @@ body.player-page { background: #000; overflow: hidden; height: 100vh; height: 10
 .game-panel { width: min(760px, 100%); min-height: 300px; padding: clamp(1.25rem, 4vw, 2.5rem); background: #1e1e1e; border: 1px solid #363636; border-radius: 8px; text-align: center; }
 .game-type { color: var(--netflix-red); text-transform: uppercase; letter-spacing: .15em; font-weight: 700; font-size: .72rem; display: block; margin-bottom: .8rem; }
 .game-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: .6rem; }
+.games-section-title { font-size: clamp(1.35rem, 2.5vw, 1.8rem); margin: 2.4rem 0 1rem; }
+.games-section-title small { color: var(--netflix-gray); font-size: .85rem; font-weight: 400; margin-left: .5rem; }
+.arcade-grid { margin-bottom: 2.5rem; }
+.arcade-grid .game-card-copy small { min-height: 2.2em; }
+.game-context p { color: var(--netflix-light); margin: .5rem 0 0; }
+.arcade-panel { width: min(880px, 100%); padding: clamp(.75rem, 2vw, 1.5rem); }
+.arcade-hud { display: flex; justify-content: space-between; gap: .5rem; flex-wrap: wrap; margin: 0 0 .8rem; color: var(--netflix-light); font-size: .9rem; }
+.arcade-hud strong { color: #fff; font-size: 1.15rem; margin-left: .25rem; }
+.arcade-stage { position: relative; border-radius: 5px; overflow: hidden; background: #111023; }
+.arcade-stage canvas { display: block; width: 100%; height: auto; aspect-ratio: 9/5; touch-action: none; }
+.arcade-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 1rem; background: rgba(0,0,0,.68); }
+.arcade-overlay[hidden] { display: none; }
+.arcade-overlay strong { font-family: var(--font-display); font-size: clamp(2rem, 6vw, 4rem); line-height: 1; }
+.arcade-overlay p { max-width: 380px; color: #eee; margin: .7rem 0 1rem; }
+.arcade-tip { color: var(--netflix-gray); font-size: .82rem; margin: .8rem 0 0; }
+.photo-picker { display: flex; justify-content: center; flex-wrap: wrap; gap: .5rem; margin-bottom: 1.2rem; }
+.photo-picker button { width: 66px; height: 66px; padding: 0; border: 2px solid transparent; border-radius: 4px; overflow: hidden; background: #333; cursor: pointer; }
+.photo-picker button.selected, .photo-picker button:focus-visible { border-color: var(--netflix-red); outline: none; }
+.photo-picker img { width: 100%; height: 100%; object-fit: cover; }
 @media (max-width: 599px) {
   .games-page { padding-top: calc(var(--nav-h) + 2rem); }
   .games-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; }
