@@ -1367,7 +1367,7 @@
 
     /* --- Sopa de letras (5–8 palabras) --- */
     sopa(body, d, api, done) {
-      const N = 10;
+      const N = 12;
       const words = d.palabras.map((w) => norm(w).toUpperCase().replace(/[^A-Z]/g, "").slice(0, N)).filter((w) => w.length > 1).slice(0, 8)
         .sort((a, b) => b.length - a.length);
       const grid = Array.from({ length: N }, () => Array(N).fill(""));
@@ -1543,7 +1543,7 @@
       } else if (arcade.id === "memory") {
         GAMES.memory(body, { pares: photoPairs }, api, complete);
       } else if (arcade.id === "sopa") {
-        GAMES.sopa(body, { palabras: [P.nombreA, P.nombreB, P.ciudad, ...P.viajes, "RECUERDOS", "AMOR"] }, api, complete);
+        GAMES.sopa(body, { palabras: [P.nombreA, P.nombreB, P.ciudad, ...P.viajes.map((v) => v.split(" ").at(-1)), "RECUERDOS", "AMOR"] }, api, complete);
       } else {
         const playPhoto = (i) => {
           $$(".photo-picker button", panel).forEach((button, k) => { button.classList.toggle("selected", k === i); button.setAttribute("aria-pressed", k === i); });
