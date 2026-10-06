@@ -1,0 +1,6 @@
+.claude/
+node_modules/
+Thumbs.db
+.DS_Store
+*.log
+assets/video/14503540_3840_2160_30fps.mp4
