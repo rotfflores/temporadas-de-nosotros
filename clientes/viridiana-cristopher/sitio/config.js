@@ -25,7 +25,7 @@ window.TDN = (() => {
   };
   const M = {
     intro: 'assets/audio/intro.mp3', temporadas: songs, canciones: songNames,
-    musica: songs[6], cancionPrincipal: songs[6], videoPrincipal: video(10).ruta,
+    musica: songs[6], cancionPrincipal: songs[6], inicioCancionPrincipal: 71, videoPrincipal: video(10).ruta,
     posterPrincipal: video(10).poster, videoFinal: video(11).ruta,
     audioRemitente: ''
   };
@@ -79,9 +79,11 @@ window.TDN = (() => {
        {img:F.anillo,texto:['']}],{duracion:226})
   ];
   const filmSongs = [6,2,5,3];
+  const filmMusicStarts = [71,45,96,100];
   temporadas.forEach((season,index) => {
     season.musica = songs[filmSongs[index]];
     season.cancion = songNames[filmSongs[index]];
+    season.episodios[0].inicioMusica = filmMusicStarts[index];
     season.top10 = false;
   });
   const extras = [

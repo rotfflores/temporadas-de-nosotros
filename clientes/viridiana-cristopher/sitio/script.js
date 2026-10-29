@@ -702,7 +702,10 @@
     $("#hInfo").onclick = () => expandTo($(".hero"), `temporada.html?t=${feat.num}`);
     $("#hList").onclick = (e) => { const on = only ? toggleList("s:" + feat.num, feat.titulo) : toggleList("serie", "Temporadas de Nosotros"); e.currentTarget.innerHTML = `${on ? I.check : I.plus} Mi lista`; };
     const theme = new Audio(C.media.cancionPrincipal);
-    theme.loop=true;theme.volume=.6;
+    const themeStart = C.media.inicioCancionPrincipal || 0;
+    theme.volume=.6;
+    theme.addEventListener('loadedmetadata',()=>{theme.currentTime=themeStart},{once:true});
+    theme.addEventListener('ended',()=>{theme.currentTime=themeStart;theme.play().catch(()=>{})});
     const themeButton=$("#hMute");
     themeButton.setAttribute('aria-label','Escuchar nuestra canción principal');
     themeButton.innerHTML=I.vol;
@@ -859,7 +862,21 @@
     let vol = ls.get("vc_20261111_vol", 0.8);
     const musicSrc = ep.musica || ep.season.musica || C.media.musica;
     const music = musicSrc ? new Audio(musicSrc) : null;
-    if (music) { music.loop = true; music.preload = "auto"; }
+    const musicStart = Math.max(0, ep.inicioMusica || 0);
+    let audioBlocked = false, audioPending = false;
+    if (music) {
+      music.preload = "auto";
+      const cue = () => { music.currentTime = Math.min(musicStart, Math.max(0, music.duration - 0.1)); };
+      music.addEventListener("loadedmetadata", cue, { once: true });
+      music.addEventListener("ended", () => { cue(); if (playing) tryMusic(); });
+      try { music.currentTime = musicStart; } catch { /* Se ajusta al cargar los metadatos. */ }
+    }
+    function tryMusic() {
+      if (!music || audioBlocked || audioPending || !music.paused) return;
+      audioPending = true;
+      music.play().then(() => { audioPending = false; audioBlocked = false; })
+        .catch(() => { audioPending = false; audioBlocked = true; player.classList.add("controls-on"); toast("Toca ▶ para activar el sonido en este navegador."); });
+    }
     const applyVol = () => {
       const v = Sound.muted ? 0 : vol;
       if (music) music.volume = v;
@@ -876,6 +893,9 @@
 
     function play() {
       if (ended) return;
+      Sound.muted = false;
+      if (vol === 0) { vol = 0.8; ls.set("vc_20261111_vol", vol); }
+      applyVol();
       playing = true; playBtn.innerHTML = I.pause;
       Sound.introAudio?.pause();
       render(true);
@@ -889,7 +909,10 @@
       player.classList.add("controls-on");
       saveWatch(true);
     }
-    const toggle = () => (playing ? pause() : play());
+    const toggle = () => {
+      if (playing && audioBlocked) { audioBlocked = false; render(true); poke(); return; }
+      playing ? pause() : play();
+    };
     function flash(icon) { const b = $("#bigPlay"); $("span", b).innerHTML = icon; b.classList.remove("flash"); b.offsetWidth; b.classList.add("flash"); }
 
     function seek(to) {
@@ -947,9 +970,7 @@
         if (sceneVideo) {
           music?.pause();
           if (sceneVideo.paused) sceneVideo.play().catch(() => toast("Toca Reproducir para escuchar el video."));
-        } else if (music?.paused) {
-          music.play().catch(() => toast("Toca Reproducir para escuchar la canción."));
-        }
+        } else tryMusic();
       }
       if (playing) saveWatch();
     }
@@ -969,12 +990,12 @@
     function poke() {
       player.classList.add("controls-on"); player.classList.remove("idle");
       clearTimeout(idle);
-      idle = setTimeout(() => { if (playing) { player.classList.remove("controls-on"); player.classList.add("idle"); } }, 3000);
+      idle = setTimeout(() => { if (playing && !audioBlocked) { player.classList.remove("controls-on"); player.classList.add("idle"); } }, 3000);
     }
     player.addEventListener("mousemove", poke);
     // Tocar la imagen: con mouse pausa/reanuda; en táctil, primero muestra controles
     player.addEventListener("pointerup", (e) => {
-      if (ended || e.target.closest(".p-top, .p-bottom, .skip-intro, .endscreen, .title-credits, .sound-start")) return;
+      if (ended || e.target.closest(".p-top, .p-bottom, .skip-intro, .endscreen, .title-credits")) return;
       if (e.pointerType === "mouse") return toggle();
       if (!player.classList.contains("controls-on")) poke(); else toggle();
     });
@@ -1106,13 +1127,7 @@
 
     render(true);
     requestAnimationFrame(frame);
-    const startControl = h('<button type="button" class="sound-start" aria-label="Reproducir película con sonido"><span class="sound-start-symbol">▶</span><strong>Reproducir con sonido</strong><small>La canción comienza al tocar aquí</small></button>');
-    player.append(startControl);
-    startControl.onclick = (event) => {
-      event.stopPropagation();
-      Sound.muted = false; if (vol === 0) { vol = 0.8; ls.set("vc_20261111_vol", vol); } applyVol();
-      play(); startControl.remove();
-    };
+    setTimeout(play, 250);
   }
 
   /* ---------- TEMPORADA FINAL ---------- */
@@ -1164,7 +1179,13 @@
     renderLogos();
     // Nuestra canción acompaña los créditos
     const songSrc = C.media.cancionPrincipal;
-    if (songSrc && !Sound.muted) { const song = new Audio(songSrc); song.loop = true; song.volume = 0.7; song.play().catch(() => {}); }
+    if (songSrc && !Sound.muted) {
+      const song = new Audio(songSrc), start = C.media.inicioCancionPrincipal || 0;
+      song.volume = 0.7;
+      song.addEventListener("loadedmetadata", () => { song.currentTime = start; }, { once: true });
+      song.addEventListener("ended", () => { song.currentTime = start; song.play().catch(() => {}); });
+      song.play().catch(() => {});
+    }
     const roll = $("#roll"), H = roll.offsetHeight + innerHeight;
     let y = 0, speed = 48, last = 0, done = false;
     const step = (ts) => {
