@@ -297,12 +297,12 @@
     SEASONS.filter((s) => !s.episodios.some((e) => isDone(e.id)) && s !== n?.season).slice(0, 4)
       .forEach((s) => items.push({ t: `${kindName(s)} disponible: ${s.titulo}`, s: String(s.anio), img: s.imagen, seed: "s" + s.num, url: `temporada.html?t=${s.num}` }));
     items.push({ t: `Ya disponible: ${C.final.titulo}`, s: "Solo para ti", img: C.final.imagen, seed: "final", url: "final.html" });
-    items.push({ t: "Estreno: Temporadas de Nosotros", s: `12 películas y 3 series originales para ${P.nombreB}`, img: F.hero, seed: "hero", url: "index.html" });
+    items.push({ t: "Estreno: Temporadas de Nosotros", s: `4 películas originales para ${P.nombreB}`, img: F.hero, seed: "hero", url: "index.html" });
     return items;
   }
 
   function renderNav(active) {
-    const links = [["home", "Inicio", "index.html"], ["movies", "Películas", "index.html?ver=peliculas"], ["series", "Series", "index.html?ver=series"], ["games", "Juegos", "juegos.html"], ["list", "Mi lista", "index.html#mi-lista"], ["new", "Novedades", "index.html#novedades"]];
+    const links = [["home", "Inicio", "index.html"], ["movies", "Películas", "index.html?ver=peliculas"], ["games", "Juegos", "juegos.html"], ["list", "Mi lista", "index.html#mi-lista"], ["new", "Novedades", "index.html#peliculas"]];
     const pr = profile(), notes = notifications();
     const sig = notes.map((n) => n.t).join("|");
     const unread = S.notifSeen === sig ? 0 : notes.length;
@@ -562,7 +562,7 @@
     root.innerHTML = `<div class="splash" id="splash">${muteBtn()}
       <div class="splash-start" id="start">
         <div class="logo" data-logo="TEMPORADAS DE NOSOTROS"></div>
-        <p>Películas y series originales para <b style="color:#fff">${esc(P.nombreB)}</b></p>
+        <p>Cuatro películas originales para <b style="color:#fff">${esc(P.nombreB)}</b></p>
         <button class="btn btn-red" id="go">${I.play} Comenzar</button>
         <p style="font-size:.8rem">Mejor con sonido 🔊</p>
       </div>
@@ -633,16 +633,16 @@
 
   /* ---------- HOME ---------- */
   function pageHome() {
-    // ?ver=peliculas o ?ver=series: la página muestra solo ese tipo de título
-    const ver = param("ver");
-    const only = ver === "peliculas" ? isMovie : ver === "series" ? (x) => !isMovie(x) : null;
-    renderNav(ver === "peliculas" ? "movies" : ver === "series" ? "series" : "home");
+    // Los enlaces anteriores a la sección de series muestran el catálogo actual.
+    const ver = param("ver") === "series" ? "peliculas" : param("ver");
+    const only = ver === "peliculas" ? isMovie : null;
+    renderNav(ver === "peliculas" ? "movies" : "home");
     const pool = only ? EPS.filter((e) => only(e.season)) : EPS;
     const nx = pool.find((e) => !isDone(e.id)) || null, feat = (nx || pool[0]).season, pr = profile();
     const playTarget = !only ? epUrl(EPS[0]) : only ? epUrl(feat.episodios.find((e) => !isDone(e.id)) || feat.episodios[0]) : nx ? epUrl(nx) : epUrl(EPS[0]);
     const resume = only && nx && S.watch[nx.id] > 0;
     const heroImg = only ? feat.imagen : C.media.videoPrincipal || F.hero || feat.imagen;
-    if (only) document.title = `${ver === "peliculas" ? "Películas" : "Series"} | Temporadas de Nosotros`;
+    if (only) document.title = `Películas | Temporadas de Nosotros`;
 
     const app = $("#app");
     app.innerHTML = `
@@ -651,7 +651,7 @@
         <div class="hero-content">
           <div class="hero-kicker"><span class="logo-mono">T</span>${only ? kindName(feat) : "Original"}</div>
           <h1 class="hero-title">${esc(only ? feat.titulo : C.sitio.titulo)}</h1>
-          <div class="hero-tags"><span class="tag-red">${esc(C.sitio.heroTag)}</span><span class="top10-mini">TOP<b>10</b></span><span>${esc(C.sitio.heroTop)}</span></div>
+          <div class="hero-tags"><span class="tag-red">${esc(C.sitio.heroTag)}</span><span>4 películas</span><span>${esc(C.sitio.heroTop)}</span></div>
           <p class="hero-synopsis">${esc(only ? feat.sinopsis : C.sitio.sinopsis)}</p>
           <div class="hero-btns">
             <button class="btn btn-play" id="hPlay">${I.play} ${resume ? "Reanudar" : "Reproducir"}</button>
@@ -673,31 +673,10 @@
       ${footer()}`;
 
     const rowsEl = $("#rows");
-    const continuing = pool.filter((e) => S.watch[e.id] > 0 && !isDone(e.id));
-    if (!continuing.length && nx) continuing.push(nx);
-    const later = SEASONS.filter((s) => s.num >= Math.ceil(SEASONS.length / 2));
-    const tops = [...SEASONS].sort((a, b) => (b.top10 ? 1 : 0) - (a.top10 ? 1 : 0)).slice(0, 10);
-
-    const movies = SEASONS.filter(isMovie), series = SEASONS.filter((x) => !isMovie(x));
-    const cont = continuing.length ? row("continuar", `Continuar viendo como ${esc(pr.name)}`, continuing.map((e) => epCard(e, { progress: true })).join("")) : "";
-    if (ver === "peliculas") rowsEl.innerHTML = cont +
-      row("peliculas", "Películas de nosotros", movies.map(seasonCard).join("")) +
-      row("top10", "Top 10 películas en tu corazón", movies.filter((x) => x.top10).concat(movies.filter((x) => !x.top10)).slice(0, 10).map((x, i) => topCard(x, i + 1)).join("")) +
-      row("porque", "Para volver a ver", [...movies].reverse().map(seasonCard).join(""));
-    else if (ver === "series") rowsEl.innerHTML = cont +
-      row("series", "Series de nosotros", series.map(seasonCard).join("")) +
-      row("novedades", "Episodios de nuestras series", EPS.filter((e) => !isMovie(e.season)).map((e) => epCard(e)).join("")) +
-      row("top10", "Top series en tu corazón", series.map((x, i) => topCard(x, i + 1)).join(""));
-    else rowsEl.innerHTML =
-      (continuing.length ? row("continuar", `Continuar viendo como ${esc(pr.name)}`, continuing.map((e) => epCard(e, { progress: true })).join("")) : "") +
-      `<a class="games-promo" href="juegos.html"><span class="games-promo-mark">🎮</span><span><b>Juegos de nuestra historia</b><small>Trivias, recuerdos y sorpresas · Juega cuando quieras</small></span><span class="games-promo-arrow">${I.right}</span></a>` +
-      row("peliculas", "Películas de nosotros", SEASONS.filter(isMovie).map(seasonCard).join("")) +
-      row("series", "Series de nosotros", SEASONS.filter((x) => !isMovie(x)).map(seasonCard).join("") + finalCard()) +
-      row("top10", "Top 10 en tu corazón hoy", tops.map((s, i) => topCard(s, i + 1)).join("")) +
-      row("novedades", "Episodios de nuestras series", EPS.filter((e) => !isMovie(e.season)).map((e) => epCard(e)).join("")) +
-      row("detras", "Detrás de cámaras", C.extras.map(extraCard).join("")) +
-      row("porque", `Porque viste '${esc(C.sitio.filaRecomendada)}'`, later.map(seasonCard).join("") + finalCard()) +
-      `<div id="mi-lista-slot"></div>`;
+    const movies = SEASONS.filter(isMovie);
+    const cards = row("peliculas", "Cuatro películas de nosotros", movies.map(seasonCard).join(""));
+    rowsEl.innerHTML = ver === "peliculas" ? cards :
+      `<a class="games-promo" href="juegos.html"><span class="games-promo-mark">🎮</span><span><b>Juegos de nuestra historia</b><small>Trivias, recuerdos y sorpresas · Juega cuando quieras</small></span><span class="games-promo-arrow">${I.right}</span></a>` + cards + `<div id="mi-lista-slot"></div>`;
 
     refreshList = () => {
       const slot = $("#mi-lista-slot");
@@ -758,7 +737,7 @@
   function pageSeason() {
     const s = seasonByNum(param("t")) || SEASONS[0];
     document.title = `${s.titulo} | Temporadas de Nosotros`;
-    renderNav("series");
+    renderNav("movies");
     const lock = !seasonUnlocked(s), nx = seasonNext(s);
     const inL = S.list.includes("s:" + s.num);
     const app = $("#app");
@@ -837,7 +816,7 @@
     if (t > D - 3) t = 0;
     const scenes = ep.escenas?.length ? ep.escenas : [{ texto: ep.descripcion }];
     const per = (D - INTRO) / scenes.length;
-    const nxt = ep.t === 11 ? null : EPS[ep.idx + 1];
+    const nxt = ep.t === 3 ? null : EPS[ep.idx + 1];
 
     const sceneHtml = (sc, i) => {
       const textOnly = !("img" in sc) && !sc.video;
@@ -884,7 +863,7 @@
     const applyVol = () => {
       const v = Sound.muted ? 0 : vol;
       if (music) music.volume = v;
-      $$("video", player).forEach((vd) => { vd.volume = v; vd.muted = v === 0; });
+      $$("video", player).forEach((vd) => { vd.volume = v; vd.muted = v === 0 || ep.audioVideo === "musica"; });
       muteBtn.innerHTML = v === 0 ? I.mute : I.vol;
       volR.value = vol;
     };
@@ -964,7 +943,7 @@
         curBeat = beat;
       }
       if (playing) {
-        const sceneVideo = t >= INTRO ? $("video", sceneEls[i]) : null;
+        const sceneVideo = t >= INTRO && ep.audioVideo !== "musica" ? $("video", sceneEls[i]) : null;
         if (sceneVideo) {
           music?.pause();
           if (sceneVideo.paused) sceneVideo.play().catch(() => toast("Toca Reproducir para escuchar el video."));
@@ -1048,7 +1027,7 @@
       if (ended) return;
       ended = true; playing = false; playBtn.innerHTML = I.play;
       S.done[ep.id] = true; delete S.watch[ep.id]; save();
-      if (ep.t === 11 && ep.e === 1) {
+      if (ep.t === 3 && ep.e === 1) {
         music?.pause();
         $(".scene.on video")?.pause();
         window.VC.renderPromiseEnding(player);
@@ -1131,7 +1110,7 @@
     player.append(startControl);
     startControl.onclick = (event) => {
       event.stopPropagation();
-      Sound.muted = false; applyVol();
+      Sound.muted = false; if (vol === 0) { vol = 0.8; ls.set("vc_20261111_vol", vol); } applyVol();
       play(); startControl.remove();
     };
   }
