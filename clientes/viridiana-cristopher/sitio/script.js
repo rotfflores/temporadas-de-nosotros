@@ -884,7 +884,7 @@
     const applyVol = () => {
       const v = Sound.muted ? 0 : vol;
       if (music) music.volume = v;
-      $$("video", player).forEach((vd) => { vd.volume = v; vd.muted = vd.classList.contains("media-img") || v === 0; });
+      $$("video", player).forEach((vd) => { vd.volume = v; vd.muted = v === 0; });
       muteBtn.innerHTML = v === 0 ? I.mute : I.vol;
       volR.value = vol;
     };
@@ -898,9 +898,8 @@
     function play() {
       if (ended) return;
       playing = true; playBtn.innerHTML = I.pause;
-      if (t < INTRO && !introSound) { introSound = true; Sound.tadum(); }
-      if (t >= INTRO) music?.play().catch(() => {});
-      const v = $(".scene.on video"); v?.play().catch(() => {});
+      Sound.introAudio?.pause();
+      render(true);
       flash(I.play); poke();
     }
     function pause(showFlash = true) {
@@ -952,10 +951,10 @@
       const beat = t < INTRO ? -1 : Math.min(lines.length - 1, Math.floor(elapsed / per * lines.length));
       if (i !== cur || beat !== curBeat || force) {
         const sceneChanged = i !== cur;
-        if (sceneChanged) {
+        if (sceneChanged || force) {
           sceneEls.forEach((el, k) => {
             const on = k === i; el.classList.toggle("on", on);
-            const v = $("video", el); if (v) { if (on && playing) v.play().catch(() => {}); else v.pause(); }
+            const v = $("video", el); if (v) { if (on && playing && t >= INTRO) v.play().catch(() => {}); else v.pause(); }
           });
           cur = i;
         }
@@ -964,7 +963,15 @@
         sub.classList.remove("beat-in"); sub.offsetWidth; sub.classList.add("beat-in");
         curBeat = beat;
       }
-      if (playing && t >= INTRO && music?.paused) { Sound.introAudio?.pause(); music.play().catch(() => {}); }
+      if (playing) {
+        const sceneVideo = t >= INTRO ? $("video", sceneEls[i]) : null;
+        if (sceneVideo) {
+          music?.pause();
+          if (sceneVideo.paused) sceneVideo.play().catch(() => toast("Toca Reproducir para escuchar el video."));
+        } else if (music?.paused) {
+          music.play().catch(() => toast("Toca Reproducir para escuchar la canción."));
+        }
+      }
       if (playing) saveWatch();
     }
 
@@ -988,7 +995,7 @@
     player.addEventListener("mousemove", poke);
     // Tocar la imagen: con mouse pausa/reanuda; en táctil, primero muestra controles
     player.addEventListener("pointerup", (e) => {
-      if (ended || e.target.closest(".p-top, .p-bottom, .skip-intro, .endscreen, .title-credits")) return;
+      if (ended || e.target.closest(".p-top, .p-bottom, .skip-intro, .endscreen, .title-credits, .sound-start")) return;
       if (e.pointerType === "mouse") return toggle();
       if (!player.classList.contains("controls-on")) poke(); else toggle();
     });
@@ -1120,7 +1127,13 @@
 
     render(true);
     requestAnimationFrame(frame);
-    setTimeout(play, 350);
+    const startControl = h('<button type="button" class="sound-start" aria-label="Reproducir película con sonido"><span class="sound-start-symbol">▶</span><strong>Reproducir con sonido</strong><small>La canción comienza al tocar aquí</small></button>');
+    player.append(startControl);
+    startControl.onclick = (event) => {
+      event.stopPropagation();
+      Sound.muted = false; applyVol();
+      play(); startControl.remove();
+    };
   }
 
   /* ---------- TEMPORADA FINAL ---------- */

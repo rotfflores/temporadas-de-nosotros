@@ -65,6 +65,9 @@
 .promise-inner h1 { font-family:var(--font-display);font-size:clamp(2.5rem,7vw,5rem);line-height:1.04;margin:20px auto 35px; }
 .promise-letter { white-space:pre-wrap;text-align:left;font-family:Georgia,serif;font-size:clamp(1.05rem,2.4vw,1.25rem);line-height:1.85;background:#f4efe5;color:#302a23;padding:clamp(28px,5vw,50px);border-radius:5px;margin-bottom:32px;box-shadow:0 20px 60px #0007; }
 .promise-ring { padding-top:45px;scroll-margin-top:20px;animation:vc-reveal 1s ease-out both; }
+.sound-start { position:absolute;inset:0;z-index:35;border:0;background:rgba(0,0,0,.72);color:#fff;display:flex;flex-direction:column;gap:13px;align-items:center;justify-content:center;text-align:center;cursor:pointer;padding:25px; }
+.sound-start-symbol { display:grid;place-items:center;width:76px;height:76px;border-radius:50%;background:#e50914;font-size:2rem;padding-left:5px;box-shadow:0 12px 30px #0008; }
+.sound-start strong { font-size:clamp(1.4rem,4vw,2.5rem); }.sound-start small { font-size:.95rem;color:#ddd; }
 .post.vc-ring-post { overflow-y:auto;align-items:flex-start;padding:30px 15px;background:#100f0d; }.vc-ring-post .post-content { width:min(650px,100%);padding:0;margin:auto; }.vc-ring-post .ring-card { margin-bottom:20px; }.vc-ring-post .ring-card h2 { opacity:1; }.vc-ring-post .post-bg { display:none; }
 .vc-credit-ring[hidden] { display:none; }
 @keyframes vc-reveal { from { opacity:0;transform:translateY(22px); } to { opacity:1;transform:none; } }
