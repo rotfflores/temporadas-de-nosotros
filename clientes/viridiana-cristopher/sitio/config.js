@@ -14,7 +14,7 @@ window.TDN = (() => {
   const photo = n => `assets/fotos/foto-${String(n).padStart(2,'0')}.webp`;
   const video = n => window.CLIENT_MEDIA.videos[n-1];
   const songs = window.CLIENT_MEDIA.audios.map(x => x.ruta);
-  const songNames = songs.map((_,i) => `Nuestra banda sonora · ${String(i+1).padStart(2,'0')}`);
+  const songNames = songs.map((_,i) => i === 7 ? 'Nuestra canción principal · Nos vemos en marzo' : `Nuestra banda sonora · ${String(i+1).padStart(2,'0')}`);
   const F = {
     hero: photo(26), perfilB: 'assets/fotos/perfil-cristopher.webp',
     perfilPareja: 'assets/fotos/perfil-pareja.webp',
@@ -25,7 +25,7 @@ window.TDN = (() => {
   };
   const M = {
     intro: 'assets/audio/intro.mp3', temporadas: songs, canciones: songNames,
-    musica: 'assets/audio/tema-video-boda.m4a', cancionPrincipal: 'assets/audio/tema-video-boda.m4a', videoPrincipal: video(10).ruta,
+    musica: songs[7], cancionPrincipal: songs[7], videoPrincipal: video(10).ruta,
     posterPrincipal: video(10).poster, videoFinal: video(11).ruta,
     audioRemitente: ''
   };
@@ -158,10 +158,10 @@ window.TDN = (() => {
     }
   ];
   temporadas[0].musica = M.cancionPrincipal;
-  temporadas[0].cancion = 'La canción de nuestro video de boda';
+  temporadas[0].cancion = songNames[7];
   const extras = [
     {titulo:'Nuestro comienzo',img:photo(8),texto:'Fuimos novios en la secundaria. Años después, tuvimos otra oportunidad de estar juntos.'},
-    {titulo:'Nuestra banda sonora',img:photo(7),texto:'La canción del video de nuestra boda es el tema principal, junto a ocho canciones que acompañan nuestra historia.'},
+    {titulo:'Nuestra banda sonora',img:photo(7),texto:'La canción de «Nos vemos en marzo» es el tema principal, junto a las demás canciones que acompañan nuestra historia.'},
     {titulo:'El regreso',img:photo(3),texto:'Después de quince años en Estados Unidos, volviste para casarnos. Hace dos meses comenzó nuestro presente juntos.'},
     {titulo:'Mi historia completa',img:photo(36),texto:'Mis tres hijas forman parte de mi vida. Gracias por elegir caminar a mi lado con todo lo que soy.'},
     {titulo:'Un mes que nos espera',img:photo(26),texto:'Marzo. Nuestra boda. El próximo gran capítulo de nosotros.'}
