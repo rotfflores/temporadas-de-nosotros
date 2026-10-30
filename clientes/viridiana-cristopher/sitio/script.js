@@ -669,8 +669,9 @@
     const rowsEl = $("#rows");
     const movies = SEASONS.filter(isMovie);
     const cards = row("peliculas", "Cuatro películas de nosotros", movies.map(seasonCard).join(""));
-    rowsEl.innerHTML = ver === "peliculas" ? cards :
-      `<a class="games-promo" href="juegos.html"><span class="games-promo-mark">🎮</span><span><b>Juegos de nuestra historia</b><small>Trivias, recuerdos y sorpresas · Juega cuando quieras</small></span><span class="games-promo-arrow">${I.right}</span></a>` + cards + `<div id="mi-lista-slot"></div>`;
+    const finalAccess = `<a class="games-promo" href="final.html"><span class="games-promo-mark">♥</span><span><b>Mi amor, ahora te toca a ti</b><small>El siguiente capítulo lo escribimos juntos</small></span><span class="games-promo-arrow">${I.right}</span></a>`;
+    rowsEl.innerHTML = ver === "peliculas" ? cards + finalAccess :
+      `<a class="games-promo" href="juegos.html"><span class="games-promo-mark">🎮</span><span><b>Juegos de nuestra historia</b><small>Trivias, recuerdos y sorpresas · Juega cuando quieras</small></span><span class="games-promo-arrow">${I.right}</span></a>` + cards + finalAccess + `<div id="mi-lista-slot"></div>`;
 
     refreshList = () => {
       const slot = $("#mi-lista-slot");

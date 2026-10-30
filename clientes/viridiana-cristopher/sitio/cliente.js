@@ -9,7 +9,7 @@ window.VC = (() => {
     const ending=document.createElement('section');
     ending.className='promise-ending';
     ending.setAttribute('aria-label','El final de nuestra última película');
-    ending.innerHTML=`<div class="promise-inner"><div class="promise-ring" id="filmRing">${ring()}<a class="btn btn-gray" href="index.html">Volver a nuestra historia</a></div></div>`;
+    ending.innerHTML=`<div class="promise-inner"><div class="promise-ring" id="filmRing">${ring()}<a class="btn btn-play" href="final.html">Mi amor, ahora te toca a ti</a><a class="btn btn-gray" href="index.html">Volver a nuestra historia</a></div></div>`;
     player.append(ending);
     ending.scrollTop=0;
   }
