@@ -9,7 +9,7 @@ window.TDN = (() => {
     viajes: [], dificiles: ['La distancia', 'Vernos solamente por una pantalla'],
     anecdota: 'La vida nos dio otra oportunidad de estar juntos', culpableAnecdota: 2,
     gustosB: [], suenos: ['Casarnos en marzo', 'Compartir la vida', 'Seguir eligiéndonos'],
-    mensajeFinal: 'Gracias por volver a mi vida y por elegirme con toda mi historia. Gracias por querer compartir tu vida conmigo y con mis tres hijas. Durante mucho tiempo solo pude verte a través de una pantalla; hoy puedo abrazarte y soñar contigo con nuestra boda. Hace un mes me pediste matrimonio y te dije que sí. Hoy quiero regalarte yo una promesa: seguir eligiéndote, cuidarnos y construir juntos lo que viene. Te amo, Cristopher. Este anillo es para ti.'
+    mensajeFinal: 'Gracias por volver a mi vida y por elegirme con toda mi historia. Gracias por compartir tu vida conmigo y por abrazar todo lo que soy. Durante mucho tiempo solo pude verte a través de una pantalla; hoy puedo abrazarte y soñar contigo con nuestra boda. Hace un mes me pediste matrimonio y te dije que sí. Hoy quiero regalarte yo una promesa: seguir eligiéndote, cuidarnos y construir juntos lo que viene. Te amo, Cristopher. Este anillo es para ti.'
   };
   const photo = n => `assets/fotos/foto-${String(n).padStart(2,'0')}.webp`;
   const video = n => window.CLIENT_MEDIA.videos[n-1];
@@ -57,7 +57,7 @@ window.TDN = (() => {
       [S(8,'Nuestra historia comenzó en la secundaria.','Luego cada uno siguió su propio camino.'),
        S(2,'Viviste quince años en Estados Unidos.','Por mucho tiempo solo pudimos vernos por una pantalla.'),
        V(1,'Las llamadas nos permitían seguir cerca.','Aunque una pantalla nunca reemplazó un abrazo.'),
-       S(36,'Yo tengo tres hijas que son parte de mi vida.','Gracias por elegirme con toda mi historia.'),
+       S(36),
        S(6,'Yo vivía en Tequisquiapan.','Me vine a Ciudad de México para nuestros planes.'),
        S(3,'Tú volviste para que pudiéramos casarnos.','Hace dos meses llegaste y al fin pudimos estar juntos.'),
        V(11,'Ya no tengo que imaginar cómo sería abrazarte.','Ahora estamos del mismo lado de la pantalla.')],
@@ -71,9 +71,9 @@ window.TDN = (() => {
        S(30,'Hoy, en nuestro aniversario,','también quiero hacerte una promesa.')],
       {duracion:136,interaccion:{tipo:'codigo',modo:'fecha',pregunta:'¿Qué día empezó esta nueva etapa de nosotros?',placeholder:'DDMMAAAA',respuestas:['11112024','11/11/2024','11 de noviembre de 2024'],pista:'Hoy 11 de noviembre de 2026 cumplimos dos años.'},recompensa:'11 de noviembre. Nuestra fecha.'}),
     film(3,'Yo también te elijo',photo(20),
-      'Nuestra historia con mis hijas, las palabras que quiero decirte y una promesa para los dos.',
-      [S(36,'Mis tres hijas son una parte inmensa de mi vida.','Gracias por elegirme con toda mi historia.'),
-       V(5,'Me encanta verte cargar a mi hija más pequeña.','Contigo, nuestra vida también encontró un lugar para crecer.'),
+      'Una promesa que nace de todo lo vivido y de lo que todavía nos espera juntos.',
+      [S(36),
+       V(5),
        S(20,'Mi vido hoy quiero decirte que yo también te elijo, cada día,','no esperé a la boda para decírtelo: sí, mil veces sí.'),
        S(23,'Tú me diste tu promesa, y hoy quiero darte la mía.','No es solo un anillo, es mi corazón diciendo: voy contigo, en las buenas y en las malas.'),
        S(31,'Cuando me diste tu anillo, sentí que el mundo se detenía.','Pero quiero que sepas que mi compromiso es tan grande como el tuyo.'),
@@ -92,7 +92,7 @@ window.TDN = (() => {
     {titulo:'Nuestro comienzo',img:photo(8),texto:'Fuimos novios en la secundaria. Años después, tuvimos otra oportunidad de estar juntos.'},
     {titulo:'Nuestra banda sonora',img:photo(7),texto:'La canción que nos envió Viridiana es el tema principal, junto a las demás canciones que acompañan nuestra historia.'},
     {titulo:'El regreso',img:photo(3),texto:'Después de quince años en Estados Unidos, volviste para casarnos. Hace dos meses comenzó nuestro presente juntos.'},
-    {titulo:'Mi historia completa',img:photo(36),texto:'Mis tres hijas forman parte de mi vida. Gracias por elegir caminar a mi lado con todo lo que soy.'},
+    {titulo:'Mi historia completa',img:photo(36),texto:'Gracias por elegir caminar a mi lado y compartir conmigo lo que viene.'},
     {titulo:'Un mes que nos espera',img:photo(26),texto:'Marzo. Nuestra boda. El próximo gran capítulo de nosotros.'}
   ];
   const final = {
