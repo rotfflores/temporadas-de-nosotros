@@ -75,6 +75,7 @@ window.TDN = (() => {
        S(23,'Tú me diste tu promesa, y hoy quiero darte la mía.','No es solo un anillo, es mi corazón diciendo: voy contigo, en las buenas y en las malas.'),
        S(31,'Cuando me diste tu anillo, sentí que el mundo se detenía.','Pero quiero que sepas que mi compromiso es tan grande como el tuyo.'),
        S(34,'Este anillo no compite con el tuyo, camina junto a él.','Gracias por elegirme. Yo te elijo a ti, hoy y todos los días de mi vida.','Tu futura esposa ❤️'),
+       {texto:'Mi amor ahora te toca a ti'},
        {img:F.anillo,texto:['']}],{duracion:226,audioVideo:'musica'})
   ];
   const filmSongs = [6,2,5,7];
