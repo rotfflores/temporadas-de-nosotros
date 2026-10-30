@@ -745,6 +745,7 @@
         <div class="hero-content">
           <div class="hero-kicker"><span class="logo-mono">T</span>${kindName(s)}</div>
           <h1 class="hero-title">${esc(s.titulo)}</h1>
+          ${s.num === 3 ? '<p class="season-dedication">Mi amor ahora te toca a ti</p>' : ''}
           <div class="meta season-meta"><span class="match">${C.sitio.coincidencia}% para ti</span><span>${s.anio}</span><span class="age-box">${esc(s.clasificacion || C.sitio.clasificacion)}</span><span>${countLabel(s)}</span><span class="hd">HD</span><span class="hd">5.1</span></div>
           ${s.top10 ? `<div class="hero-tags"><span class="top10-mini">TOP<b>10</b></span><span>Top 10 en momentos inolvidables</span></div>` : ""}
           <p class="hero-synopsis">${esc(s.sinopsis)}</p>
