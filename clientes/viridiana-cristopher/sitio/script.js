@@ -113,10 +113,9 @@
   }
 
   const PROFILES = {
-    b: { name: P.nombreB, img: F.perfilB, color: "linear-gradient(135deg,#e50914,#6d0610)" },
     pareja: { name: "Tú y yo", img: F.perfilPareja, color: "linear-gradient(135deg,#2c7bd6,#123a6b)", mark: "♥" }
   };
-  const profile = () => PROFILES[ss.get("vc_20261111_who")] || PROFILES.b;
+  const profile = () => PROFILES.pareja;
   const avatarHtml = (p, cls = "avatar") =>
     `<span class="${cls}" style="background:${p.color}">${p.img ? `<img src="${esc(p.img)}" alt="">` : esc(p.mark || initial(p.name))}</span>`;
 
@@ -319,14 +318,12 @@
         <div class="profile-menu"><button class="pm-btn" aria-label="Menú de perfil">${avatarHtml(pr)}</button><span class="caret hide-sm">${I.caret}</span>
           <div class="dropdown">
             <a href="index.html">${avatarHtml(pr)} Perfil de ${esc(pr.name)}</a>
-            <a href="profiles.html" data-switch>${avatarHtml(pr === PROFILES.b ? PROFILES.pareja : PROFILES.b)} ${esc(pr === PROFILES.b ? PROFILES.pareja.name : PROFILES.b.name)}</a>
-            <hr><a href="profiles.html" data-switch>Cambiar de perfil</a>
-            <a href="splash.html">Ver la intro otra vez</a>
+            <hr><a href="splash.html">Ver la intro otra vez</a>
             <button type="button" data-reset>Reiniciar progreso</button>
           </div></div>
       </div></header>`);
     const drawer = h(`<nav class="drawer" aria-label="Menú">
-      <div class="drawer-head">${avatarHtml(pr)}<div><b>${esc(pr.name)}</b><br><a href="profiles.html" data-switch style="padding:0;color:var(--netflix-gray);font-size:.85rem">Cambiar perfil</a></div></div>
+      <div class="drawer-head">${avatarHtml(pr)}<div><b>${esc(pr.name)}</b></div></div>
       ${links.map(([k, l, u]) => `<a href="${u}" class="${k === active ? "active" : ""}">${l}</a>`).join("")}
       <a href="final.html">${esc(C.final.titulo)}</a>
       <button type="button" data-reset>Reiniciar progreso</button></nav>`);
@@ -355,7 +352,6 @@
     bell.addEventListener("mouseenter", () => { S.notifSeen = sig; save(); $(".dot", bell)?.remove(); });
     $(".pm-btn", pm).onclick = () => { pm.classList.toggle("open"); bell.classList.remove("open"); };
     document.addEventListener("click", (e) => { if (!nav.contains(e.target)) { bell.classList.remove("open"); pm.classList.remove("open"); } });
-    $$("[data-switch]", document).forEach((a) => a.addEventListener("click", () => ss.del("vc_20261111_who")));
     $$("[data-reset]", document).forEach((b) => b.addEventListener("click", () => {
       if (confirm("¿Reiniciar todo el progreso de la serie? Se borrarán episodios vistos y respuestas.")) {
         ls.del(KEY); location.href = "index.html";
@@ -614,13 +610,11 @@
   function pageProfiles() {
     $("#app").innerHTML = `<div class="profiles" id="profiles">
       <a class="top-logo" href="#"><span class="logo" data-logo="TEMPORADAS DE NOSOTROS"></span></a>
-      <h1>¿Quién está viendo?</h1>
+      <h1>En esta casa solo hay un perfil</h1>
       <div class="profile-list">${Object.entries(PROFILES).map(([k, p]) => `
         <button class="profile" data-p="${k}"><div class="pic" style="background:${p.color}">${p.img ? `<img class="media-img" src="${esc(p.img)}" alt="">` : `<span class="initial">${esc(p.mark || initial(p.name))}</span>`}</div>
-        <span class="name">${esc(p.name)}</span></button>`).join("")}</div>
-      <button class="btn btn-outline" id="manage">Administrar perfiles</button></div>`;
+        <span class="name">${esc(p.name)}</span></button>`).join("")}</div></div>`;
     renderLogos();
-    $("#manage").onclick = () => toast("Solo hay dos perfiles en esta casa ❤️");
     $$(".profile").forEach((b) => b.addEventListener("click", () => {
       ss.set("vc_20261111_who", b.dataset.p);
       b.classList.add("chosen"); $("#profiles").classList.add("leaving");

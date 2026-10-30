@@ -61,7 +61,7 @@ window.TDN = (() => {
        S(6,'Yo vivía en Tequisquiapan.','Me vine a Ciudad de México para nuestros planes.'),
        S(3,'Tú volviste para que pudiéramos casarnos.','Hace dos meses llegaste y al fin pudimos estar juntos.'),
        V(11,'Ya no tengo que imaginar cómo sería abrazarte.','Ahora estamos del mismo lado de la pantalla.')],
-      {duracion:174}),
+      {duracion:174,audioVideo:'musica'}),
     film(2,'Dos años de nosotros',F.t6,
       'Hoy 11 de noviembre cumplimos dos años. Hace un mes me pediste matrimonio y en marzo comenzará nuestra vida de casados.',
       [S(5,'Hoy 11 de noviembre cumplimos dos años.','Dos años de esta nueva oportunidad de amarnos.'),
