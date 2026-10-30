@@ -80,8 +80,8 @@ window.TDN = (() => {
        S(34,'Este anillo no compite con el tuyo, camina junto a él.','Gracias por elegirme. Yo te elijo a ti, hoy y todos los días de mi vida.','Tu futura esposa ❤️'),
        {img:F.anillo,texto:['']}],{duracion:226,audioVideo:'musica'})
   ];
-  const filmSongs = [6,2,5,3];
-  const filmMusicStarts = [71,45,96,100];
+  const filmSongs = [6,2,5,7];
+  const filmMusicStarts = [71,45,96,117];
   temporadas.forEach((season,index) => {
     season.musica = songs[filmSongs[index]];
     season.cancion = songNames[filmSongs[index]];
