@@ -34,6 +34,7 @@
 .song-card h2 { font-size:1.25rem;margin:9px 0; }.song-card p { color:#aaa;font-size:.85rem; }
 .song-card audio { width:100%;display:block;margin-top:20px; }
 .vc-final { max-width:940px; }.final-hero .hero-bg img { object-position:center 40%; }
+.final-hero .inter-kicker { color:#fff; }.final-hero .inter-kicker::before { background:#fff; }
 .optional-answers { margin-bottom:45px;padding:22px;border:1px solid #3b3b3b;border-radius:5px; }
 .optional-answers summary { cursor:pointer;font-weight:600; }.optional-answers summary span { color:#999;font-size:.78rem;margin-left:10px; }
 .optional-answers p { color:#aaa;font-size:.9rem;line-height:1.7; }

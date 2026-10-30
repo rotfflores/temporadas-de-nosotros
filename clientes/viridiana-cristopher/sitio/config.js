@@ -71,12 +71,14 @@ window.TDN = (() => {
        S(30,'Hoy, en nuestro aniversario,','también quiero hacerte una promesa.')],
       {duracion:136,interaccion:{tipo:'codigo',modo:'fecha',pregunta:'¿Qué día empezó esta nueva etapa de nosotros?',placeholder:'DDMMAAAA',respuestas:['11112024','11/11/2024','11 de noviembre de 2024'],pista:'Hoy 11 de noviembre de 2026 cumplimos dos años.'},recompensa:'11 de noviembre. Nuestra fecha.'}),
     film(3,'Yo también te elijo',photo(20),
-      'Las palabras de Viridiana para Cristopher. La última escena muestra el anillo que ella le entregará.',
-      [S(20,'Mi vido hoy quiero decirte que yo también te elijo, cada día,','no esperé a la boda para decírtelo: sí, mil veces sí.'),
+      'Nuestra historia con mis hijas, las palabras que quiero decirte y una promesa para los dos.',
+      [S(36,'Mis tres hijas son una parte inmensa de mi vida.','Gracias por elegirme con toda mi historia.'),
+       V(5,'Me encanta verte cargar a mi hija más pequeña.','Contigo, nuestra vida también encontró un lugar para crecer.'),
+       S(20,'Mi vido hoy quiero decirte que yo también te elijo, cada día,','no esperé a la boda para decírtelo: sí, mil veces sí.'),
        S(23,'Tú me diste tu promesa, y hoy quiero darte la mía.','No es solo un anillo, es mi corazón diciendo: voy contigo, en las buenas y en las malas.'),
        S(31,'Cuando me diste tu anillo, sentí que el mundo se detenía.','Pero quiero que sepas que mi compromiso es tan grande como el tuyo.'),
        S(34,'Este anillo no compite con el tuyo, camina junto a él.','Gracias por elegirme. Yo te elijo a ti, hoy y todos los días de mi vida.','Tu futura esposa ❤️'),
-       {img:F.anillo,texto:['']}],{duracion:226})
+       {img:F.anillo,texto:['']}],{duracion:226,audioVideo:'musica'})
   ];
   const filmSongs = [6,2,5,3];
   const filmMusicStarts = [71,45,96,100];
