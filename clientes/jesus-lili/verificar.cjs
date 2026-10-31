@@ -29,7 +29,7 @@ for (const page of ['index', 'splash', 'profiles', 'password', 'temporada', 'epi
   const html = fs.readFileSync(path.join(root, `${page}.html`), 'utf8');
   assert(html.includes('cliente.js'), `Falta cliente.js en ${page}.html`);
   if (page !== 'imprimible') {
-    assert(html.includes('property="og:image" content="https://streaming-us.rotfstudio.com/clientes/jesus-lili/assets/og.jpg?v=2"'), `Falta imagen social en ${page}.html`);
+    assert(html.includes('property="og:image" content="https://streaming-us.rotfstudio.com/clientes/jesus-lili/assets/og.jpg?v=3"'), `Falta imagen social en ${page}.html`);
     assert(html.includes('name="twitter:image"'), `Falta imagen de Twitter en ${page}.html`);
   }
 }

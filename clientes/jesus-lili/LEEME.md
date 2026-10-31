@@ -12,9 +12,9 @@ Versión independiente basada en la **misma plantilla original** que usan los de
 
 ## Comprobación
 
-Abrir `index.html` o servir esta carpeta como sitio estático. `node verificar.cjs` revisa la configuración, los medios y el alcance del paquete. Enlace para compartir: `https://streaming-us.rotfstudio.com/clientes/jesus-lili/index.html?compartir=1`.
+Abrir `index.html` o servir esta carpeta como sitio estático. `node verificar.cjs` revisa la configuración, los medios y el alcance del paquete. Enlace para compartir: `https://streaming-us.rotfstudio.com/clientes/jesus-lili/index.html?compartir=2`.
 
-`assets/og.jpg` es la portada social de 1200 × 630: muestra la foto de Jesús y Lili, el título de la plantilla y el contenido del paquete. Las páginas incluyen etiquetas Open Graph y Twitter con una ruta absoluta a esa imagen. La vista previa solo aparecerá cuando la página y la imagen estén publicadas en el dominio indicado.
+`assets/og.jpg` es una captura real de la página de inicio, ajustada a 1200 × 630 para la vista previa social. Muestra la interfaz de la plataforma, el menú, la portada de Jesús y Lili y el inicio del catálogo. Las páginas incluyen etiquetas Open Graph y Twitter con una ruta absoluta a esa imagen.
 
 ## Imágenes de ambiente
 

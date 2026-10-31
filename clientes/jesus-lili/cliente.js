@@ -34,7 +34,7 @@
   Object.assign(c.acceso, { demo: false, password: '', pistaPassword: '', estreno: '' });
   Object.assign(c.notificacion, { whatsapp: '', email: '', endpoint: '' });
   Object.assign(c.sitio, {
-    url: 'https://streaming-us.rotfstudio.com/clientes/jesus-lili/index.html?compartir=1',
+    url: 'https://streaming-us.rotfstudio.com/clientes/jesus-lili/index.html?compartir=2',
     coincidencia: 100, clasificacion: 'TP', clasificacionTexto: 'Romance y mucho cariño',
     heroTag: 'EXCLUSIVO PARA LILI', heroTop: 'Una historia de Jesús para Lili',
     sinopsis: 'Apenas llevamos unos meses juntos, pero ya quiero mil años más contigo. Cuatro películas, una serie y un juego sobre todo lo que siento por ti, mi goldita chula y preciosa.',
