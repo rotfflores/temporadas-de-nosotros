@@ -12,7 +12,7 @@ check(c.temporadas.filter(t => t.tipo === 'pelicula').length === 4, 'El paquete 
 check(c.temporadas.filter(t => t.tipo === 'serie').length === 1, 'El paquete debe tener una serie');
 check(c.temporadas.every(t => t.episodios.every(e => !e.interaccion)), 'Hay juegos extra');
 check(c.final.carta().includes('Mary Frutes') && c.final.carta().includes('Paul'), 'Falta la carta');
-check(c.media.videoFinal === 'assets/video/recuerdo-2.mp4', 'Falta el video final');
+check(c.media.videoFinal === 'assets/video/recuerdo-2-gloria.mp4', 'Falta el video final con música');
 const media = new Set([
   ...Object.values(c.fotos), c.media.intro, c.media.videoFinal,
   ...c.temporadas.flatMap(t => [t.imagen, ...t.episodios.flatMap(e => e.escenas.flatMap(s => [s.img, s.poster, s.video]))]),

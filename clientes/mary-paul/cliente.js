@@ -3,12 +3,12 @@
   const c = window.TDN;
   const A = 'Mary Frutes', B = 'Paul Garcia';
   const f = n => `assets/fotos/foto-${n}.jpg`;
-  const v = n => `assets/video/recuerdo-${n}.mp4`;
+  const v = n => `assets/video/recuerdo-${n}-gloria.mp4`;
   const scene = (img, texto, video = '') => ({ img, poster: img, video, texto: [texto] });
   Object.assign(c.pareja, {
     nombreA: A, nombreB: B, apodos: ['Paul'], apodo: 'Paul',
     fechaInicio: '', anioInicio: 2026, anios: 0, fechaCodigo: '',
-    ciudad: '', primeraCita: '', cancion: '', artista: '', viajes: [], dificiles: [],
+    ciudad: '', primeraCita: '', cancion: 'Con los años que me quedan', artista: 'Gloria Estefan', viajes: [], dificiles: [],
     anecdota: '', culpableAnecdota: 2, gustosB: [],
     suenos: ['Seguir creciendo juntos', 'Celebrar nuevas metas', 'Crear más recuerdos'],
     mensajeFinal: 'Gracias por compartir la vida conmigo. Deseo que sigamos encontrando motivos para abrazarnos, reír y mirar hacia adelante juntos.'
@@ -21,7 +21,7 @@
   });
   c.media.intro = 'assets/audio/intro.mp3';
   c.media.temporadas = [];
-  c.media.canciones = [];
+  c.media.canciones = ['Con los años que me quedan — Gloria Estefan'];
   c.media.musica = '';
   c.media.videoFinal = v(2);
   c.media.audioRemitente = '';
@@ -113,7 +113,9 @@
   });
   c.creditos = [
     ['Una historia para', B], ['Con cariño de', A], ['Protagonistas', `${A} y ${B}`],
-    ['Fotografías y videos', 'Recuerdos compartidos'], ['Próximo capítulo', 'Por escribir juntos'],
+    ['Fotografías y videos', 'Recuerdos compartidos'],
+    ['Música de los videos', 'Con los años que me quedan — Gloria Estefan'],
+    ['Próximo capítulo', 'Por escribir juntos'],
     ['', 'Gracias por estar aquí, Paul. ♡']
   ];
   c.postCreditos = {
