@@ -11,7 +11,7 @@
     ciudad: '', primeraCita: '', cancion: 'Con los años que me quedan', artista: 'Gloria Estefan', viajes: [], dificiles: [],
     anecdota: '', culpableAnecdota: 2, gustosB: [],
     suenos: ['Seguir creciendo juntos', 'Celebrar nuevas metas', 'Crear más recuerdos'],
-    mensajeFinal: 'Gracias por compartir la vida conmigo. Deseo que sigamos encontrando motivos para abrazarnos, reír y mirar hacia adelante juntos.'
+    mensajeFinal: 'Gracias por compartir la vida conmigo. Que nunca me falten tus brazos.'
   });
   Object.assign(c.fotos, {
     hero: f(1), perfilB: f(3), perfilPareja: f(1),
@@ -71,7 +71,10 @@
         scene(f(2), 'Que nos demos tiempo para explorar, descansar y disfrutar cada paso.'),
         scene(f(4), 'Que celebremos nuestras metas y cuidemos lo que estamos construyendo.'),
         scene(f(1), 'Que el futuro nos encuentre con la misma ilusión de estar cerca.'),
-        scene(f(3), 'Y que nunca se nos olvide decir gracias, te quiero y aquí estoy.')
+        scene(f(3), 'Y que nunca se nos olvide decir gracias, te quiero y aquí estoy.'),
+        scene(f(7), 'Quiero seguir descubriendo lugares y momentos contigo.'),
+        scene(f(8), 'Hay abrazos que se quedan conmigo aun después de que termina el día.'),
+        scene(f(6), 'Que nunca me falten\nTus brazos')
       ]),
     {
       num: 4, tipo: 'serie', titulo: 'Nuestro siguiente capítulo', anio: 2026,
@@ -93,11 +96,15 @@
       ]
     }
   );
+  c.temporadas[3].episodios[0].duracion = 72;
   c.extras = [
     { titulo: 'Una foto para volver', img: f(1), texto: 'Hay imágenes que se sienten como un abrazo.' },
     { titulo: 'Juntos frente al paisaje', img: f(2), texto: 'Un instante compartido que merece quedarse aquí.' },
     { titulo: 'Celebrar la vida', img: 'assets/fotos/video-1.jpg', texto: 'Un recuerdo en movimiento para volver a mirar.' },
-    { titulo: 'Lo que viene', img: f(5), texto: 'Más metas, más gratitud y más momentos por compartir.' }
+    { titulo: 'Lo que viene', img: f(5), texto: 'Más metas, más gratitud y más momentos por compartir.' },
+    { titulo: 'Un lugar para recordar', img: f(7), texto: 'Una nueva foto para guardar entre nuestros recuerdos.' },
+    { titulo: 'Cerquita de ti', img: f(8), texto: 'Quiero seguir atesorando momentos como este.' },
+    { titulo: 'Que nunca me falten tus brazos', img: f(6), texto: 'Que nunca me falten tus brazos.' }
   ];
   Object.assign(c.final, {
     titulo: 'Una carta para Paul', imagen: f(1),
@@ -109,7 +116,7 @@
       '¿Qué meta te ilusiona para nuestro futuro?',
       '¿Qué quisieras decirme hoy?'
     ],
-    carta: () => `Paul:\n\nQuise reunir estas fotos y videos para decirte algo sencillo y muy grande a la vez: me alegra compartir mi vida contigo. Cada imagen me recuerda que el cariño también vive en una mirada, una sonrisa, un abrazo y en el tiempo que elegimos darnos.\n\nGracias por estar, por los momentos que hemos compartido y por darme razones para mirar hacia adelante con ilusión. Deseo que sigamos cuidándonos, escuchándonos y celebrando nuestras metas, las de cada uno y las que soñemos juntos.\n\nNo sé qué traerán los próximos capítulos. Sí sé que quiero llenarlos de gratitud, compañía, risas y nuevos recuerdos contigo. Que siempre encontremos un momento para decirnos cuánto nos queremos.\n\nCon todo mi cariño,\nMary Frutes`
+    carta: () => `Paul:\n\nQuise reunir estas fotos y videos para decirte algo sencillo y muy grande a la vez: me alegra compartir mi vida contigo. Cada imagen me recuerda que el cariño también vive en una mirada, una sonrisa, un abrazo y en el tiempo que elegimos darnos.\n\nGracias por estar, por los momentos que hemos compartido y por darme razones para mirar hacia adelante con ilusión. Deseo que sigamos cuidándonos, escuchándonos y celebrando nuestras metas, las de cada uno y las que soñemos juntos.\n\nNo sé qué traerán los próximos capítulos. Sí sé que quiero llenarlos de gratitud, compañía, risas y nuevos recuerdos contigo. Que siempre encontremos un momento para decirnos cuánto nos queremos.\n\nQue nunca me falten\nTus brazos\n\nCon todo mi cariño,\nMary Frutes`
   });
   c.creditos = [
     ['Una historia para', B], ['Con cariño de', A], ['Protagonistas', `${A} y ${B}`],
