@@ -94,6 +94,16 @@
   const KEY = "mp_v1";
   const S = Object.assign({ done: {}, watch: {}, inter: {}, list: [], liked: {}, final: null, draft: [], sent: false, notifSeen: "" }, ls.get(KEY, {}));
   const save = () => ls.set(KEY, S);
+  // La cuarta película ahora es una obra nueva. Conserva el resto del progreso del cliente.
+  if (!ls.get("mp_pelicula_brazos_v1")) {
+    delete S.done["3-1"];
+    delete S.watch["3-1"];
+    delete S.inter["3-1"];
+    S.list = S.list.filter((item) => item !== "s:3");
+    delete S.liked["s:3"];
+    save();
+    ls.set("mp_pelicula_brazos_v1", true);
+  }
 
   const isDone = (id) => !!S.done[id];
   const unlocked = () => true; // Todo el contenido está disponible desde el inicio

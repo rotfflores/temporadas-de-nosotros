@@ -12,8 +12,14 @@ check(c.temporadas.filter(t => t.tipo === 'pelicula').length === 4, 'El paquete 
 check(c.temporadas.filter(t => t.tipo === 'serie').length === 1, 'El paquete debe tener una serie');
 check(c.temporadas.every(t => t.episodios.every(e => !e.interaccion)), 'Hay juegos extra');
 check(c.final.carta().includes('Mary Frutes') && c.final.carta().includes('Paul'), 'Falta la carta');
-check(c.final.carta().includes('Que nunca me falten\nTus brazos'), 'Falta el mensaje en la carta');
-check(c.temporadas[3].episodios[0].escenas.some(s => s.img === 'assets/fotos/foto-6.jpg' && s.texto[0] === 'Que nunca me falten\nTus brazos'), 'Falta el mensaje destacado');
+const peliculaNueva = c.temporadas[3];
+check(peliculaNueva.tipo === 'pelicula' && peliculaNueva.titulo === 'Que nunca me falten tus brazos' && peliculaNueva.imagen === 'assets/fotos/foto-8.jpg', 'Falta la película nueva');
+check(peliculaNueva.episodios[0].escenas.map(s => s.img).join('|') === [7, 8, 6].map(n => `assets/fotos/foto-${n}.jpg`).join('|'), 'Las tres fotos nuevas deben estar juntas en la película');
+check(peliculaNueva.episodios[0].escenas.at(-1).texto[0] === 'Que nunca me falten\nTus brazos', 'Falta el mensaje destacado');
+check(c.temporadas.slice(0, 3).every(t => t.episodios.every(e => e.escenas.every(s => !/[678]\.jpg$/.test(s.img)))), 'Las fotos nuevas aparecen en otra película');
+check(c.extras.every(e => !/foto-[678]\.jpg$/.test(e.img)) && !c.final.carta().includes('Que nunca me falten'), 'Las fotos o el mensaje nuevos quedaron fuera de la película');
+check(c.temporadas[4].episodios[1].escenas.some(s => s.texto[0] === 'Deseo que sigamos encontrando luz aun cuando el camino cambie.'), 'Faltan las escenas anteriores de la cuarta película');
+for (let n = 1; n <= 5; n++) check(c.temporadas.some(t => t.episodios.some(e => e.escenas.some(s => s.img === `assets/fotos/foto-${n}.jpg`))), `Se perdió la foto anterior ${n}`);
 check(c.media.videoFinal === 'assets/video/recuerdo-2-gloria.mp4', 'Falta el video final con música');
 const media = new Set([
   ...Object.values(c.fotos), c.media.intro, c.media.videoFinal,
