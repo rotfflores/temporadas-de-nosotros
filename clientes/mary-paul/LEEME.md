@@ -1,0 +1,11 @@
+# Mary Frutes para Paul Garcia
+
+Página independiente basada en la plantilla original de «Temporadas de Nosotros». Corresponde al paquete básico **Nuestro capítulo**: cuatro películas, una serie, un memorama y una carta final.
+
+Se usaron las cinco fotografías y los dos videos entregados para este pedido. Los textos expresan cariño, gratitud y deseos para el futuro. No atribuyen a la pareja fechas, una historia de cómo se conocieron ni anécdotas que no se recibieron. Tampoco se configuró una contraseña, canción ni envío de respuestas porque no se proporcionaron esos datos.
+
+La imagen social `assets/og.jpg` mide 1200 × 630 y usa la portada y el diseño visual de la página. Las diez páginas HTML incluyen etiquetas Open Graph y Twitter con una URL HTTPS absoluta. La vista previa aparecerá cuando el contenido esté publicado y la plataforma donde se comparta vuelva a leer el enlace.
+
+Enlace previsto: https://streaming-us.rotfstudio.com/clientes/mary-paul/index.html
+
+Comprobación local: `node verificar.cjs`.
