@@ -17,7 +17,7 @@
   [1,8,16,21,28,36,43,57].forEach((n,i)=>c.fotos[`t${i}`]=photo(n));
   Object.assign(c.media,{intro:'',temporadas:Array.from({length:8},(_,i)=>aud(i+1)),canciones:names.slice(0,8),musica:'',videoFinal:'',audioRemitente:''});
   Object.assign(c.acceso,{demo:false,password:'',pistaPassword:'',estreno:''});
-  Object.assign(c.notificacion,{whatsapp:'',email:'',endpoint:''});
+  Object.assign(c.notificacion,{whatsapp:'522411585760',email:'',endpoint:''});
   Object.assign(c.sitio,{url:'https://streaming-us.rotfstudio.com/clientes/aniversario-24-junio-2022/sitio/index.html',heroTop:'Desde aquel viernes 24',heroTag:'UNA HISTORIA PARA SILVINO',
     sinopsis:'Maribel y Silvino: una historia que comenzó sin buscarse el 24 de junio de 2022. Ocho películas, dos series y recuerdos que siguen creciendo.',
     filaRecomendada:'Nuestro 24 de junio'});

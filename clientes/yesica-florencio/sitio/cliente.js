@@ -29,7 +29,7 @@
   c.media.canciones=canciones;
   c.media.musica=""; c.media.videoFinal=""; c.media.audioRemitente="";
   Object.assign(c.acceso,{demo:false,password:"",pistaPassword:"",estreno:""});
-  Object.assign(c.notificacion,{whatsapp:"",email:"",endpoint:""});
+  Object.assign(c.notificacion,{whatsapp:"528115913773",email:"",endpoint:""});
   Object.assign(c.sitio,{
     url:"https://streaming-us.rotfstudio.com/clientes/yesica-florencio/sitio/index.html", heroTop:"Una historia que empezó en el cine", heroTag:"PARA FLORENCIO",
     sinopsis:"El 18 de octubre de 2021, Yesica y Florencio fueron al cine a ver una película de Halloween. Aquella primera cita se volvió el comienzo de una historia que aún tiene mucho por contar: 8 películas, 2 series, 3 juegos y una carta hecha con amor.",

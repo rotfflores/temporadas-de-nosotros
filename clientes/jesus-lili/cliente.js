@@ -32,7 +32,7 @@
   c.media.videoFinal = 'assets/video/nuestro-capitulo.mp4';
   c.media.audioRemitente = '';
   Object.assign(c.acceso, { demo: false, password: '', pistaPassword: '', estreno: '' });
-  Object.assign(c.notificacion, { whatsapp: '', email: '', endpoint: '' });
+  Object.assign(c.notificacion, { whatsapp: '523512228032', email: '', endpoint: '' });
   Object.assign(c.sitio, {
     url: 'https://streaming-us.rotfstudio.com/clientes/jesus-lili/index.html?compartir=2',
     coincidencia: 100, clasificacion: 'TP', clasificacionTexto: 'Romance y mucho cariño',

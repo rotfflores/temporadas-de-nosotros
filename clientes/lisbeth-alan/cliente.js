@@ -33,7 +33,7 @@
   c.media.videoFinal = 'assets/video/para-alan.mp4';
   c.media.audioRemitente = '';
   Object.assign(c.acceso, { demo: false, password: '', pistaPassword: '', estreno: '' });
-  Object.assign(c.notificacion, { whatsapp: '', email: '', endpoint: '' });
+  Object.assign(c.notificacion, { whatsapp: '525525271245', email: '', endpoint: '' });
   Object.assign(c.sitio, {
     url: 'https://streaming-us.rotfstudio.com/clientes/lisbeth-alan/index.html?compartir=2',
     coincidencia: 100, clasificacion: 'TP', clasificacionTexto: 'Amor y recuerdos',

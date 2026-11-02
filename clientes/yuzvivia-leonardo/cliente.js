@@ -33,7 +33,7 @@
   c.media.videoFinal = 'assets/video/para-leonardo-juanes.mp4';
   c.media.audioRemitente = '';
   Object.assign(c.acceso, { demo: false, password: '', pistaPassword: '', estreno: '' });
-  Object.assign(c.notificacion, { whatsapp: '', email: '', endpoint: '' });
+  Object.assign(c.notificacion, { whatsapp: '529531711003', email: '', endpoint: '' });
   Object.assign(c.sitio, {
     url: 'https://streaming-us.rotfstudio.com/clientes/yuzvivia-leonardo/index.html',
     coincidencia: 100, clasificacion: 'TP', clasificacionTexto: 'Romance y complicidad',
