@@ -81,7 +81,7 @@
         scene(foto(3), 'Quiero celebrar tus metas como si fueran mías y saberte cerca cuando necesites apoyo.'),
         scene(foto(10), 'Quiero que sigamos conociéndonos, aprendiendo a cuidarnos y eligiéndonos con libertad.'),
         scene(foto(4), 'Nuestro primer aniversario aún está por venir. Me ilusiona todo lo que construiremos hasta entonces y después.'),
-        scene(foto(10), 'Leo, Yuzvivi y Roxxy Pop estarán siempre para ti.', 'Con mis dos nombres y todo mi corazón, aquí estaré.')
+        scene(foto(10), 'Leo, Yuzvivia y Roxxy Pop estarán siempre para ti.', 'Con mis dos nombres y todo mi corazón, aquí estaré.')
       ])
   ];
   const serie = {
