@@ -37,7 +37,7 @@ for (const item of media) assert(fs.existsSync(path.join(root, item)), `Falta ${
 for (const name of ['index', 'splash', 'profiles', 'password', 'temporada', 'episodio', 'juegos', 'final', 'credits']) {
   const html = fs.readFileSync(path.join(root, `${name}.html`), 'utf8');
   assert(html.includes('cliente.js'), `Falta cliente.js en ${name}`);
-  assert(html.includes('https://streaming-us.rotfstudio.com/clientes/jesus-lorena/assets/og.jpg?v=1'), `Falta Open Graph en ${name}`);
+  assert(html.includes('https://streaming-us.rotfstudio.com/clientes/jesus-lorena/sitio/assets/og.jpg?v=1'), `Falta Open Graph en ${name}`);
 }
 const script = fs.readFileSync(path.join(root, 'script.js'), 'utf8');
 assert(script.includes('const KEY = "jr_v1"') && !script.includes('"la_') && !script.includes('"jl_') && !script.includes('"bg_'), 'Almacenamiento compartido con otro cliente');

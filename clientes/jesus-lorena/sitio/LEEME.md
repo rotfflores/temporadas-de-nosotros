@@ -43,4 +43,4 @@ Abrir `index.html` o servir esta carpeta como sitio estático. `node verificar.c
 
 Lleva contraseña (se la da Obed a Jesús; no está escrita en ningún archivo, solo su huella SHA-256 en `cliente.js`). No lleva fecha de estreno.
 
-URL prevista: `https://streaming-us.rotfstudio.com/clientes/jesus-lorena/index.html?compartir=1`. La vista previa de WhatsApp aparecerá cuando la carpeta esté publicada en esa ruta.
+URL: `https://streaming-us.rotfstudio.com/clientes/jesus-lorena/sitio/splash.html`. La vista previa de WhatsApp usa `index.html?compartir=1`.

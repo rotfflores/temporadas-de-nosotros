@@ -40,7 +40,7 @@
   Object.assign(c.acceso, { demo: false, password: '836627b318e4847ff6a7706b1cbb71d53c475e6498fe8d74d24430ebc59e6705', pistaPassword: 'Jesús te la envió por WhatsApp. Puedes escribirla con o sin guiones.', estreno: '' });
   Object.assign(c.notificacion, { whatsapp: '529841057499', email: '', endpoint: '' });
   Object.assign(c.sitio, {
-    url: 'https://streaming-us.rotfstudio.com/clientes/jesus-lorena/index.html?compartir=1',
+    url: 'https://streaming-us.rotfstudio.com/clientes/jesus-lorena/sitio/index.html?compartir=1',
     coincidencia: 100, clasificacion: 'TP', clasificacionTexto: 'Amor y segundas oportunidades',
     heroTag: 'EXCLUSIVO PARA LORENA', heroTop: 'Una historia de Jesús para Lorena',
     sinopsis: 'Se conocieron hace diez años, la vida los separó y hoy, por fin, se están eligiendo. Cuatro películas, una serie y un juego sobre la historia que tardó una década en empezar.',
