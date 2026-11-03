@@ -49,7 +49,7 @@
   c.media.videoFinal = 'assets/video/para-beatriz.mp4';
   c.media.audioRemitente = '';
   /* La contraseña no se guarda aquí: solo su huella SHA-256 (minúsculas, sin guiones ni espacios). */
-  Object.assign(c.acceso, { demo: false, password: 'e6b124bc2a9118828490f73434707665014caf3b040bc4058525d3e7b0c7832d', pistaPassword: 'Cristian te la envió por WhatsApp. Puedes escribirla con o sin guiones.', estreno: '' });
+  Object.assign(c.acceso, { demo: false, password: 'e132df45531dffc0ffad3cb99aa224f3adb906a816f688b16599d5941c742066', pistaPassword: 'Cristian te la envió por WhatsApp.', estreno: '' });
   Object.assign(c.notificacion, { whatsapp: '525663696233', email: '', endpoint: '' });
   Object.assign(c.sitio, {
     url: 'https://streaming-us.rotfstudio.com/clientes/cristian-beatriz/sitio/index.html?compartir=1',
