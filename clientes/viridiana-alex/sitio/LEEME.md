@@ -29,7 +29,7 @@ Sitio independiente para el paquete básico **Nuestro capítulo** ($79 MXN): cua
 
 Abrir `index.html` o servir esta carpeta como sitio estático. `node verificar.cjs` comprueba el alcance del paquete, que la primera película y la tarjeta extra reproduzcan la historia de Viridiana (la de abajo), los videos, la fecha, el límite de 10 medios, el WhatsApp, las rutas de medios y que el progreso no se comparta con otros clientes.
 
-Lleva contraseña (Obed se la da a Viridiana; no está escrita en ningún archivo, solo su huella SHA-256 en `cliente.js`). No lleva fecha de estreno.
+Lleva contraseña: la fecha en que se hicieron novios en formato DDMMAA (Obed se la da a Viridiana; en el sitio solo está su huella SHA-256 en `cliente.js`). No lleva fecha de estreno.
 
 URL: `https://streaming-us.rotfstudio.com/clientes/viridiana-alex/sitio/splash.html`. La vista previa de WhatsApp usa `index.html?compartir=1`.
 

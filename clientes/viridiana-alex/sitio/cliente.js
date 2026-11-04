@@ -101,7 +101,7 @@
   c.media.videoFinal = 'assets/video/para-alex.mp4';
   c.media.audioRemitente = '';
   /* La contraseña no se guarda aquí: solo su huella SHA-256 (minúsculas, sin guiones ni espacios). */
-  Object.assign(c.acceso, { demo: false, password: '7dca621117f50ba1e876014321d6c60c02de8f35fb8754677e323491f8ea13ca', pistaPassword: 'Viridiana te la envió por WhatsApp. Puedes escribirla con o sin guiones.', estreno: '' });
+  Object.assign(c.acceso, { demo: false, password: '319a7391ac20e44ce70e6cd9d28aa03fde8dc3dd51fb5ef83ec2985ac854e145', pistaPassword: 'El día en que empezamos a ser novios (DDMMAA).', estreno: '' });
   Object.assign(c.notificacion, { whatsapp: '525567373460', email: '', endpoint: '' });
   Object.assign(c.sitio, {
     url: 'https://streaming-us.rotfstudio.com/clientes/viridiana-alex/sitio/index.html?compartir=1',
