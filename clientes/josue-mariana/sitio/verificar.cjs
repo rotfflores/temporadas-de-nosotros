@@ -33,7 +33,7 @@ for (const t of c.temporadas) {
   assert(fotos.size <= 10, `«${t.titulo}» tiene más de 10 imágenes`);
 }
 assert(/^[0-9a-f]{64}$/.test(c.acceso.password), 'La contraseña debe ir como huella SHA-256');
-assert(/^\d{0,15}$/.test(c.notificacion.whatsapp), 'WhatsApp de Josué inválido');
+assert(c.notificacion.whatsapp === '529601059759', 'WhatsApp de Josué incorrecto');
 const media = new Set([
   ...Object.values(c.fotos), c.media.intro, c.media.videoFinal, ...c.media.temporadas,
   ...c.temporadas.flatMap(t => [t.imagen, t.musica, ...t.episodios.flatMap(e => [e.musica, ...e.escenas.flatMap(s => [s.img, s.poster])])]),

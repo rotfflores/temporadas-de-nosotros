@@ -6,7 +6,7 @@ Sitio independiente para el paquete básico **Nuestro capítulo** ($79): cuatro 
 
 - Envía: Josué Emmanuel Morales Ortiz («tu flaco»). Recibe: Mariana Garcia Barrios.
 - Fecha de su historia: empezaron un 5 de septiembre. El cliente no dio el año; se usó 2025 (fecha de inicio del sitio y de la contraseña).
-- WhatsApp de Josué: pendiente. Mientras esté vacío, la Temporada Final no muestra el botón «Enviar mi respuesta a Josué». Se configura en `cliente.js` → `c.notificacion.whatsapp` (solo dígitos con código de país, p. ej. `52XXXXXXXXXX`).
+- WhatsApp de Josué: 52 960 105 9759 (`529601059759`). No se muestra en la página; solo se usa en el botón «Enviar mi respuesta a Josué» de la Temporada Final, que abre WhatsApp con las respuestas de Mariana.
 
 ## Contenido
 
@@ -27,6 +27,8 @@ Sitio independiente para el paquete básico **Nuestro capítulo** ($79): cuatro 
 - `assets/og.jpg` (1200 × 630): captura de la portada para la vista previa de WhatsApp.
 
 ## Revisión y publicación
+
+Los subtítulos de este cliente (y solo de este) van más arriba y con letra Dancing Script (`cliente.css`).
 
 Abrir `index.html` o servir esta carpeta como sitio estático. `node verificar.cjs` comprueba el alcance del paquete, que la primera película y la tarjeta extra reproduzcan el mensaje de Josué (el de abajo), los videos, la fecha, el límite de 10 medios, el WhatsApp, las rutas de medios y que el progreso no se comparta con otros clientes.
 

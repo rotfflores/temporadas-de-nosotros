@@ -56,7 +56,7 @@
   c.media.audioRemitente = '';
   /* La contraseña no se guarda aquí: solo su huella SHA-256 (minúsculas, sin guiones ni espacios). */
   Object.assign(c.acceso, { demo: false, password: '029cc0873514586e5652223ff68a1c770eb24c573058e5f9eb31fb6acd90b94d', pistaPassword: 'El día en que decidimos empezar esto (DDMMAA).', estreno: '' });
-  Object.assign(c.notificacion, { whatsapp: '', email: '', endpoint: '' });
+  Object.assign(c.notificacion, { whatsapp: '529601059759', email: '', endpoint: '' });
   Object.assign(c.sitio, {
     url: 'https://streaming-us.rotfstudio.com/clientes/josue-mariana/sitio/index.html?compartir=1',
     coincidencia: 100, clasificacion: 'TP', clasificacionTexto: 'Amor, gratitud y para siempre',
