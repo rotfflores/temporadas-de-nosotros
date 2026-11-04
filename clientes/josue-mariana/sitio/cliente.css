@@ -7,3 +7,11 @@
 @media (max-width: 600px) {
   .home-hero .hero-bg img { content: url('assets/fotos/foto-19.webp'); object-position: center 40%; }
 }
+
+/* Solo Josué → Mariana: subtítulos más arriba y con letra romántica (Dancing Script). */
+.subtitle {
+  bottom: 26%; font-family: 'Dancing Script', cursive; font-weight: 700;
+  font-size: clamp(1.5rem, 3.6vw, 2.8rem); line-height: 1.2; letter-spacing: .01em;
+  text-shadow: 0 0 8px #000, 0 2px 4px #000, 0 0 18px rgba(0, 0, 0, .6);
+}
+.player.controls-on .subtitle { bottom: 32%; }
