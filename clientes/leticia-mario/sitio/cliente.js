@@ -244,7 +244,7 @@
   };
   c.temporadas.splice(0, c.temporadas.length, ...peliculas, serie);
   c.extras = [
-    { titulo: 'Nuestra historia, en palabras de Lety', img: amb('carta'), texto: historiaTexto },
+    { titulo: 'Nuestra historia, en palabras de Lety', img: foto(1), texto: historiaTexto },
     { titulo: 'Desde el 24 de abril de 2022', img: foto(18), texto: 'El día en que el destino nos dio una segunda oportunidad y comenzó nuestra historia favorita.' },
     { titulo: 'Lo que sueño contigo', img: foto(23), texto: 'Seguir sumando historias, acompañarnos en cada sueño y construir juntos toda una vida de recuerdos.' },
     { titulo: 'Qué fortuna', img: foto(26), texto: 'Entre tantas personas, tantos lugares y tantos caminos, qué fortuna haber coincidido contigo.' }
