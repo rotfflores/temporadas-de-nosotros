@@ -16,11 +16,11 @@ Sitio independiente para el paquete básico **Nuestro capítulo** ($79): cuatro 
 - **«Nuestra historia favorita»** (primera película, Top 10, unos 6 minutos) reproduce la historia completa de Lety, palabra por palabra, repartida en subtítulos. También aparece completa en la tarjeta extra «Nuestra historia, en palabras de Lety».
 - **«Qué fortuna que seas tú»** (lo que siente), **«Contigo aprendí»** (lo aprendido juntos), **«Gracias por quedarte»** (agradecimientos) y la serie **«Los capítulos que nos esperan»** («Lo que eres para mí», «Lo que sueño contigo» con metas y «En cada una de mis vidas») son texto creativo basado en su historia. La carta final, firmada «Con todo mi amor, Lety», también. No se inventaron lugares, fechas ni anécdotas.
 - Máximo 10 imágenes o videos por película o serie (`verificar.cjs` lo comprueba, y también que se usen las 32 fotos).
-- Canciones del cliente, recortadas en el clímax/coro final con fundidos y volumen igualado (−14 LUFS):
+- Canciones del cliente, recortadas desde antes del clímax hasta el final (más largas que los 70 s de música de cada película, para que no se repitan) con fundidos y volumen igualado (−14 LUFS):
   - «Te Esperaba» (Carlos Rivera), desde 2:27, 56 s → «Nuestra historia favorita», la serie y el video final
-  - «Tú Sí Sabes Quererme» (Natalia Lafourcade con Los Macorinos), desde 3:19, 45 s → «Qué fortuna que seas tú» y el episodio 1
-  - «Contigo Aprendí» (Armando Manzanero), desde 2:39, 53 s → «Contigo aprendí» y el episodio 2
-  - «Canción especial 1» (el archivo llegó sin nombre), desde 2:17, 60 s → «Gracias por quedarte» y el episodio 3
+  - «Tú Sí Sabes Quererme» (Natalia Lafourcade con Los Macorinos), desde 2:43, 81 s → «Qué fortuna que seas tú» y el episodio 1
+  - «Contigo Aprendí» (Armando Manzanero), desde 2:13, 79 s → «Contigo aprendí» y el episodio 2
+  - «Canción especial 1» (el archivo llegó sin nombre), desde 1:48, 88 s → «Gracias por quedarte» y el episodio 3
 - `assets/audio/historia-completa.mp3` (6 min 11 s): pista continua de «Nuestra historia favorita», a pedido de la clienta para que la canción no se repita: «Te Esperaba» completa desde el inicio y, con un fundido, «Tú Sí Sabes Quererme» desde el inicio.
 - `assets/video/para-mario.mp4`: montaje vertical de 39 s con dieciséis fotos, el video de Teotihuacán y «Te Esperaba».
 - `assets/og.jpg` (1200 × 630): captura de la portada para la vista previa de WhatsApp.
