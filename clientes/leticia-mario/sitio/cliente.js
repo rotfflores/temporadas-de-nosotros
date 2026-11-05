@@ -12,7 +12,9 @@
     esperaba: { titulo: 'Te Esperaba — Carlos Rivera', src: 'assets/audio/te-esperaba-climax.mp3' },
     quererme: { titulo: 'Tú Sí Sabes Quererme — Natalia Lafourcade', src: 'assets/audio/tu-si-sabes-climax.mp3' },
     aprendi: { titulo: 'Contigo Aprendí — Armando Manzanero', src: 'assets/audio/contigo-aprendi-climax.mp3' },
-    especial: { titulo: 'Canción especial 1', src: 'assets/audio/especial-1-climax.mp3' }
+    especial: { titulo: 'Canción especial 1', src: 'assets/audio/especial-1-climax.mp3' },
+    /* Pista continua para la primera película (6 min): «Te Esperaba» completa y después «Tú Sí Sabes Quererme», sin repetir. */
+    historia: { titulo: 'Te Esperaba — Carlos Rivera', src: 'assets/audio/historia-completa.mp3' }
   };
 
   /* Su historia, con las palabras exactas de Lety (solo se repartió en subtítulos). */
@@ -146,7 +148,7 @@
     puzzle: foto(22), puzzle2: foto(28), postCreditos: foto(29)
   });
   c.media.intro = 'assets/audio/intro.mp3';
-  c.media.temporadas = [tracks.esperaba.src, tracks.quererme.src, tracks.aprendi.src, tracks.especial.src, tracks.esperaba.src];
+  c.media.temporadas = [tracks.historia.src, tracks.quererme.src, tracks.aprendi.src, tracks.especial.src, tracks.esperaba.src];
   c.media.canciones = [tracks.esperaba.titulo, tracks.quererme.titulo, tracks.aprendi.titulo, tracks.especial.titulo, tracks.esperaba.titulo];
   c.media.musica = '';
   c.media.videoFinal = 'assets/video/para-mario.mp4';
@@ -170,7 +172,7 @@
     episodios: [{ titulo, duracion, descripcion: sinopsis, escenas, interaccion: null, recompensa: '' }]
   });
   const peliculas = [
-    film(0, 'Nuestra historia favorita', portada(18), tracks.esperaba,
+    film(0, 'Nuestra historia favorita', portada(18), tracks.historia,
       'Una universidad, caminos que se separan y una llamada el 24 de abril de 2022. La historia de Lety y Mario, contada por ella con sus propias palabras.',
       escenasHistoria, 6 + historia.length * 4),
     film(1, 'Qué fortuna que seas tú', portada(3), tracks.quererme,
@@ -261,7 +263,7 @@
   });
   c.creditos = [
     ['Una historia para', B], ['Con todo el amor de', A], ['Protagonistas', `${A} y ${B}`],
-    ['Banda sonora', Object.values(tracks).map(t => t.titulo).join(' · ')],
+    ['Banda sonora', [tracks.esperaba, tracks.quererme, tracks.aprendi, tracks.especial].map(t => t.titulo).join(' · ')],
     ['Basada en hechos reales', 'Juntos desde el 24 de abril de 2022'],
     ['Agradecimientos especiales', 'Al destino, por volver a juntarnos'],
     ['Próximo estreno', 'Todos los capítulos que nos esperan'], ['', 'Continuará ♡']

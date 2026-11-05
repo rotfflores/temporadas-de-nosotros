@@ -17,7 +17,7 @@ assert(films.length === 4 && series.length === 1, 'Alcance del paquete incorrect
 assert(series[0].episodios.length === 3, 'La serie debe tener tres episodios');
 assert(c.temporadas.every(t => t.episodios.every(e => !e.interaccion)), 'Hay juegos adicionales');
 assert(c.final.carta().includes('Lety') && c.final.carta().includes('Mario'), 'Falta la carta');
-assert(c.media.temporadas.length === 5 && new Set(c.media.temporadas).size === 4, 'Faltan canciones');
+assert(c.media.temporadas.length === 5 && new Set(c.media.temporadas).size === 5, 'Faltan canciones');
 assert(require('node:crypto').createHash('sha256').update('240422').digest('hex') === c.acceso.password, 'Contraseña distinta de 240422');
 assert(c.pareja.fechaInicio === '2022-04-24', 'Fecha de aniversario incorrecta');
 /* La historia debe ser idéntica, carácter por carácter, a la que envió Lety (solo cambian los saltos de línea). */

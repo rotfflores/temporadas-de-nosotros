@@ -21,6 +21,7 @@ Sitio independiente para el paquete básico **Nuestro capítulo** ($79): cuatro 
   - «Tú Sí Sabes Quererme» (Natalia Lafourcade con Los Macorinos), desde 3:19, 45 s → «Qué fortuna que seas tú» y el episodio 1
   - «Contigo Aprendí» (Armando Manzanero), desde 2:39, 53 s → «Contigo aprendí» y el episodio 2
   - «Canción especial 1» (el archivo llegó sin nombre), desde 2:17, 60 s → «Gracias por quedarte» y el episodio 3
+- `assets/audio/historia-completa.mp3` (6 min 11 s): pista continua de «Nuestra historia favorita», a pedido de la clienta para que la canción no se repita: «Te Esperaba» completa desde el inicio y, con un fundido, «Tú Sí Sabes Quererme» desde el inicio.
 - `assets/video/para-mario.mp4`: montaje vertical de 39 s con dieciséis fotos, el video de Teotihuacán y «Te Esperaba».
 - `assets/og.jpg` (1200 × 630): captura de la portada para la vista previa de WhatsApp.
 
