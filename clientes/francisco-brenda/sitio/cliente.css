@@ -1,0 +1,24 @@
+[hidden]{display:none!important}
+.home-hero .hero-bg img{object-position:center 35%}
+.scene .media-wrap img,.scene .media-wrap video{object-fit:contain!important;background:#080808}
+.scene.on .media-wrap{animation:none}
+.thumb img,.ep-thumb img{object-position:center}
+.library{padding:110px 5vw 60px;max-width:1600px;margin:auto}
+.library h1{font-size:clamp(2rem,6vw,4rem);margin:.5em 0}.library>p{color:#bbb;margin-bottom:2rem}
+.memory-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px}
+.memory-photo{border:0;background:#181818;cursor:pointer;padding:0;border-radius:6px;overflow:hidden}
+.memory-photo img{width:100%;height:320px;object-fit:contain;display:block}
+.memory-grid figure{margin:0}.memory-grid video{width:100%;height:320px;background:#080808}.memory-grid figcaption{padding:12px;color:#bbb}
+.photo-dialog{border:1px solid #444;background:#111;color:#fff;max-width:96vw;max-height:96dvh;padding:12px;border-radius:8px}.photo-dialog::backdrop{background:#000d}.photo-dialog img{display:block;max-width:88vw;max-height:78dvh;margin:10px auto;object-fit:contain}.dialog-bar{display:flex;align-items:center;gap:10px;justify-content:center;flex-wrap:wrap}
+.song-list{display:grid;gap:16px;max-width:850px}.song-card{display:flex;gap:22px;padding:24px;background:#1d1d1d;border-radius:8px}.song-card>span{font-size:1.8rem;color:#888}.song-card h2{font-size:1.15rem;margin:0 0 16px}.song-card audio{width:min(100%,500px)}.song-card>div{flex:1;min-width:0}
+.game-immersive{overflow:hidden}.game-immersive .navbar,.game-immersive footer{display:none}
+.games-page.game-detail{position:fixed;inset:0;z-index:150;margin:0!important;padding:76px max(16px,env(safe-area-inset-right)) 20px!important;width:100%!important;max-width:none!important;height:100dvh;overflow:auto;background:#080808;display:flex;flex-direction:column;align-items:center;gap:10px}
+.game-detail .games-back{position:absolute;top:max(20px,env(safe-area-inset-top));left:20px;margin:0}
+.game-fullscreen{position:absolute;top:max(16px,env(safe-area-inset-top));right:16px;font-size:.8rem;z-index:5}
+.game-detail .game-context{width:100%;text-align:center;margin:0}.game-detail .game-context h1{font-size:clamp(1.4rem,3vw,2.4rem);margin:0 0 8px}.game-detail .game-context p{margin:0;color:#bbb}
+.game-detail .game-panel{width:100%;max-width:none;flex:1;min-height:0;border:0;background:transparent;padding:12px;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.game-detail .inter-body{width:min(100%,1000px)}.game-detail .arcade-stage{width:100%;background:#080808}.game-detail .arcade-stage canvas{width:100%;height:min(64dvh,calc(100vw * .5556));object-fit:contain}.game-detail .sopa-wrap{width:min(78dvh,100%,680px);margin:auto}.game-detail .memory{max-width:900px;margin:auto}.game-detail .puzzle{width:min(62dvh,90vw,600px);margin:auto}
+@media(max-width:600px){.game-detail .games-back{font-size:.78rem;left:12px}.game-fullscreen{font-size:.7rem;padding:10px}.game-detail .game-context p{font-size:.8rem}.game-detail .game-panel{padding:4px}.memory-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.memory-photo img,.memory-grid video{height:240px}.song-card{padding:16px;gap:12px}.song-card audio{width:100%}.home-hero .hero-bg img{object-position:62% center}}
+@media(max-height:500px){.games-page.game-detail{padding-top:54px!important}.game-detail .game-context{display:none}.game-detail .arcade-stage canvas{height:74dvh}.game-detail .sopa-wrap{width:70dvh}.game-detail .puzzle{width:65dvh}}
+
+.auth-bg-private{background:radial-gradient(ellipse at top,#242424 0%,#0b0b0b 65%);opacity:1!important}
