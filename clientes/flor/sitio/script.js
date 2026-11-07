@@ -1507,9 +1507,7 @@
     renderNav("games");
     const games = EPS.filter((ep) => ep.interaccion && GAMES[ep.interaccion.tipo]);
     const arcadeId = param("arcade");
-    const arcades = [
-      { id: "memory", name: "Memorama de fotos", type: "Memoria", desc: "Encuentra las parejas con las fotos de Flor y su amor.", img: F.t3 }
-    ];
+    const arcades = [];
     const arcade = arcades.find((x) => x.id === arcadeId);
     const selected = games.find((ep) => ep.id === param("j"));
     const done = games.filter((ep) => S.inter[ep.id]).length;
@@ -1560,8 +1558,8 @@
       $("#app").innerHTML = `<main class="games-page">
         <header class="games-header"><span class="inter-kicker">Una serie para jugar</span><h1>Juegos de nosotros</h1>
           <p>Juega cuando quieras, sin interrumpir las películas ni las series.</p></header>
-        <h2 class="games-section-title">Para jugar ahora</h2>
-        <div class="games-grid arcade-grid">${arcades.map((item) => `<a class="game-card" href="juegos.html?arcade=${item.id}">
+        ${arcades.length ? `<h2 class="games-section-title">Para jugar ahora</h2>` : ""}
+        <div class="games-grid arcade-grid"${arcades.length ? "" : " hidden"}>${arcades.map((item) => `<a class="game-card" href="juegos.html?arcade=${item.id}">
           <span class="game-card-art">${media(item.img, item.name, item.id)}<span class="game-card-badge">${esc(item.type)}</span></span>
           <span class="game-card-copy"><small>${esc(item.desc)}</small><strong>${esc(item.name)}</strong><span>Jugar ahora ${I.right}</span></span></a>`).join("")}</div>
         ${games.length ? `<h2 class="games-section-title">Retos de la historia <small>${done} de ${games.length} completados</small></h2>

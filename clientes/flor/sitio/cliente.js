@@ -1,4 +1,4 @@
-/* Contenido exclusivo para Flor; la plantilla original permanece intacta. */
+/* Contenido exclusivo para Flor (paquete Nuestra Temporada, $149); la plantilla original permanece intacta. */
 (() => {
   const c = window.TDN;
   /* No se dio el nombre de quien regala: se usa «Tu amor» (en WhatsApp ella lo tiene como «Mi Amor»). */
@@ -6,13 +6,21 @@
   const B = 'Flor';
   const foto = n => `assets/fotos/foto-${String(n).padStart(2, '0')}.webp`;
   const portada = n => `assets/fotos/portada-${String(n).padStart(2, '0')}.webp`;
+  const amb = n => `assets/ambiente/${n}.webp`;
   /* Videos del cliente: en bucle y sin sonido, con su miniatura. */
   const vid = n => ({ img: `assets/video/momento-${n}.mp4`, poster: `assets/fotos/momento-${n}.webp` });
+  /* Videos de ambiente (libres, reutilizados de otras carpetas), también sin sonido. */
+  const ambVid = n => ({ img: `assets/ambiente/${n}-video.mp4`, poster: `assets/ambiente/${n}-video.webp` });
   const tracks = {
     anhelo: { titulo: 'Mi Mayor Anhelo — Banda MS', src: 'assets/audio/mi-mayor-anhelo-climax.mp3' },
     mundo: { titulo: 'El Mundo a Tus Pies — Grupo Firme', src: 'assets/audio/el-mundo-a-tus-pies-climax.mp3' },
     perfecta: { titulo: 'Perfecta — Banda Los Recoditos', src: 'assets/audio/perfecta-climax.mp3' },
-    deja: { titulo: 'Deja — Banda El Recodo', src: 'assets/audio/deja-climax.mp3' }
+    deja: { titulo: 'Deja — Banda El Recodo', src: 'assets/audio/deja-climax.mp3' },
+    /* Segundo tramo de cada canción (desde el primer coro), para que las películas nuevas no repitan el mismo audio. */
+    anhelo2: { titulo: 'Mi Mayor Anhelo — Banda MS', src: 'assets/audio/mi-mayor-anhelo-coro.mp3' },
+    mundo2: { titulo: 'El Mundo a Tus Pies — Grupo Firme', src: 'assets/audio/el-mundo-a-tus-pies-coro.mp3' },
+    perfecta2: { titulo: 'Perfecta — Banda Los Recoditos', src: 'assets/audio/perfecta-coro.mp3' },
+    deja2: { titulo: 'Deja — Banda El Recodo', src: 'assets/audio/deja-coro.mp3' }
   };
 
   const carta = [
@@ -41,8 +49,6 @@
     puzzle: foto(24), puzzle2: foto(23), postCreditos: foto(28)
   });
   c.media.intro = 'assets/audio/intro.mp3';
-  c.media.temporadas = [tracks.anhelo.src, tracks.deja.src, tracks.perfecta.src, tracks.mundo.src, tracks.anhelo.src];
-  c.media.canciones = [tracks.anhelo.titulo, tracks.deja.titulo, tracks.perfecta.titulo, tracks.mundo.titulo, tracks.anhelo.titulo];
   c.media.musica = '';
   c.media.videoFinal = 'assets/video/para-flor.mp4';
   c.media.audioRemitente = '';
@@ -53,17 +59,33 @@
     url: 'https://streaming-us.rotfstudio.com/clientes/flor/sitio/index.html?compartir=1',
     coincidencia: 100, clasificacion: 'TP', clasificacionTexto: 'Amor, familia y gratitud',
     heroTag: 'EXCLUSIVO PARA FLOR', heroTop: 'Una historia de amor para Flor',
-    sinopsis: 'Un 2 de noviembre para celebrar a la mujer que llena de amor una familia entera. Lo que siente por ella, lo que le agradece y todo lo que sueña a su lado. Cuatro películas, una serie y un juego.',
+    sinopsis: 'Un 2 de noviembre para celebrar a la mujer que llena de amor una familia entera. Lo que siente por ella, lo que le agradece y todo lo que sueña a su lado. Ocho películas, dos series y tres juegos.',
     generos: ['Romance', 'Basada en hechos reales', 'Familia'], filaRecomendada: 'Porque eres mi mayor anhelo'
   });
 
   const scene = (img, ...texto) => (typeof img === 'string' ? { img, poster: img, texto } : { ...img, texto });
-  const film = (num, titulo, imagen, track, sinopsis, escenas, duracion = 76) => ({
+  const film = (num, titulo, imagen, track, sinopsis, escenas, interaccion = null, duracion = 76) => ({
     num, tipo: 'pelicula', titulo, anio: 2026, clasificacion: 'TP', imagen,
     musica: track.src, cancion: track.titulo, top10: num === 0, sinopsis,
     creditos: [['Una historia para', B], ['Con amor de', A], ['Música', track.titulo]],
-    episodios: [{ titulo, duracion, descripcion: sinopsis, escenas, interaccion: null, recompensa: '' }]
+    episodios: [{ titulo, duracion, descripcion: sinopsis, escenas, interaccion, recompensa: '' }]
   });
+
+  /* Los tres juegos del paquete: trivia, código secreto y ordena la historia. */
+  const trivia = {
+    tipo: 'quiz', titulo: 'Lo que más amo de ti', pregunta: 'Flor, ¿qué es lo que más amo de ti?',
+    opciones: ['Tu sonrisa', 'Cómo cuidas a nuestra familia', 'Todo, absolutamente todo'], correcta: 2,
+    ok: 'Todo de ti, mi Flor. Cada detalle.'
+  };
+  const codigo = {
+    tipo: 'codigo', titulo: 'Nuestro día', modo: 'fecha', pregunta: '¿Qué día celebramos nuestro aniversario? Escribe día y mes (DDMM).',
+    placeholder: 'DDMM', respuestas: ['0211'], pista: 'Es en noviembre… y es el día 2.', ok: 'El 2 de noviembre: nuestro día.'
+  };
+  const ordenar = {
+    tipo: 'ordenar', titulo: 'Lo que te escribí', eventos: ['Solo', 'de tu mano', 'quiero caminar…', 'te amo,', 'mi Flor ❤️'],
+    ok: 'Solo de tu mano quiero caminar… te amo, mi Flor.'
+  };
+
   const peliculas = [
     film(0, 'Mi mayor anhelo', portada(21), tracks.anhelo,
       'Lo que él siente por Flor, contado escena por escena: su sonrisa, su mirada y el lugar donde siempre quiere estar.', [
@@ -103,7 +125,7 @@
         scene(foto(31), 'Gracias por cada abrazo', 'y cada risa en casa.'),
         scene(foto(32), 'Gracias por elegirme', 'también en los días difíciles.'),
         scene(foto(33), 'Para mí eres perfecta.', 'Gracias, mi amor.')
-      ]),
+      ], trivia),
     film(3, 'El mundo a tus pies', portada(27), tracks.mundo,
       'Las metas y los sueños que quiere cumplir al lado de Flor y de su familia.', [
         scene(foto(27), 'Flor, si pudiera,', 'te pondría el mundo a tus pies.'),
@@ -116,10 +138,62 @@
         scene(foto(21), 'Quiero seguir enamorándote', 'como el primer día.'),
         scene(foto(28), 'Y quiero envejecer a tu lado,', 'mirándote así.'),
         scene(foto(23), 'Contigo lo tengo todo, Flor.')
+      ]),
+    film(4, 'Solo de tu mano', portada(37), tracks.anhelo2,
+      'Los caminos que recorren juntos, la mano que no quiere soltar y el día que los une.', [
+        scene(foto(37), 'Hay una mano que no quiero soltar nunca:', 'la tuya.'),
+        scene(foto(41), 'Me gusta ir a tu lado,', 'aunque no sepamos a dónde vamos.'),
+        scene(ambVid('bosque'), 'Cualquier carretera es bonita', 'si la recorro contigo.'),
+        scene(foto(35), 'Contigo los trayectos largos', 'se sienten cortos.'),
+        scene(foto(34), 'Tú de copiloto, nuestra familia atrás:', 'no necesito nada más.'),
+        scene(amb('costa'), 'Si el camino se pone difícil,', 'lo caminamos juntos.'),
+        scene(foto(17), 'Contigo hasta el silencio', 'se siente acompañado.'),
+        scene(foto(22), 'Tu compañía es mi lugar seguro.'),
+        scene(foto(16), 'A donde vayas,', 'quiero ir contigo.'),
+        scene(foto(2), 'Solo de tu mano quiero caminar,', 'hoy y todos los días.')
+      ], codigo),
+    film(5, 'Los pequeños momentos', portada(36), tracks.deja2,
+      'Un raspado compartido, una comida juntos, una tarde cualquiera: lo sencillo también es amor.', [
+        scene(foto(36), 'Lo más bonito no siempre es lo más grande:', 'a veces es algo para compartir contigo.'),
+        scene(ambVid('cafe'), 'Me gustan nuestras pláticas', 'sin prisa.'),
+        scene(foto(1), 'Cada comida juntos', 'sabe mejor.'),
+        scene(foto(20), 'Admiro cómo haces todo', 'con tanto cariño.'),
+        scene(foto(15), 'Los días sencillos con nuestra familia', 'son mis favoritos.'),
+        scene(foto(30), 'Las risas en casa', 'valen más que cualquier cosa.'),
+        scene(foto(39), 'Una foto juntos al final del día', 'es todo lo que necesito.'),
+        scene(foto(31), 'No necesito fechas especiales:', 'contigo cualquier día es especial.'),
+        scene(amb('luz'), 'Tú le pones luz', 'a lo cotidiano.'),
+        scene(foto(33), 'Gracias por enseñarme', 'que la felicidad está en los detalles.')
+      ]),
+    film(6, 'Mi Flor', portada(38), tracks.perfecta2,
+      'Un homenaje a ella: su belleza, su fuerza y todo lo que la hace única.', [
+        scene(foto(38), 'Flores para mi Flor,', 'aunque ninguna es tan bonita como tú.'),
+        scene(foto(40), 'Un beso tuyo', 'me cambia el día.'),
+        scene(amb('rosas'), 'Tu nombre te queda perfecto:', 'llenas de color todo lo que tocas.'),
+        scene(foto(39), 'Me encanta verte sonreír así,', 'con esa luz que solo tú tienes.'),
+        scene(foto(19), 'Eres hermosa por fuera', 'y todavía más por dentro.'),
+        scene(foto(41), 'Me gusta cómo te ves', 'cuando eres feliz.'),
+        scene(amb('flores'), 'Eres fuerte, dulce y valiente', 'al mismo tiempo.'),
+        scene(foto(18), 'Admiro la mujer que eres', 'y la mamá en la que te convertiste.'),
+        scene(foto(21), 'A tu lado aprendí', 'lo que es querer bonito.'),
+        scene(foto(26), 'Nunca dejes de florecer,', 'mi Flor.')
+      ], ordenar),
+    film(7, 'Lo que aprendí contigo', portada(34), tracks.mundo2,
+      'Todo lo que él ha aprendido desde que Flor está en su vida.', [
+        scene(foto(34), 'Flor, contigo aprendí', 'que el amor se demuestra todos los días.'),
+        scene(foto(35), 'Aprendí que un abrazo tuyo', 'arregla cualquier día.'),
+        scene(ambVid('atardecer'), 'Aprendí que los atardeceres', 'se disfrutan más acompañado.'),
+        scene(foto(23), 'Aprendí a ser mejor', 'por ti y por nuestra familia.'),
+        scene(foto(25), 'Aprendí que la familia', 'es el regalo más grande.'),
+        scene(foto(29), 'Aprendí que en tus brazos', 'encuentro descanso.'),
+        scene(ambVid('olas'), 'Aprendí que, como el mar,', 'el amor siempre vuelve.'),
+        scene(foto(32), 'Aprendí a reírme de todo', 'contigo.'),
+        scene(amb('horizonte'), 'Y aprendí que el futuro', 'no me da miedo si es contigo.'),
+        scene(foto(27), 'Todo lo bonito que sé del amor', 'lo aprendí contigo.')
       ])
   ];
   const serie = {
-    num: 4, tipo: 'serie', titulo: 'Lo que eres para mí', anio: 2026,
+    num: 8, tipo: 'serie', titulo: 'Lo que eres para mí', anio: 2026,
     clasificacion: 'TP', imagen: portada(24), musica: tracks.anhelo.src, cancion: tracks.anhelo.titulo,
     sinopsis: 'Tres episodios para celebrar este 2 de noviembre: lo que Flor significa para él, lo que sueña a su lado y una promesa para siempre.',
     creditos: [['Protagonista', B], ['Aniversario', '2 de noviembre'], ['Duración', 'Toda la vida']],
@@ -145,16 +219,47 @@
         ], interaccion: null, recompensa: '' }
     ]
   };
-  c.temporadas.splice(0, c.temporadas.length, ...peliculas, serie);
+  const serie2 = {
+    num: 9, tipo: 'serie', titulo: 'Nuestro para siempre', anio: 2026,
+    clasificacion: 'TP', imagen: portada(40), musica: tracks.deja.src, cancion: tracks.deja.titulo,
+    sinopsis: 'Tres episodios sobre lo que viene: las promesas que él le hace a Flor, el futuro que imagina y un mensaje para los años que vienen.',
+    creditos: [['Protagonista', B], ['Con amor de', A], ['Temporada', 'Para siempre']],
+    episodios: [
+      { titulo: 'Mis promesas', duracion: 40, descripcion: 'Lo que él le promete a Flor.', musica: tracks.deja.src,
+        escenas: [
+          scene(foto(37), 'Te prometo no soltarte la mano,', 'ni en los días buenos ni en los difíciles.'),
+          scene(foto(40), 'Te prometo un beso', 'cada vez que lo necesites.'),
+          scene(amb('manos'), 'Te prometo escucharte,', 'cuidarte y respetarte siempre.')
+        ], interaccion: null, recompensa: '' },
+      { titulo: 'Lo que viene', duracion: 50, descripcion: 'El futuro que imagina con Flor.', musica: tracks.anhelo2.src,
+        escenas: [
+          scene(amb('siluetas'), 'Me imagino muchos años más', 'caminando juntos.'),
+          scene(foto(24), 'Me imagino a nuestra familia creciendo', 'y a nosotros a su lado.'),
+          scene(amb('estrellas'), 'Me imagino noches tranquilas,', 'tú y yo, platicando de todo.'),
+          scene(foto(41), 'Y me imagino que, con los años,', 'te seguiré mirando igual.')
+        ], interaccion: null, recompensa: '' },
+      { titulo: 'Carta al futuro', duracion: 40, descripcion: 'Un mensaje para todos los 2 de noviembre que vienen.', musica: tracks.perfecta2.src,
+        escenas: [
+          scene(foto(38), 'Flor del futuro:', 'espero que sigas sonriendo así.'),
+          scene(amb('carta'), 'Si algún día lo dudas, vuelve a ver esto:', 'te elegí y te sigo eligiendo.'),
+          scene(foto(34), 'Feliz 2 de noviembre,', 'hoy y todos los que vengan. ❤️')
+        ], interaccion: null, recompensa: '' }
+    ]
+  };
+  const todas = [...peliculas, serie, serie2];
+  c.temporadas.splice(0, c.temporadas.length, ...todas);
+  c.media.temporadas = todas.map(t => t.musica);
+  c.media.canciones = todas.map(t => t.cancion);
   c.extras = [
-    { titulo: 'Solo de tu mano', img: foto(2), texto: 'Solo de tu mano quiero caminar. Te amo, mi Flor.' },
+    { titulo: 'Solo de tu mano', img: foto(37), texto: 'Solo de tu mano quiero caminar. Te amo, mi Flor.' },
     { titulo: 'Feliz 2 de noviembre', img: foto(27), texto: 'Hoy celebro contigo todo lo que hemos vivido y todo lo que nos falta por vivir.' },
     { titulo: 'Nuestra familia', img: foto(24), texto: 'Tú, yo y los que más amamos: mi mejor historia.' },
-    { titulo: 'Lo que sueño contigo', img: foto(26), texto: 'Ver crecer a nuestra familia, cumplir juntos cada sueño y verte sonreír todos los días.' }
+    { titulo: 'Lo que sueño contigo', img: foto(26), texto: 'Ver crecer a nuestra familia, cumplir juntos cada sueño y verte sonreír todos los días.' },
+    { titulo: 'Flores para mi Flor', img: foto(38), texto: 'Ninguna flor es tan bonita como tú.' }
   ];
   Object.assign(c.final, {
     titulo: 'Para ti, Flor', imagen: portada(27),
-    sinopsis: 'La última escena guarda una carta para Flor: lo que siente, lo que agradece y todo lo que quiere seguir viviendo con ella.',
+    sinopsis: 'Ocho películas, dos series y tres juegos después, la última escena guarda una carta para Flor: lo que siente, lo que agradece y todo lo que quiere seguir viviendo con ella.',
     preguntas: [
       '¿Cuál es tu recuerdo favorito conmigo?',
       '¿Qué fue lo que más te gustó de mí al principio?',

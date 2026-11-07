@@ -13,11 +13,12 @@ const assert = (test, message) => { if (!test) throw new Error(message); };
 const films = c.temporadas.filter(t => t.tipo === 'pelicula');
 const series = c.temporadas.filter(t => t.tipo === 'serie');
 assert(c.pareja.nombreA === 'Tu amor' && c.pareja.nombreB === 'Flor', 'Nombres incorrectos');
-assert(films.length === 4 && series.length === 1, 'Alcance del paquete incorrecto');
-assert(series[0].episodios.length === 3, 'La serie debe tener tres episodios');
-assert(c.temporadas.every(t => t.episodios.every(e => !e.interaccion)), 'Hay juegos adicionales');
+assert(films.length === 8 && series.length === 2, 'Alcance del paquete incorrecto');
+assert(series.every(s => s.episodios.length === 3), 'Cada serie debe tener tres episodios');
+const juegos = c.temporadas.flatMap(t => t.episodios.map(e => e.interaccion)).filter(Boolean).map(i => i.tipo).sort().join(',');
+assert(juegos === 'codigo,ordenar,quiz', 'Los juegos deben ser trivia, código secreto y ordena la historia');
 assert(c.final.carta().startsWith('Flor:'), 'Falta la carta');
-assert(c.media.temporadas.length === 5 && new Set(c.media.temporadas).size === 4, 'Faltan canciones');
+assert(c.media.temporadas.length === 10 && new Set(c.media.temporadas).size === 8, 'Faltan canciones');
 assert(require('node:crypto').createHash('sha256').update('0211').digest('hex') === c.acceso.password, 'Contraseña distinta de 0211');
 assert(c.pareja.fechaInicio.endsWith('-11-02'), 'Fecha de aniversario incorrecta');
 const fotosCliente = new Set(c.temporadas.flatMap(t => t.episodios.flatMap(e => e.escenas.map(s => s.img))).filter(x => x.includes('/fotos/')));
@@ -42,7 +43,7 @@ for (const name of ['index', 'splash', 'profiles', 'password', 'temporada', 'epi
 }
 const script = fs.readFileSync(path.join(root, 'script.js'), 'utf8');
 assert(script.includes('const KEY = "fl_v1"') && !/"(la|jl|jr|bg|mp|yl|cb|sm|vx|jm|ar|ck|fm|lm)_/.test(script), 'Almacenamiento compartido con otro cliente');
-assert(/const arcades = \[\s*\{ id: "memory"[^\n]*\}\s*\]/.test(script), 'El paquete incluye juegos extra');
+assert(script.includes('const arcades = [];'), 'El paquete incluye juegos extra');
 assert(fs.existsSync(path.join(root, 'assets/og.jpg')), 'Falta imagen de WhatsApp');
 for (const t of c.temporadas) for (const e of t.episodios) for (const s of e.escenas) assert(s.texto.join(' ').length > 0, 'Escena sin texto');
-console.log(`OK (para Flor): 4 películas, 1 serie, 1 memorama, 4 canciones y ${media.size} medios válidos.`);
+console.log(`OK (para Flor, $149): 8 películas, 2 series, 3 juegos, 4 canciones y ${media.size} medios válidos.`);
