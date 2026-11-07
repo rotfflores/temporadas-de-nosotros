@@ -282,4 +282,18 @@
     subtitulo: 'Apenas es el comienzo de todos los capítulos que todavía nos esperan.',
     sorpresa: 'Solo de tu mano quiero caminar. ♡'
   };
+
+  /* Barra superior de pago pendiente. Cambiar a false cuando el cliente complete el pago. */
+  const pagoPendiente = true;
+  if (pagoPendiente && typeof document !== 'undefined') {
+    document.documentElement.classList.add('pago-pendiente');
+    const ponerBarra = () => {
+      if (document.querySelector('.pago-bar')) return;
+      const bar = document.createElement('div');
+      bar.className = 'pago-bar'; bar.setAttribute('role', 'alert');
+      bar.textContent = '⚠️ Pago pendiente: completa tu pago para conservar este regalo.';
+      document.body.prepend(bar);
+    };
+    if (document.body) ponerBarra(); else document.addEventListener('DOMContentLoaded', ponerBarra);
+  }
 })();

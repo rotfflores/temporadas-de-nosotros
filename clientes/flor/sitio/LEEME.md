@@ -35,3 +35,7 @@ Abrir `index.html` o servir esta carpeta como sitio estático. `node verificar.c
 Contraseña: `0211` (la dio Obed). En el sitio solo está su huella SHA-256 en `cliente.js`. No lleva fecha de estreno.
 
 URL: `https://streaming-us.rotfstudio.com/clientes/flor/sitio/splash.html`. La vista previa de WhatsApp usa `index.html?compartir=1`.
+
+## Pago pendiente
+
+Desde el 7 de noviembre de 2026 la página muestra arriba una barra amarilla: «⚠️ Pago pendiente: completa tu pago para conservar este regalo.» (pedida por Obed). Para quitarla, poner `const pagoPendiente = false;` en `cliente.js` y volver a publicar.
