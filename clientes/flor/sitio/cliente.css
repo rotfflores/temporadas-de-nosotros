@@ -16,21 +16,16 @@
 }
 .player.controls-on .subtitle { bottom: 32%; }
 
-/* Barra de pago pendiente (pedida por Obed el 7 de noviembre de 2026). Para quitarla: pagoPendiente = false en cliente.js. */
-.pago-bar {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 9999; min-height: 38px;
-  display: flex; align-items: center; justify-content: center; gap: .5rem;
-  padding: .45rem 1rem; background: #f5c518; color: #111; text-align: center;
-  font: 600 .9rem/1.25 Inter, Arial, sans-serif; box-shadow: 0 2px 10px rgba(0,0,0,.45);
+/* Bloqueo por pago pendiente: se oculta todo y solo queda el aviso. Se activa con pagoPendiente en cliente.js. */
+html.pago-bloqueado, html.pago-bloqueado body { overflow: hidden !important; height: 100%; background: #000 !important; }
+html.pago-bloqueado body > *:not(.pago-lock) { display: none !important; }
+.pago-lock {
+  position: fixed; inset: 0; z-index: 2147483647; display: flex; align-items: center; justify-content: center;
+  padding: 24px 16px; background: radial-gradient(circle at 50% 30%, #2a0a0d 0%, #000 70%); color: #fff;
+  font-family: Inter, Arial, sans-serif; text-align: center;
 }
-html.pago-pendiente body { padding-top: 38px; }
-html.pago-pendiente .nav { top: 38px; }
-@media (max-width: 600px) {
-  .pago-bar { font-size: .8rem; min-height: 46px; }
-  html.pago-pendiente body { padding-top: 46px; }
-  html.pago-pendiente .nav { top: 46px; }
-}
-html.pago-pendiente .splash-mute, html.pago-pendiente .credits-back, html.pago-pendiente .profiles .top-logo { top: calc(1.2rem + 38px); }
-@media (max-width: 600px) {
-  html.pago-pendiente .splash-mute, html.pago-pendiente .credits-back, html.pago-pendiente .profiles .top-logo { top: calc(1.2rem + 46px); }
-}
+.pago-lock-box { max-width: 440px; }
+.pago-lock-icon { font-size: 3rem; margin-bottom: .6rem; }
+.pago-lock h1 { margin: 0 0 1rem; font: 400 clamp(2.2rem, 8vw, 3.2rem)/1 'Bebas Neue', Impact, sans-serif; letter-spacing: .03em; color: #E50914; }
+.pago-lock p { margin: .4rem 0; font-size: 1.05rem; line-height: 1.5; color: #e5e5e5; }
+.pago-lock strong { color: #f5c518; }

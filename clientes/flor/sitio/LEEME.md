@@ -38,4 +38,4 @@ URL: `https://streaming-us.rotfstudio.com/clientes/flor/sitio/splash.html`. La v
 
 ## Pago pendiente
 
-Desde el 7 de noviembre de 2026 la página muestra arriba una barra amarilla: «⚠️ Pago pendiente: completa tu pago para conservar este regalo.» (pedida por Obed). Para quitarla, poner `const pagoPendiente = false;` en `cliente.js` y volver a publicar.
+Desde el 7 de noviembre de 2026 la página está **bloqueada** a pedido de Obed: todas las pantallas muestran solo «🔒 Contenido bloqueado. Este regalo tiene un pago pendiente. En cuanto se complete el pago, podrás disfrutarlo completo.», sin música ni videos, y no responde a clics ni teclas. Para desbloquearla, poner `const pagoPendiente = false;` en `cliente.js`, subir el `?v=` de los HTML y volver a publicar. El bloqueo es de la página: los archivos sueltos (fotos, canciones) siguen en el servidor.

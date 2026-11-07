@@ -283,17 +283,28 @@
     sorpresa: 'Solo de tu mano quiero caminar. ♡'
   };
 
-  /* Barra superior de pago pendiente. Cambiar a false cuando el cliente complete el pago. */
+  /* Bloqueo por pago pendiente (pedido por Obed el 7 de noviembre de 2026): ninguna página muestra contenido.
+     Cuando el cliente pague, cambiar a false y volver a publicar (subir también el ?v= en los HTML). */
   const pagoPendiente = true;
   if (pagoPendiente && typeof document !== 'undefined') {
-    document.documentElement.classList.add('pago-pendiente');
-    const ponerBarra = () => {
-      if (document.querySelector('.pago-bar')) return;
-      const bar = document.createElement('div');
-      bar.className = 'pago-bar'; bar.setAttribute('role', 'alert');
-      bar.textContent = '⚠️ Pago pendiente: completa tu pago para conservar este regalo.';
-      document.body.prepend(bar);
+    document.documentElement.classList.add('pago-bloqueado');
+    const pausar = () => document.querySelectorAll('audio, video').forEach(m => { try { m.pause(); m.muted = true; } catch (e) {} });
+    const bloquear = () => {
+      if (!document.querySelector('.pago-lock')) {
+        const lock = document.createElement('div');
+        lock.className = 'pago-lock'; lock.setAttribute('role', 'alertdialog'); lock.setAttribute('aria-modal', 'true');
+        lock.innerHTML = '<div class="pago-lock-box"><div class="pago-lock-icon">🔒</div>' +
+          '<h1>Contenido bloqueado</h1>' +
+          '<p>Este regalo tiene un <strong>pago pendiente</strong>.</p>' +
+          '<p>En cuanto se complete el pago, podrás disfrutarlo completo.</p></div>';
+        document.body.appendChild(lock);
+      }
+      pausar();
     };
-    if (document.body) ponerBarra(); else document.addEventListener('DOMContentLoaded', ponerBarra);
+    if (document.body) bloquear(); else document.addEventListener('DOMContentLoaded', bloquear);
+    setInterval(bloquear, 500);
+    ['click', 'keydown', 'touchstart', 'pointerdown'].forEach(ev => window.addEventListener(ev, e => {
+      e.stopImmediatePropagation(); e.preventDefault();
+    }, { capture: true, passive: false }));
   }
 })();
