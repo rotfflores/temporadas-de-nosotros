@@ -1,0 +1,7 @@
+.home-hero .hero-bg img { object-position: center 40%; }
+.scene .media-wrap img, .scene .media-wrap video { object-fit: contain; background: #080808; }
+.games-page .games-grid.arcade-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 300px)); }
+[hidden] { display: none !important; }
+@media (max-width: 600px) {
+  .home-hero .hero-bg img { content: url('assets/fotos/foto-26.webp'); object-position: center 35%; }
+}
