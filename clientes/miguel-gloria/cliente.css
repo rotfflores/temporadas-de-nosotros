@@ -6,3 +6,19 @@
 [hidden] { display: none !important; }
 /* La dedicatoria de portada se muestra completa también en celular. */
 .home-hero .hero-synopsis { display: block; -webkit-line-clamp: unset; overflow: visible; }
+
+/* Aviso de pago visible arriba de todas las pantallas del regalo. */
+:root { --payment-notice-h: 64px; }
+body { padding-top: var(--payment-notice-h); }
+.payment-notice {
+  position: fixed; inset: 0 0 auto; z-index: 1000;
+  min-height: var(--payment-notice-h); box-sizing: border-box;
+  display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
+  align-content: center; gap: 0 .35em; padding: 10px 16px;
+  background: #f5c451; color: #241803; border-bottom: 1px solid #c89020;
+  font: 500 14px/1.4 Arial, sans-serif; text-align: center;
+}
+.payment-notice strong { font-weight: 800; }
+.nav, .player { top: var(--payment-notice-h); }
+.player:fullscreen { top: 0; }
+@media print { .payment-notice { display: none; } body { padding-top: 0; } }
