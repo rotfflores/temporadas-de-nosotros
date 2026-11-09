@@ -99,6 +99,107 @@
     ]
   };
 
+  const nuevaFoto = nombre => `assets/fotos/${nombre}.webp`;
+  const lago = { img: 'assets/ambiente/lago.mp4', poster: ambiente('lago') };
+  const todoCambio = pista('todo-cambio', 'Todo Cambió — Camila');
+  const cosaBella = pista('la-cosa-mas-bella', 'La Cosa Más Bella — Eros Ramazzotti');
+  const perfecta = pista('perfecta', 'Perfecta — Miranda!');
+  const mezclaEncuentro = pista('mezcla-encuentro', `${ahi.cancion} · ${soledad.cancion}`);
+  const mezclaPorvenir = pista('mezcla-porvenir', `${solamente.cancion} · ${posibilidad.cancion}`);
+  const instrumental = pista('carefree', 'Carefree — Kevin MacLeod (instrumental)');
+
+  const peliculasNuevas = [
+    pelicula(5, 'Lo que cambió al quedarme', nuevaFoto('paseo'), todoCambio,
+      'Isra le cuenta a Mariel qué significa hacer vida en Zacatlán, después de tantos años hablando desde lejos.', 62, [
+        escena(lago, 'Antes, saber de ti era esperar una llamada.', 'Hoy me alegra poder decirte: ¿salimos un rato?'),
+        escena(nuevaFoto('mariel-orilla'), 'Me gusta ir conociendo Zacatlán a tu lado.', 'También me gusta sentarme contigo y mirar el agua.'),
+        escena(nuevaFoto('paseo'), 'Decidir quedarme fue apenas el comienzo.', 'Lo bonito es descubrir qué hacer con el tiempo que tenemos.'),
+        escena(foto(28), 'Quiero que hagamos nuestros recorridos favoritos', 'y que algún día podamos elegirlos sin siquiera ponernos de acuerdo.'),
+        escena(nuevaFoto('patio'), 'Gracias por hacerme espacio en tus días.', 'Yo quiero aprender a estar presente en los tuyos.'),
+        escena(nuevaFoto('mariel-lago'), 'Si un martes cualquiera termina con una charla contigo,', 'para mí ya valió la pena el día.'),
+        escena(foto(26), 'Por eso me da tanto gusto haber llegado.', 'Y por eso quiero seguir aquí.')
+      ]),
+    pelicula(6, 'Mis cosas favoritas de ti', nuevaFoto('muy-cerca'), cosaBella,
+      'Una película para Mariel sobre lo que Isra admira de ella y las pequeñas cosas que se le quedan en la memoria.', 60, [
+        escena(nuevaFoto('muy-cerca'), 'Mariel, hay cosas de ti', 'que se me quedan grabadas con solo mirarte.'),
+        escena(nuevaFoto('mariel-taza'), 'Esa sonrisa que se te escapa', 'justo cuando intentas esconderla detrás de la taza.'),
+        escena(nuevaFoto('mariel-orilla'), 'Lo fácil que es pasar de estar platicando', 'a quedarnos callados un rato, a gusto.'),
+        escena(foto(7), 'Me hace feliz saber que todavía puedo descubrir', 'algo nuevo de la amiga que conocí hace veinte años.'),
+        escena(foto(22), 'Admiro la vida que has hecho.', 'Gracias por contarme de ella y dejarme conocerte hoy.'),
+        escena(nuevaFoto('brindis'), 'Quiero seguir encontrando motivos para decirte', 'lo mucho que me gustas.'),
+        escena(foto(25), 'Y si mañana se me olvida decirlo,', 'aquí queda por escrito.')
+      ]),
+    pelicula(7, 'Brindis por lo sencillo', nuevaFoto('brindis'), perfecta,
+      'Un paseo, una taza de barro y el gusto de pasar la tarde juntos. Una película para guardar esas escenas.', 61, [
+        escena(nuevaFoto('brindis'), 'Un brindis por estas tardes', 'en que tenemos tiempo de quedarnos otro rato.'),
+        escena(nuevaFoto('patio'), 'Por las fotos que nos tomamos', 'cuando estamos a medio chiste.'),
+        escena(nuevaFoto('mariel-taza'), 'Por esas tazas de barro', 'que me van a recordar tu cara cada vez que vea una.'),
+        escena(lago, 'Me gustaría que sigamos saliendo sin prisa', 'y preguntándonos qué se nos antoja hacer ese día.'),
+        escena(nuevaFoto('paseo'), 'A veces el plan que más me gusta', 'es sentarme donde estás tú.'),
+        escena(foto(5), 'Gracias por compartir conmigo', 'también las tardes de cualquier día.'),
+        escena(nuevaFoto('muy-cerca'), 'Quiero guardar muchas más de esas', 'y acordarme de lo bien que la pasamos.')
+      ]),
+    pelicula(8, 'Siempre un lugar para Ger', nuevaFoto('ger-sonrisa'), mezclaEncuentro,
+      'Isra le cuenta a Ger cuánto le alegra conocerlo y cómo le gustaría construir su amistad, a su ritmo.', 62, [
+        escena(nuevaFoto('ger-sonrisa'), 'Ger, me da mucho gusto conocerte.', 'Qué bonito que podamos compartir esta etapa.'),
+        escena(ambiente('sobremesa'), 'Cuando imagino los planes con tu mamá,', 'siempre hay un lugar para ti en la mesa.'),
+        escena(nuevaFoto('ger-patio'), 'También hay un lugar para lo que tú piensas.', 'Me importa saber qué quieres y cómo te sientes.'),
+        escena(nuevaFoto('minecraft'), 'Si un día quieres enseñarme Minecraft,', 'me dará gusto que tú seas mi maestro.'),
+        escena(nuevaFoto('ger-fuente'), 'Quiero ser tu amigo, Ger,', 'y que nos conozcamos a tu ritmo.'),
+        escena(nuevaFoto('ger-lago'), 'Ojalá tengamos tardes para reírnos', 'y también ratos tranquilos para platicar.'),
+        escena(nuevaFoto('ger-sonrisa'), 'Gracias por los ratitos que ya hemos compartido.', 'Me alegra que estés aquí, tal como eres.')
+      ])
+  ];
+
+  peliculasNuevas[0].episodios[0].interaccion = {
+    tipo: 'quiz',
+    pregunta: '¿En qué ciudad decidió quedarse Isra?',
+    opciones: ['La Paz', 'Zacatlán', 'Puebla capital'],
+    correcta: 1
+  };
+  peliculasNuevas[3].episodios[0].interaccion = {
+    tipo: 'ordenar',
+    titulo: 'Ordena nuestra historia',
+    eventos: ['Nos hicimos amigos en la universidad', 'Volvimos a hablar el 15 de agosto', 'Nos reencontramos el 8 de octubre', 'Nos hicimos novios el 1 de noviembre']
+  };
+
+  const serieNueva = {
+    num: 9, tipo: 'serie', titulo: 'Hacer equipo', anio: 2026, clasificacion: 'TP',
+    imagen: nuevaFoto('paseo'), ...antes,
+    sinopsis: 'Tres episodios sobre agradecer lo vivido, hacer planes en familia y dedicarle a Ger una aventura de Minecraft.',
+    creditos: [
+      ['Con cariño de', 'Isra'],
+      ['Para', 'Mariel y Ger'],
+      ['Música del especial', '«Carefree» — Kevin MacLeod (incompetech.com). CC BY 4.0. Fragmento editado.']
+    ],
+    episodios: [
+      episodio('Gracias por hacerme un lugar', 50, 'Isra le agradece a Mariel la confianza con la que han vuelto a acercarse.', nuevaFoto('muy-cerca'), antes, [
+        escena(ambiente('carta-familia'), 'Mariel, gracias por aquella primera charla', 'después de tanto tiempo.'),
+        escena(nuevaFoto('muy-cerca'), 'Todavía me gusta cuando una conversación con la que', 'íbamos a ponernos al día nos lleva a hacer otro plan.'),
+        escena(nuevaFoto('mariel-orilla'), 'Gracias por irme mostrando cómo es tu vida aquí', 'y por preguntarme cómo me gustaría hacer la mía.'),
+        escena(nuevaFoto('patio'), 'Quiero darte también un lugar en mis planes', 'y tiempo para contarme los tuyos.'),
+        escena(foto(14), 'Me da alegría hacer todo eso', 'con la amiga que volví a encontrar y que ahora es mi novia.')
+      ]),
+      episodio('Un sábado para los tres', 54, 'Isra imagina un sábado en familia en el que Ger también decide qué hacer.', nuevaFoto('ger-lago'), mezclaPorvenir, [
+        escena(nuevaFoto('ger-lago'), 'Ger, si pudieras elegir el plan del sábado,', '¿por dónde empezaríamos?'),
+        escena(lago, 'Podríamos ir a ver el agua un rato', 'y después buscar algo rico para comer.'),
+        escena(nuevaFoto('ger-patio'), 'O quedarnos en casa y armar una partida.', 'Me da curiosidad saber qué se te ocurriría a ti.'),
+        escena(nuevaFoto('ger-fuente'), 'Me gusta pensar en una tarde con tiempo', 'para escuchar tus historias y reírnos juntos.'),
+        escena(nuevaFoto('ger-sonrisa'), 'Tu mamá y yo tenemos ganas de compartir esos días contigo.', 'Tus ideas también hacen que el plan sea de los tres.')
+      ]),
+      episodio('Una aventura para Ger', 64, 'Un especial de Isra para Ger, con Minecraft y música instrumental.', nuevaFoto('ger-fuente'), instrumental, [
+        escena(nuevaFoto('ger-fuente'), 'Ger, esta aventura es para ti.', 'Me da mucho gusto que podamos conocernos.'),
+        escena(nuevaFoto('ger-patio'), 'Quiero ser tu amigo y conocer tu mundo.', '¿Qué es lo que más te gusta construir en Minecraft?'),
+        escena(nuevaFoto('minecraft-1'), 'Yo llevo las antorchas.', 'Tú me dices si empezamos con una casa o una expedición.'),
+        escena(nuevaFoto('ger-lago'), 'También me gustaría salir a explorar contigo.', 'Puedes enseñarme los lugares que más te gustan.'),
+        escena(nuevaFoto('especial-juntos'), 'Tu mamá y yo queremos que tengas tiempo para tus aventuras', 'y que sepas que puedes contar con nosotros.'),
+        escena(nuevaFoto('especial-mariel'), 'Tu mamá y yo estaremos felices de escucharte', 'cuando quieras contarnos cómo te fue.'),
+        escena(nuevaFoto('ger-sonrisa'), 'Ojalá nunca te falten ganas de imaginar', 'y de enseñarnos las cosas que inventas.'),
+        escena(nuevaFoto('especial-ger'), 'Gracias por ser tú, Ger. Cuando quieras jugar, me apunto.', 'Con cariño, tu amigo Isra.')
+      ])
+    ]
+  };
+
   const carta = [
     'Mariel,',
     'Hace veinte años te conocí en la universidad. Fuimos amigos y después pasaron muchos años sin vernos. Yo estaba en La Paz y tú en Zacatlán. A veces pienso en todo lo que pudo haberse quedado sin decir si aquel 15 de agosto no te hubiera llamado.',
@@ -124,7 +225,7 @@
       generos: ['Romance', 'Basada en hechos reales', 'Reencuentros'], filaRecomendada: 'Veinte años después'
     },
     media: { intro: audio('intro'), temporadas: [ahi.musica, soledad.musica, antes.musica, solamente.musica, posibilidad.musica], videoFinal: 'assets/video/para-mariel.mp4' },
-    temporadas: [...peliculas, serie],
+    temporadas: [...peliculas, serie, ...peliculasNuevas, serieNueva],
     extras: [
       { titulo: '15 de agosto', img: foto(24), texto: 'Volví a llamarte. A partir de ese día, escuchar tu voz se volvió parte de mi rutina.' },
       { titulo: '8 de octubre', img: foto(28), texto: 'El día en que volví a verte en Zacatlán.' },
@@ -145,6 +246,8 @@
     creditos: [
       ['Una historia para', 'Mariel'], ['Con cariño de', 'Isra'], ['Protagonistas', 'Isra y Mariel'],
       ['Banda sonora', [ahi, antes, posibilidad, solamente, soledad].map(track => track.cancion).join(' · ')],
+      ['Música nueva', [todoCambio, cosaBella, perfecta].map(track => track.cancion).join(' · ')],
+      ['Música del especial', '«Carefree» — Kevin MacLeod (incompetech.com). CC BY 4.0. Fragmento editado.'],
       ['Desde', '1 de noviembre de 2026'], ['Próximo capítulo', 'En Zacatlán']
     ],
     postCreditos: {
