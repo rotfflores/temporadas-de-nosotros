@@ -146,7 +146,7 @@
         escena(nuevaFoto('ger-patio'), 'También hay un lugar para lo que tú piensas.', 'Me importa saber qué quieres y cómo te sientes.'),
         escena(nuevaFoto('minecraft'), 'Si un día quieres enseñarme Minecraft,', 'me dará gusto que tú seas mi maestro.'),
         escena(nuevaFoto('ger-fuente'), 'Quiero ser tu amigo, Ger,', 'y que nos conozcamos a tu ritmo.'),
-        escena(nuevaFoto('ger-lago'), 'Ojalá tengamos tardes para reírnos', 'y también ratos tranquilos para platicar.'),
+        escena(nuevaFoto('ger-isra-lago'), 'Me gusta compartir ratos así contigo, Ger.', 'Hasta quedarnos un momento mirando el agua.'),
         escena(nuevaFoto('ger-sonrisa'), 'Gracias por los ratitos que ya hemos compartido.', 'Me alegra que estés aquí, tal como eres.')
       ])
   ];
@@ -182,7 +182,7 @@
       ]),
       episodio('Un sábado para los tres', 54, 'Isra imagina un sábado en familia en el que Ger también decide qué hacer.', nuevaFoto('ger-lago'), mezclaPorvenir, [
         escena(nuevaFoto('ger-lago'), 'Ger, si pudieras elegir el plan del sábado,', '¿por dónde empezaríamos?'),
-        escena(lago, 'Podríamos ir a ver el agua un rato', 'y después buscar algo rico para comer.'),
+        escena(nuevaFoto('ger-orilla'), 'Podríamos sentarnos junto al agua un rato', 'y después buscar algo rico para comer.'),
         escena(nuevaFoto('ger-patio'), 'O quedarnos en casa y armar una partida.', 'Me da curiosidad saber qué se te ocurriría a ti.'),
         escena(nuevaFoto('ger-fuente'), 'Me gusta pensar en una tarde con tiempo', 'para escuchar tus historias y reírnos juntos.'),
         escena(nuevaFoto('ger-sonrisa'), 'Tu mamá y yo tenemos ganas de compartir esos días contigo.', 'Tus ideas también hacen que el plan sea de los tres.')
@@ -191,7 +191,7 @@
         escena(nuevaFoto('ger-fuente'), 'Ger, esta aventura es para ti.', 'Me da mucho gusto que podamos conocernos.'),
         escena(nuevaFoto('ger-patio'), 'Quiero ser tu amigo y conocer tu mundo.', '¿Qué es lo que más te gusta construir en Minecraft?'),
         escena(nuevaFoto('minecraft-1'), 'Yo llevo las antorchas.', 'Tú me dices si empezamos con una casa o una expedición.'),
-        escena(nuevaFoto('ger-lago'), 'También me gustaría salir a explorar contigo.', 'Puedes enseñarme los lugares que más te gustan.'),
+        escena(nuevaFoto('ger-orilla'), 'También me gustaría salir a explorar contigo.', 'Puedes enseñarme los lugares que más te gustan.'),
         escena(nuevaFoto('especial-juntos'), 'Tu mamá y yo queremos que tengas tiempo para tus aventuras', 'y que sepas que puedes contar con nosotros.'),
         escena(nuevaFoto('especial-mariel'), 'Tu mamá y yo estaremos felices de escucharte', 'cuando quieras contarnos cómo te fue.'),
         escena(nuevaFoto('ger-sonrisa'), 'Ojalá nunca te falten ganas de imaginar', 'y de enseñarnos las cosas que inventas.'),
