@@ -1,0 +1,104 @@
+@font-face {
+  font-family: "Bebas Neue";
+  src: url("assets/fonts/BebasNeue-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Playfair Display";
+  src: url("assets/fonts/PlayfairDisplay.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Playfair Display";
+  src: url("assets/fonts/PlayfairDisplay-Italic.ttf") format("truetype");
+  font-style: italic;
+  font-weight: 400 900;
+  font-display: swap;
+}
+
+:root { --font-story: "Playfair Display", Georgia, serif; }
+html { scroll-padding-top: var(--nav-h); }
+
+.hero-title, .intro-card h1, .modal-body h2, .thumb-title,
+.row-title, .ep-head h2, .ep-top > span:first-child, .section-title,
+.auth-box h1, .profiles h1, .games-header h1, .game-context h1,
+.games-section-title, .post h2, .t-main h1, .letter {
+  font-family: var(--font-story);
+}
+
+.hero-title {
+  color: #fff4e8;
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -.035em;
+  text-wrap: balance;
+}
+
+.intro-card h1, .modal-body h2 {
+  font-weight: 700;
+  line-height: 1.13;
+  text-wrap: balance;
+}
+
+.thumb-title {
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: 0;
+}
+
+.row-title .explore { font-family: var(--font); }
+
+.home-hero .hero-bg img { object-position: center 36%; }
+.scene .media-wrap img, .scene .media-wrap video { object-fit: contain; background: #080808; }
+.games-page .games-grid.arcade-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 300px)); }
+[hidden] { display: none !important; }
+.subtitle {
+  bottom: 22%;
+  font-family: var(--font-story);
+  font-style: italic;
+  font-weight: 600;
+  font-size: clamp(1.35rem, 3.4vw, 2.65rem);
+  line-height: 1.22;
+  text-wrap: balance;
+  text-shadow: 0 2px 5px #000;
+}
+.player.controls-on .subtitle { bottom: 30%; }
+
+@media (max-width: 600px) {
+  .anniversary-hero .hero-bg {
+    height: clamp(390px, 57svh, 530px);
+    animation: none;
+    mask-image: linear-gradient(#000 49%, transparent 100%);
+  }
+  .anniversary-hero::before {
+    background: linear-gradient(180deg, rgba(0,0,0,.35), transparent 17%);
+  }
+  .anniversary-hero .hero-bg img {
+    content: url('assets/fotos/foto-11.webp');
+    object-position: center 24%;
+  }
+  .anniversary-hero .hero-content {
+    padding-top: clamp(250px, 35svh, 350px);
+    padding-bottom: 96px;
+  }
+  .anniversary-hero .hero-synopsis {
+    display: block;
+  }
+}
+
+.scene-label {
+  position: absolute;
+  z-index: 1;
+  top: max(4.25rem, env(safe-area-inset-top));
+  right: max(1rem, env(safe-area-inset-right));
+  padding: .3rem .55rem;
+  border-radius: .25rem;
+  background: rgba(0,0,0,.72);
+  color: #fff;
+  font-size: .75rem;
+}
