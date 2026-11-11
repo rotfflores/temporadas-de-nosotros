@@ -1,0 +1,95 @@
+@font-face {
+  font-family: "Playfair Display";
+  src: url("assets/fonts/PlayfairDisplay.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Playfair Display";
+  src: url("assets/fonts/PlayfairDisplay-Italic.ttf") format("truetype");
+  font-style: italic;
+  font-weight: 400 900;
+  font-display: swap;
+}
+
+:root { --font-story: "Playfair Display", Georgia, serif; }
+html { scroll-padding-top: var(--nav-h); }
+
+.hero-title, .intro-card h1, .modal-body h2, .thumb-title,
+.row-title, .ep-head h2, .ep-top > span:first-child, .section-title,
+.auth-box h1, .profiles h1, .games-header h1, .game-context h1,
+.games-section-title, .post h2, .t-main h1, .letter {
+  font-family: var(--font-story);
+}
+
+.hero-title {
+  color: #fff4e8;
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -.035em;
+  text-wrap: balance;
+}
+
+.intro-card h1, .modal-body h2 {
+  font-weight: 700;
+  line-height: 1.13;
+  text-wrap: balance;
+}
+
+.thumb-title {
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: 0;
+}
+
+.row-title .explore { font-family: var(--font); }
+
+.home-hero .hero-bg img { object-position: center 40%; }
+.scene .media-wrap img, .scene .media-wrap video { object-fit: contain; background: #080808; }
+.games-page .games-grid.arcade-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 300px)); }
+[hidden] { display: none !important; }
+.subtitle {
+  bottom: 22%;
+  font-family: var(--font-story);
+  font-style: italic;
+  font-weight: 600;
+  font-size: clamp(1.35rem, 3.4vw, 2.65rem);
+  line-height: 1.22;
+  text-wrap: balance;
+  text-shadow: 0 2px 5px #000;
+}
+.player.controls-on .subtitle { bottom: 30%; }
+.scene-source {
+  position: absolute;
+  top: max(4.5rem, calc(env(safe-area-inset-top) + 3.5rem));
+  right: max(1rem, env(safe-area-inset-right));
+  padding: .35em .65em;
+  border-radius: .25rem;
+  background: #141414d9;
+  color: #f4eee9;
+  font-size: .75rem;
+}
+
+@media (max-width: 600px) {
+  .anniversary-hero .hero-bg {
+    bottom: auto;
+    height: clamp(285px, 78vw, 400px);
+    animation: none;
+  }
+  .anniversary-hero::before {
+    background: linear-gradient(180deg, #1414149c, transparent 64px, transparent 155px, #141414 clamp(285px, 78vw, 400px));
+  }
+  .anniversary-hero.home-hero .hero-content {
+    padding-top: clamp(225px, 61vw, 325px);
+    padding-bottom: 75px;
+  }
+  .anniversary-hero .hero-synopsis {
+    display: block;
+  }
+  .anniversary-hero .hero-bg img {
+    content: url('assets/fotos/portada-08-4.webp');
+    object-position: center;
+  }
+}
