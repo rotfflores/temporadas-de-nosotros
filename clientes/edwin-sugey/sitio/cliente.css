@@ -1,0 +1,27 @@
+/* Ajustes de medios verticales; la identidad visual y los componentes vienen de la plantilla original. */
+.home-hero .hero-bg img { object-position: center 28%; }
+.scene .media-wrap img, .scene .media-wrap video { object-fit: contain; background: #080808; }
+.thumb img, .ep-thumb img { object-position: center center; }
+.games-page .games-grid.arcade-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 300px)); }
+[hidden] { display: none !important; }
+@media (max-width: 600px) {
+  .home-hero .hero-bg img { content: url('assets/fotos/foto-05.webp'); object-position: center 42%; }
+}
+
+.subtitle {
+  bottom: 23%; font-family: 'Dancing Script', Georgia, serif; font-weight: 700;
+  font-size: clamp(1.25rem, 3.6vw, 2.6rem); line-height: 1.24;
+  text-shadow: 0 2px 4px #000, 0 0 12px #000;
+}
+.player.controls-on .subtitle { bottom: 29%; }
+.scene-label {
+  position: absolute;
+  top: max(4.75rem, calc(env(safe-area-inset-top) + 3.75rem));
+  left: max(1rem, env(safe-area-inset-left));
+  padding: .35rem .55rem;
+  border-radius: .25rem;
+  background: rgba(0, 0, 0, .72);
+  color: #fff;
+  font-size: .75rem;
+  z-index: 2;
+}
