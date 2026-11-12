@@ -41,7 +41,7 @@ window.TDN = (() => {
       'Del niño alegre al hombre decidido que sigue haciendo su propio camino.', [
         escena(25, 'En estas fotos de cuando eras niño me gusta buscar todo lo que sigo reconociendo en ti.'),
         escena(26, 'Creciste querido por tu familia y con una alegría que se nos pegaba a todos.'),
-        escena(21, 'Entre una foto y otra fuiste encontrando tu manera de ver el mundo.'),
+        escena(21, 'En el trayecto de la vida fuiste encontrando la manera de ver al mundo'),
         escena(14, 'Por más que pasen los años, me sigue alegrando verte sonreír así.'),
         escena(4, 'Admiro lo inteligente y amoroso que eres, y la decisión con la que vas tras tus metas.'),
         escena(7, 'Sé que cuesta llegar a donde uno quiere. Me da orgullo ver cómo sigues adelante.'),
@@ -54,7 +54,7 @@ window.TDN = (() => {
         escena(13, 'Por compartir la mesa, incluso cuando lo mejor del día fue estar todos ahí.'),
         escena(30, 'Gracias por prestarte para la foto, los disfraces y las ocurrencias de la familia.'),
         escena(15, 'Y por dejarme guardar caras como ésta, que me siguen dando risa.'),
-        escena(18, 'También le doy gracias a tu familia por todo el cariño con el que has crecido.'),
+        escena(18, 'Eres amado por tu familia'),
         escena(28, 'Gracias, hijo. Todavía disfruto tanto tener un ratito contigo.')
       ]),
     pelicula(3, 'Que seas feliz', portada(3), viaje,
@@ -77,7 +77,7 @@ window.TDN = (() => {
           escena(clip('bebe'), 'Cuando naciste, yo estaba aprendiendo a ser mamá desde el primer día.'),
           escena(23, 'Si alguna vez me ganó el miedo o no supe cómo hacer algo, ojalá podamos hablarlo.'),
           escena(22, 'Yo quería cuidarte y darte lo mejor que tenía. Mientras tú crecías, yo también iba creciendo.'),
-          escena(27, 'A veces quisiera abrazar a la mamá que fui. Ahora sé cuánto bien me hacía abrazarte.')
+          escena(27, 'A veces quisiera regresar el tiempo, para abrazarte y besarte mas')
         ]),
         episodio('Los días de estar juntos', 'Fotos en la mesa y de cumpleaños, recuerdos del cariño con el que creció Josmar.', 46, regalo, [
           escena(17, 'Al vernos aquí, pienso en todo el cariño que te acompañó mientras crecías.'),
